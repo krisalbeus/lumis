@@ -24,6 +24,9 @@ class CornerOverlay(
     context: Context,
     private val scene: () -> Quad,
     private val move: (Int, Point) -> Boolean,
+    private val transform: () -> PreviewTransform,
+    private val beginEdit: () -> Unit,
+    private val endEdit: () -> Unit,
     private val onInvalid: () -> Unit,
 ) : ViewGroup(context) {
     private val density = resources.displayMetrics.density
@@ -57,13 +60,15 @@ class CornerOverlay(
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        viewport = Viewport.fit(width, height, INSET_DP * density)
+        viewport = transform().apply(Viewport.fit(width, height, INSET_DP * density))
         scene().points.forEachIndexed { index, point ->
             val screen = viewport.toScreen(point)
             val handle = handles[index]
             val x = screen.x.roundToInt() - handle.measuredWidth / 2
             val y = screen.y.roundToInt() - handle.measuredHeight / 2
             handle.layout(x, y, x + handle.measuredWidth, y + handle.measuredHeight)
+            handle.visibility = if (x + handle.measuredWidth > 0 && y + handle.measuredHeight > 0 &&
+                x < width && y < height) View.VISIBLE else View.INVISIBLE
         }
     }
 
@@ -97,6 +102,7 @@ class CornerOverlay(
             hypot(event.x - p.x, event.y - p.y) <= 28 * density
         } ?: -1
         if (activeCorner < 0) return false
+        beginEdit()
         pointerId = event.getPointerId(0)
         val p = viewport.toScreen(scene().points[activeCorner])
         grabOffset = Point(event.x - p.x, event.y - p.y)
@@ -132,6 +138,7 @@ class CornerOverlay(
     }
 
     private fun finishGesture() {
+        if (activeCorner >= 0) endEdit()
         activeCorner = -1
         pointerId = -1
         parent.requestDisallowInterceptTouchEvent(false)
@@ -184,7 +191,9 @@ class CornerOverlay(
                 else -> return super.performAccessibilityAction(action, arguments)
             }
             val p = scene().points[index]
+            beginEdit()
             if (!move(index, Point(p.x + delta.x, p.y + delta.y))) onInvalid()
+            endEdit()
             return true
         }
     }

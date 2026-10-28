@@ -179,7 +179,8 @@
       "html": {
         "name": "projects/9969649650324268552/files/1b8bb33a83024adaa67b68fa90eb96b1",
         "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/1b8bb33a83024adaa67b68fa90eb96b1:download"
-      }
+      },
+      "localExport": "stitch/12-editor-viewport-navigation.html"
     },
     {
       "id": "fa131d9dce884aea8105172699e2658d",

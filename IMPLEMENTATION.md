@@ -73,11 +73,15 @@ Use [the Stitch workflow](design/README.md) for missing screens and assets.
 - [x] Verify precise paused playback position, cold reopen, actual force-stop
   restart, corruption/unknown versions, recovery, failed writes/retry, and CRUD.
 
-## Milestone 5 - Editing polish (next)
+## Milestone 5 - Editing polish (emulator complete; device acceptance pending)
 
-- [ ] Add viewport zoom/pan without modifying scene coordinates.
-- [ ] Add undo/redo with one history entry per continuous gesture.
-- [ ] Review accessibility, small-screen layout, and touch targets on device.
+- [x] Add viewport zoom/pan without modifying scene coordinates or clean Output.
+- [x] Add undo/redo with one history entry per continuous corner/opacity gesture.
+- [x] Verify accessible control alternatives, compact 150% text, rotation, and
+  touch targets on the development emulator.
+- [x] Exercise 1/4 videos, 8 distinct images, and mixed 4-video/8-image scenes
+  through repeated edit/undo/redo/Output/background cycles on the emulator.
+- [ ] Review TalkBack, small-screen layout, and touch targets on a physical device.
 - [ ] Stress-test 1/4 videos, 8 images, and mixed compositions on Pixel 9 Pro.
 
 ## Future work (separate approval and Stitch designs required)
@@ -89,6 +93,42 @@ Use [the Stitch workflow](design/README.md) for missing screens and assets.
 - [ ] Physical projector-assisted calibration (requires hardware).
 
 ## Verification log
+
+### Milestone 5
+
+Verified on 2026-10-29 using `e2e_playstore` (Android 16 / API 36).
+
+| Check | Result |
+|---|---|
+| Unit tests | 30 passed (15 geometry + 8 scene + 7 preview/history) |
+| Android lint | 0 errors; 3 existing SDK/Gradle/back-attribute warnings |
+| Full connected suite, 1080x2400 / density 420 | 64 passed (46 regression + 14 editing + 4 stress) |
+| Compact suite, 720x1280 / density 320 / font scale 1.5 | 37 passed (14 editing + 4 stress + 13 rendering + 6 Output) |
+| Preview navigation | Two-finger pan/pinch, zoom/Fit buttons, accessible pan dialog, transformed corner motion; scene unchanged |
+| Actual GPU perspective | Independent inverse-matrix gradient samples at 50%, 150%, 400%, within 3/255 per RGB channel; upright video markers; Edit/Output isolation |
+| Undo grouping | Continuous corner/opacity drags are one entry; no-op/cancel without changes creates none; partial cancelled drag retains visible changes as one entry |
+| Undo coverage | Reset, visibility/opacity, layer ordering, add/duplicate/delete including last surface, source replacement, redo branching, and monotonic IDs |
+| Media resources | Unchanged decoder Surface identity retained; restored video kept recorded playback intent; deleted textures released |
+| Lifecycle/durability | Preview/history retained on recreation/backgrounding; undone content autosaved; cold reopen uses Fit and empty history |
+| Stress | Four configurations, five cycles each, 12 property edit/undo/redo/undo sequences per cycle; every visible GPU texture checked and each video advanced at least 16 frames per cycle |
+| Visual review | Native portrait editor, warped quad, scrollable Undo/Redo/zoom controls, and accessible pan dialog inspected on the emulator |
+
+Zoom is editor-only, 50-400%, with bounded panning and Fit recovery. Shader-side
+homogeneous viewport placement avoids exceeding hardware viewport dimensions
+while retaining one authoritative compositor. Preview framing is not project
+content. History retains only immutable model snapshots in memory; it survives
+configuration changes but not project reopen or process death. It has no
+artificial entry-count cap and does not retain decoder/GPU resources.
+
+The compact GPU test initially compared a requested source location with the
+nearest raster sample, overestimating error on a small zoomed-out quad. It now
+uses an independent Android Matrix inverse at each physical pixel center, keeping
+the strict 3/255 threshold rather than weakening it.
+
+No physical Pixel 9 Pro is connected. These short emulator stress runs do not
+establish sustained frame rates, hardware-decoder limits, memory-leak freedom,
+thermal behavior, TalkBack usability, or physical projector quality. Those
+acceptance checks remain explicitly unchecked above.
 
 ### Milestone 4
 

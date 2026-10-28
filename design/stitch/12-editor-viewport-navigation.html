@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Lumis — Editor / Viewport Navigation</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "primary-fixed": "#e8ddff",
+            "on-surface": "#e2e2e9",
+            "on-background": "#e2e2e9",
+            "inverse-primary": "#674bb5",
+            "on-primary-fixed-variant": "#4f319c",
+            "error": "#ffb4ab",
+            "surface-container": "#1e1f25",
+            "tertiary-fixed-dim": "#45dfa4",
+            "on-tertiary-fixed": "#002114",
+            "error-container": "#93000a",
+            "surface-container-lowest": "#0c0e13",
+            "tertiary": "#45dfa4",
+            "surface-dim": "#111318",
+            "secondary-container": "#02aebe",
+            "inverse-on-surface": "#2e3036",
+            "tertiary-container": "#00b37e",
+            "on-surface-variant": "#cac4d4",
+            "secondary-fixed": "#91f1ff",
+            "surface-variant": "#33353a",
+            "primary-container": "#a78bfa",
+            "primary": "#cebdff",
+            "on-error-container": "#ffdad6",
+            "on-secondary": "#00363c",
+            "on-error": "#690005",
+            "inverse-surface": "#e2e2e9",
+            "on-tertiary-container": "#003d28",
+            "surface-container-highest": "#33353a",
+            "on-primary-fixed": "#21005e",
+            "on-tertiary-fixed-variant": "#005137",
+            "on-secondary-fixed-variant": "#004f57",
+            "on-secondary-container": "#003b42",
+            "on-secondary-fixed": "#001f23",
+            "surface": "#111318",
+            "on-tertiary": "#003825",
+            "primary-fixed-dim": "#cebdff",
+            "outline": "#948e9d",
+            "surface-container-low": "#1a1b21",
+            "tertiary-fixed": "#68fcbf",
+            "outline-variant": "#494552",
+            "on-primary-container": "#3c1989",
+            "background": "#111318",
+            "secondary": "#54d8e8",
+            "surface-bright": "#37393f",
+            "on-primary": "#381385",
+            "surface-tint": "#cebdff",
+            "surface-container-high": "#282a2f",
+            "secondary-fixed-dim": "#54d8e8"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "gutter": "0.75rem",
+            "space-xl": "2rem",
+            "margin": "1rem"
+          },
+          "fontFamily": {
+            "label-lg": ["Plus Jakarta Sans"],
+            "label-code-sm": ["JetBrains Mono"],
+            "headline-xl": ["Space Grotesk"],
+            "headline-md": ["Space Grotesk"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "label-code-md": ["JetBrains Mono"],
+            "headline-lg": ["Space Grotesk"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "title-sm": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "label-lg": ["13px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "label-code-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+            "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "label-code-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "title-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 20px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Grid Canvas Aesthetics */
+    .viewport-grid {
+      background-size: 32px 32px;
+      background-image:
+        linear-gradient(to right, rgba(73, 69, 82, 0.22) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(73, 69, 82, 0.22) 1px, transparent 1px);
+    }
+
+    .touch-ripple {
+      animation: pulse-ring 2.2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    }
+
+    @keyframes pulse-ring {
+      0% { transform: scale(0.65); opacity: 0.9; }
+      50% { transform: scale(1.15); opacity: 0.4; }
+      100% { transform: scale(1.4); opacity: 0; }
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-lowest text-on-surface antialiased select-none overflow-hidden m-0 p-0 flex justify-center items-center min-h-screen">
+<!-- Mobile Viewport Frame (Pixel 9 Pro simulation: 412 x 915 dp) -->
+<main class="w-[412px] h-[915px] max-h-screen bg-surface relative flex flex-col overflow-hidden shadow-2xl border border-outline-variant/30">
+<!-- Android System Bar / Top Hardware Inset Area -->
+<header class="w-full pt-2 px-space-md flex justify-between items-center bg-surface z-40 shrink-0">
+<span class="font-label-code-sm text-label-code-sm text-outline">09:41</span>
+<!-- Center Camera Cutout Simulation & Telemetry Pill -->
+<div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-surface-container-low border border-outline-variant/40">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-pulse"></span>
+<span class="font-label-code-sm text-label-code-sm text-on-surface tracking-tight">Optic Sync: 12ms</span>
+</div>
+<div class="flex items-center space-x-1 text-outline">
+<span class="material-symbols-outlined text-[15px]">wifi</span>
+<span class="material-symbols-outlined text-[15px]">battery_full</span>
+</div>
+</header>
+<!-- Top Navigation Bar -->
+<nav class="flex justify-between items-center w-full px-space-md pt-2 pb-2.5 max-w-full bg-surface border-b border-outline-variant/20 z-40 shrink-0">
+<!-- Left: Back '< Projects' & Title -->
+<div class="flex items-center gap-2">
+<button aria-label="Back to projects" class="flex items-center text-outline hover:bg-surface-container-high transition-colors duration-150 active:scale-95 py-1 px-1 rounded-lg" type="button">
+<span class="material-symbols-outlined text-primary text-[22px]">chevron_left</span>
+<span class="font-body-sm text-body-sm text-outline ml-0.5">Projects</span>
+</button>
+<span class="text-outline-variant/60">/</span>
+<div class="flex flex-col">
+<span class="font-headline-md text-[15px] leading-tight font-bold tracking-tight text-on-surface truncate max-w-[110px]">
+            Living room test
+          </span>
+</div>
+</div>
+<!-- Center & Right: Undo/Redo, Output Toggle, Settings -->
+<div class="flex items-center gap-1">
+<!-- Undo / Redo Micro buttons -->
+<div class="flex items-center bg-surface-container-low rounded-lg p-0.5 border border-outline-variant/30">
+<button aria-label="Undo" class="w-7 h-7 flex items-center justify-center text-outline hover:text-on-surface active:scale-95 rounded transition-transform" type="button">
+<span class="material-symbols-outlined text-[18px]">undo</span>
+</button>
+<button aria-label="Redo" class="w-7 h-7 flex items-center justify-center text-outline/50 active:scale-95 rounded transition-transform" disabled="" type="button">
+<span class="material-symbols-outlined text-[18px]">redo</span>
+</button>
+</div>
+<!-- Mode Toggle: Edit / Output -->
+<div class="flex items-center bg-surface-container-low rounded-lg p-0.5 border border-outline-variant/30">
+<button class="px-2 py-1 rounded bg-surface-container-high text-secondary font-label-code-sm text-[10px] uppercase font-semibold" type="button">
+            Edit
+          </button>
+<button class="px-2 py-1 rounded text-outline font-label-code-sm text-[10px] uppercase hover:text-on-surface" type="button">
+            Beam
+          </button>
+</div>
+<!-- Settings Icon Button -->
+<button aria-label="Project Settings" class="w-8 h-8 flex items-center justify-center text-outline hover:bg-surface-container-high rounded-lg active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</button>
+</div>
+</nav>
+<!-- Canvas Info Header Strip: Coordinate Telemetry -->
+<section aria-label="Coordinate Telemetry Readout" class="w-full px-space-md py-1.5 bg-surface-container-lowest/80 backdrop-blur border-b border-outline-variant/15 flex items-center justify-between z-30 shrink-0">
+<div class="flex items-center gap-2">
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="font-label-code-sm text-label-code-sm text-on-surface-variant font-medium">
+          Canvas: <span class="text-on-surface font-semibold">1920 × 1080</span>
+</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="font-label-code-sm text-[10px] text-outline">VIEWPORT OFFSET</span>
+<span class="font-label-code-sm text-label-code-sm bg-surface-container px-1.5 py-0.5 rounded border border-outline-variant/30 text-secondary">
+          +120px, -45px
+        </span>
+</div>
+</section>
+<!-- CENTER VIEWPORT (Active Pinch-Zoom & Pan State) -->
+<section aria-label="Projection Mapping Matrix Canvas" class="relative flex-1 w-full overflow-hidden bg-[#090B10] cursor-grab active:cursor-grabbing">
+<!-- Pan / Zoom Container transformed to 145% Scale and +120px, -45px Pan -->
+<div class="absolute inset-0 w-full h-full viewport-grid transition-transform duration-75 origin-center" style="transform: translate(32px, -18px) scale(1.45);">
+<!-- Canvas Bounds Frame (Simulated 1920x1080 base boundary in viewport) -->
+<div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] h-[210px] border border-outline-variant/40 rounded-sm pointer-events-none">
+<span class="absolute -top-4 left-0 font-label-code-sm text-[9px] text-outline uppercase tracking-wider">Canvas Boundary 1.0x</span>
+<span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 border-t border-l border-outline/30"></span>
+</div>
+<!-- Mapped Projection Quad (Living Room Surface Quad 01) -->
+<svg class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] h-[210px] overflow-visible pointer-events-none" viewbox="0 0 340 210">
+<defs>
+<!-- Laser Projection Glow Filter -->
+<filter height="140%" id="opt-glow" width="140%" x="-20%" y="-20%">
+<fegaussianblur result="blur" stddeviation="3"></fegaussianblur>
+<fecomposite in="SourceGraphic" in2="blur" operator="over"></fecomposite>
+</filter>
+<lineargradient id="quadGrad" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#a78bfa" stop-opacity="0.25"></stop>
+<stop offset="100%" stop-color="#54d8e8" stop-opacity="0.1"></stop>
+</lineargradient>
+<!-- Warped Mesh Grid Lines -->
+<pattern height="28" id="meshGrid" patternunits="userSpaceOnUse" width="28">
+<path d="M 28 0 L 0 0 0 28" fill="none" stroke="rgba(84, 216, 232, 0.25)" stroke-width="0.75"></path>
+</pattern>
+</defs>
+<!-- Deformed Quad Polygon -->
+<!-- P1(18, 22), P2(328, 8), P3(312, 196), P4(38, 184) -->
+<polygon fill="url(#quadGrad)" filter="url(#opt-glow)" points="18,22 328,8 312,196 38,184" stroke="#54d8e8" stroke-width="1.8"></polygon>
+<polygon fill="url(#meshGrid)" points="18,22 328,8 312,196 38,184"></polygon>
+<!-- Internal Bézier Mesh Guidance Vectors -->
+<path d="M 18,22 Q 170,12 328,8" fill="none" stroke="#54d8e8" stroke-dasharray="3,3" stroke-width="0.8"></path>
+<path d="M 38,184 Q 180,200 312,196" fill="none" stroke="#54d8e8" stroke-dasharray="3,3" stroke-width="0.8"></path>
+<path d="M 18,22 Q 24,100 38,184" fill="none" stroke="#54d8e8" stroke-dasharray="3,3" stroke-width="0.8"></path>
+<path d="M 328,8 Q 320,105 312,196" fill="none" stroke="#54d8e8" stroke-dasharray="3,3" stroke-width="0.8"></path>
+<!-- Perspective Center Cross -->
+<line stroke="rgba(206, 189, 255, 0.45)" stroke-dasharray="2,2" stroke-width="1" x1="173" x2="175" y1="15" y2="190"></line>
+<line stroke="rgba(206, 189, 255, 0.45)" stroke-dasharray="2,2" stroke-width="1" x1="28" x2="320" y1="103" y2="102"></line>
+</svg>
+<!-- Corner Vertex Anchors (Node Handles with Hitboxes) -->
+<!-- Vertex Top-Left -->
+<div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-auto" style="left: calc(50% - 170px + 18px); top: calc(50% - 105px + 22px);">
+<div class="w-10 h-10 -ml-5 -mt-5 flex items-center justify-center cursor-pointer group">
+<div class="w-3.5 h-3.5 rounded-full border-2 border-secondary bg-surface flex items-center justify-center shadow-[0_0_8px_#67E8F9]">
+<span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+</div>
+</div>
+</div>
+<!-- Vertex Top-Right (Inspected fine-corner) -->
+<div class="absolute pointer-events-auto" style="left: calc(50% - 170px + 328px); top: calc(50% - 105px + 8px);">
+<div class="w-10 h-10 -ml-5 -mt-5 flex items-center justify-center cursor-pointer">
+<div class="w-4 h-4 rounded-full border-2 border-primary-container bg-surface flex items-center justify-center ring-2 ring-primary/40 shadow-[0_0_12px_#A78BFA]">
+<span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+</div>
+<!-- Fine inspection coordinate tag -->
+<div class="absolute left-5 -top-2 bg-surface-container-high border border-primary/40 px-1.5 py-0.5 rounded shadow-lg pointer-events-none whitespace-nowrap">
+<span class="font-label-code-sm text-[9px] text-primary">X:1904 Y:14</span>
+</div>
+</div>
+</div>
+<!-- Vertex Bottom-Right -->
+<div class="absolute pointer-events-auto" style="left: calc(50% - 170px + 312px); top: calc(50% - 105px + 196px);">
+<div class="w-10 h-10 -ml-5 -mt-5 flex items-center justify-center cursor-pointer">
+<div class="w-3.5 h-3.5 rounded-full border-2 border-secondary bg-surface flex items-center justify-center shadow-[0_0_8px_#67E8F9]">
+<span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+</div>
+</div>
+</div>
+<!-- Vertex Bottom-Left -->
+<div class="absolute pointer-events-auto" style="left: calc(50% - 170px + 38px); top: calc(50% - 105px + 184px);">
+<div class="w-10 h-10 -ml-5 -mt-5 flex items-center justify-center cursor-pointer">
+<div class="w-3.5 h-3.5 rounded-full border-2 border-secondary bg-surface flex items-center justify-center shadow-[0_0_8px_#67E8F9]">
+<span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+</div>
+</div>
+</div>
+</div>
+<!-- MULTI-TOUCH GESTURE FEEDBACK RINGS (Two-finger pinch/pan pucks) -->
+<!-- Finger 1 Touch Indicator -->
+<div class="absolute left-[138px] top-[260px] pointer-events-none z-20 flex flex-col items-center">
+<div class="relative w-12 h-12 flex items-center justify-center">
+<span class="absolute inset-0 rounded-full border-2 border-secondary/80 touch-ripple"></span>
+<span class="w-8 h-8 rounded-full bg-secondary/20 border border-secondary backdrop-blur-sm flex items-center justify-center">
+<span class="w-2.5 h-2.5 rounded-full bg-white shadow-[0_0_6px_#67e8f9]"></span>
+</span>
+</div>
+<span class="mt-1 font-label-code-sm text-[10px] text-secondary tracking-tight bg-surface-dim/80 px-1 rounded">1</span>
+</div>
+<!-- Dynamic Vector Connector between Pinch Fingers -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none z-10">
+<line opacity="0.65" stroke="#54d8e8" stroke-dasharray="4,4" stroke-width="1.5" x1="162" x2="264" y1="284" y2="380"></line>
+<!-- Midpoint distance pill indicator -->
+<circle cx="213" cy="332" fill="#a78bfa" r="3"></circle>
+</svg>
+<!-- Finger 2 Touch Indicator -->
+<div class="absolute left-[240px] top-[356px] pointer-events-none z-20 flex flex-col items-center">
+<div class="relative w-12 h-12 flex items-center justify-center">
+<span class="absolute inset-0 rounded-full border-2 border-secondary/80 touch-ripple" style="animation-delay: 0.35s;"></span>
+<span class="w-8 h-8 rounded-full bg-secondary/20 border border-secondary backdrop-blur-sm flex items-center justify-center">
+<span class="w-2.5 h-2.5 rounded-full bg-white shadow-[0_0_6px_#67e8f9]"></span>
+</span>
+</div>
+<span class="mt-1 font-label-code-sm text-[10px] text-secondary tracking-tight bg-surface-dim/80 px-1 rounded">2</span>
+</div>
+<!-- FLOATING VIEWPORT ZOOM PILL & CONTROLS (Top Right of Canvas) -->
+<aside aria-label="Zoom Controls" class="absolute top-4 right-4 z-30 flex flex-col items-end gap-2">
+<div class="flex items-center bg-[#1C2230]/90 border border-primary/30 backdrop-blur-md rounded-xl p-1 shadow-[0_8px_24px_rgba(0,0,0,0.6)]">
+<!-- Zoom Out [-] -->
+<button aria-label="Zoom Out" class="w-8 h-8 flex items-center justify-center text-outline hover:text-on-surface hover:bg-surface-container-high rounded-lg active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[18px]">remove</span>
+</button>
+<!-- Zoom Percent Readout -->
+<div class="px-2 py-0.5 text-center min-w-[48px]">
+<span class="font-label-code-md text-label-code-md text-primary font-bold">145%</span>
+</div>
+<!-- Zoom In [+] -->
+<button aria-label="Zoom In" class="w-8 h-8 flex items-center justify-center text-outline hover:text-on-surface hover:bg-surface-container-high rounded-lg active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+<!-- Divider -->
+<span class="h-4 w-px bg-outline-variant/60 mx-1"></span>
+<!-- Reset View (100%) Button -->
+<button aria-label="Reset View to 100%" class="px-2 h-8 flex items-center gap-1 text-on-surface hover:bg-surface-container-high rounded-lg active:scale-95 transition-all" title="Reset 100%" type="button">
+<span class="material-symbols-outlined text-secondary text-[16px]">fit_screen</span>
+<span class="font-label-code-sm text-[11px] text-secondary font-medium">1:1</span>
+</button>
+</div>
+<!-- Snap-to-Grid / Corner Magnet Toggle chip -->
+<div class="flex items-center gap-1.5 px-2.5 py-1 bg-[#141821]/80 backdrop-blur border border-outline-variant/30 rounded-lg text-outline">
+<span class="material-symbols-outlined text-[14px] text-tertiary">grid_goldenratio</span>
+<span class="font-label-code-sm text-[10px] text-on-surface-variant font-medium">Grid Snap 10px</span>
+</div>
+</aside>
+<!-- PROMINENT FLOATING TOAST / GESTURE GUIDE BANNER -->
+<aside aria-label="Gesture Guidance" class="absolute bottom-5 left-4 right-4 z-30">
+<div class="w-full bg-[#1C2230]/95 border border-primary/25 backdrop-blur-md rounded-xl px-3.5 py-2.5 flex items-center justify-between shadow-[0_8px_24px_rgba(0,0,0,0.7)]">
+<div class="flex items-center gap-2.5 overflow-hidden">
+<div class="w-7 h-7 rounded-lg bg-primary-container/20 border border-primary-container/40 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-[17px]">pinch</span>
+</div>
+<p class="font-body-sm text-[12px] leading-snug text-on-surface truncate">
+<span class="text-secondary font-semibold">Two fingers</span> to pan &amp; zoom • <span class="text-on-surface-variant">One finger moves quad corners</span>
+</p>
+</div>
+<!-- Dismiss/Info indicator -->
+<span class="material-symbols-outlined text-outline/70 text-[18px] ml-2 shrink-0">info</span>
+</div>
+</aside>
+</section>
+<!-- BOTTOM MINIMIZED TOOLBAR & QUICK SURFACE DOCK -->
+<footer class="w-full bg-[#141821] border-t border-outline-variant/30 px-space-md pt-2 pb-5 z-40 shrink-0 flex flex-col gap-2">
+<!-- Top Row: Surface Selection Carousel -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2 overflow-x-auto py-1">
+<span class="font-label-code-sm text-[11px] text-outline uppercase tracking-wider shrink-0">Surface:</span>
+<!-- Active Surface Chip (Living Room Quad 1) -->
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container-high border border-secondary text-secondary font-label-code-sm text-label-code-sm shrink-0 shadow-[0_0_8px_rgba(84,216,232,0.2)]" type="button">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>Quad #1 (Wall Main)</span>
+<span class="text-[10px] text-outline">4-pt</span>
+</button>
+<!-- Inactive Surface Chip -->
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container-low border border-outline-variant/30 text-outline hover:text-on-surface font-label-code-sm text-label-code-sm shrink-0" type="button">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+<span>Quad #2 (Ceiling Alcove)</span>
+</button>
+</div>
+<!-- Add Surface Tool -->
+<button aria-label="Add Surface" class="w-8 h-8 rounded-lg bg-surface-container border border-outline-variant/40 flex items-center justify-center text-outline hover:text-on-surface active:scale-95 ml-2 shrink-0" type="button">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+<!-- Bottom Row: Essential Tool Rack -->
+<div class="flex items-center justify-between pt-1 border-t border-outline-variant/20">
+<!-- Precision Nudge D-Pad Trigger -->
+<button class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-outline hover:bg-surface-container active:scale-95" type="button">
+<span class="material-symbols-outlined text-[18px]">open_with</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Nudge</span>
+</button>
+<!-- Tool: Mesh Subdivisions -->
+<button class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-outline hover:bg-surface-container active:scale-95" type="button">
+<span class="material-symbols-outlined text-[18px]">grid_4x4</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Mesh (2×2)</span>
+</button>
+<!-- Tool: Corner Pinning Mode Active -->
+<button class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-primary-container/15 text-primary border border-primary/30 active:scale-95" type="button">
+<span class="material-symbols-outlined text-[18px] text-primary">polyline</span>
+<span class="font-label-lg text-label-lg font-semibold">Keystone</span>
+</button>
+<!-- Tool: Test Patterns Trigger -->
+<button class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-outline hover:bg-surface-container active:scale-95" type="button">
+<span class="material-symbols-outlined text-[18px]">app_badging</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Pattern</span>
+</button>
+</div>
+<!-- Android Gesture Pill Navigation Inset Bar -->
+<div class="w-full flex justify-center pt-2">
+<div class="w-32 h-1 bg-outline/40 rounded-full"></div>
+</div>
+</footer>
+</main>
+</body></html>

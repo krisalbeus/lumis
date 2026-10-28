@@ -3,7 +3,8 @@
 An Android-first, offline projection-mapping app. Currently implemented:
 **Milestone 0, the rendering proof**, **Milestone 1, the virtual projector
 canvas**, **Milestone 2, media import**, **Milestone 3, scene composition**,
-and **Milestone 4, local project persistence**. This is intentionally not the
+**Milestone 4, local project persistence**, and **Milestone 5, editing polish
+(emulator-verified; physical-device acceptance pending)**. This is intentionally not the
 complete MVP.
 
 Play a bundled video, independently drag its four corners, and watch the GPU
@@ -92,6 +93,24 @@ are test-only dependencies; the first build needs access to Gradle/Maven artifac
   one-time "Viewing full screen" tutorial over the app. Dismiss it before
   projecting; it is system UI, not Lumis output.
 - Drag handles **A, B, C, D**. Each has a 56dp target.
+- Two fingers on empty canvas **pan and pinch-zoom the preview (50-400%)**.
+  One finger moves a corner; a gesture starting on a corner keeps ownership if
+  another finger lands. **Zoom in / out**, **Pan canvas** direction buttons,
+  and **Fit** provide accessible alternatives in the scrollable control panel.
+  Fit restores the preview only. Navigation never changes scene coordinates,
+  projected geometry, saved content, or clean Output.
+- **Undo / Redo** restores corner mapping, Reset, properties, layer order,
+  add/duplicate/delete, and source replacement. A continuous corner drag or
+  opacity swipe is one edit; a cancelled gesture keeps any already-visible
+  changes as one edit. No-op gestures create no entry. Selection, playback,
+  preview navigation, and automatic missing-media fallback are not edits.
+  A new content edit discards redo. Unchanged media resources keep playing;
+  restored/replaced media recovers the recorded playback intent/position.
+- Undo/redo autosaves the restored scene. History contains model snapshots, not
+  textures/decoders, and survives rotation/backgrounding in the same process.
+  It is session-only: cold project reopen/process death does not restore history.
+  Preview framing survives activity recreation but cold project reopen starts
+  at Fit. Surface IDs remain monotonic even after undoing additions.
 - Corners stay within the canvas. Folded, crossed, or nearly collapsed geometry
   is rejected with a visible message instead of feeding a singular transform to
   the renderer.
@@ -178,7 +197,10 @@ Per-image bounded bitmap decode -> GL texture -> same homography path
 
 Scene coordinates are normalized to the fixed 1920x1080 logical output frame
 (`OutputCanvas`). A `Viewport` places that frame on a physical surface. Edit uses
-a 28dp inset preview shared exactly by the renderer and handle overlay. Output uses
+a 28dp inset preview shared exactly by the renderer and handle overlay, followed
+by an editor-only zoom/pan transform. The shader applies the final viewport in
+homogeneous clip space, keeping the hardware GL viewport screen-sized even at
+400% zoom. Output ignores that editor transform and uses
 the same `GLSurfaceView`, compositor, media surfaces, and scene with no inset,
 letterboxed or pillarboxed in black at 16:9. Switching modes only changes view
 visibility, system bars, and the viewport; it never recreates the video pipeline.
@@ -194,6 +216,8 @@ Key source:
 - [GPU video renderer](app/src/main/java/com/lumis/renderer/VideoRenderer.kt)
 - [Decoder lifecycle](app/src/main/java/com/lumis/media/SamplePlayer.kt)
 - [Corner editing and accessibility](app/src/main/java/com/lumis/editor/CornerOverlay.kt)
+- [Editor preview transform](app/src/main/java/com/lumis/editor/PreviewTransform.kt)
+- [Scene edit history](app/src/main/java/com/lumis/editor/EditHistory.kt)
 - [Native screen](app/src/main/java/com/lumis/MainActivity.kt)
 
 The UI follows the Milestone 1 Stitch revisions of references 13 and 33, plus
@@ -207,6 +231,8 @@ Composition controls reuse approved screens 10/11 (Layers/Properties),
 14 (source choice), 30 (delete confirmation), and 08 (empty canvas). Native
 scrollable dialogs and accessible move buttons adapt the references without
 introducing roadmap controls.
+Editing polish reuses screens 09/12 for Undo/Redo and two-finger navigation,
+with native zoom/Fit and accessible pan controls. These remain editor-only.
 
 ## Tests
 
@@ -256,6 +282,20 @@ Android's system input pipeline.
   upright output, touch rejection, rotation, backgrounding, and error recovery.
   A full-display screenshot asserts every sampled pixel outside the projected
   quad is black, catching system bars and stray views.
+- [Editing unit tests](app/src/test/java/com/lumis/editor/EditingTest.kt) cover
+  viewport identity, anchor-preserving zoom, coordinate round trips, bounds,
+  invalid input, and history ordering/branching.
+- [Editing interaction tests](app/src/androidTest/java/com/lumis/EditingPolishTest.kt)
+  cover gesture grouping/cancellation, undo/redo of properties/order/lifecycle/
+  source/deletion, monotonic IDs, media resource isolation, durable undo,
+  cold-session boundaries, accessible controls, and zoomed GPU perspective.
+  An independent Android Matrix inverse evaluates gradient texture coordinates
+  at actual pixel centers, requiring error within 3/255 at 50%, 150%, and 400%.
+- [Composition stress tests](app/src/androidTest/java/com/lumis/CompositionStressTest.kt)
+  exercise 1 video, 4 videos, 8 distinct images, and 4 videos plus 8 images.
+  Each runs five edit/undo/redo/Output/background cycles, verifies every surface's
+  actual GPU pixels, and checks each video decoder advances independently.
+  Timing/process-memory logs are emulator observations, not device benchmarks.
 - GPU tests use `PixelCopy` on the actual GL surface, not a UI screenshot proxy.
   They compare 20 source points after a strong trapezoid warp, requiring average
   per-channel error under 5/255 and at least 18/20 samples under 12/255.
@@ -279,8 +319,7 @@ sh tools/generate-sample.sh
 
 ## Not implemented yet
 
-Undo/redo, viewport pan/zoom,
-external Output displays, shaders, masks, and cameras are not part of this
+External Output displays, effects, masks, and cameras are not part of this
 build. Physical Pixel 9 Pro performance, thermal behavior,
 hardware-specific decoding, and projector output still need device testing.
 Follow the [milestone checklist](IMPLEMENTATION.md) rather than expanding everything

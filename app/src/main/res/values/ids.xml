@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <item name="undo" type="id" />
+    <item name="redo" type="id" />
+    <item name="zoom_in" type="id" />
+    <item name="zoom_out" type="id" />
+    <item name="zoom_level" type="id" />
+    <item name="fit_canvas" type="id" />
+    <item name="pan_canvas" type="id" />
     <item name="projects" type="id" />
     <item name="project_status" type="id" />
     <item name="save_project" type="id" />

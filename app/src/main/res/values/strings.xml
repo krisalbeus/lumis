@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="undo">Undo</string>
+    <string name="redo">Redo</string>
+    <string name="zoom_in">Zoom in</string>
+    <string name="zoom_out">Zoom out</string>
+    <string name="zoom_percent">Preview %1$d%%</string>
+    <string name="fit_canvas">Fit</string>
+    <string name="pan_canvas">Pan canvas</string>
+    <string name="navigation_hint">Two fingers pan and zoom. One finger moves a corner. Fit restores the preview; Output is unchanged.</string>
     <string name="projects_heading">Lumis / Projects</string>
     <string name="projects">Projects</string>
     <string name="projects_description">On-device projects. Your media stays on your device.</string>

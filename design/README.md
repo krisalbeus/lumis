@@ -104,6 +104,7 @@ metadata is 3840x2160, the same aspect ratio at twice the resolution.
 - [Selected-video screenshot](stitch/09-editor-selected-video.png)
 - [Surface layers](stitch/10-editor-surface-layers.html)
 - [Surface properties](stitch/11-editor-surface-properties.html)
+- [Viewport navigation](stitch/12-editor-viewport-navigation.html)
 - [Delete surface confirmation](stitch/30-delete-surface-confirmation.html)
 - [Rendering-proof mobile layout, Milestone 1](stitch/13-rendering-proof-mobile.html)
 - [Rendering-proof landscape layout, Milestone 1](stitch/33-rendering-proof-landscape.html)
@@ -146,6 +147,17 @@ screen 07. Recovery copy explicitly warns that an older snapshot can lose recent
 edits; it does not repeat the mockup's unsupported "No data was lost" claim.
 Save/load errors and project navigation never enter clean Output.
 The persistence exports are the approved existing references, not new revisions.
+
+Milestone 5 reuses screens 09/12 for Undo/Redo, zoom level, zoom in/out, Fit,
+and two-finger pan/pinch navigation. Single-finger corner editing retains gesture
+ownership. Native scrollable controls preserve source/playback access; a
+charcoal direction-button dialog provides a screen-reader-friendly alternative
+to panning. This is an accessibility adaptation of screen 12, not a new visual
+language. Zoom is bounded to 50-400%; Fit resets preview framing only.
+Undo/redo is session-only and groups each drag/opacity swipe as one edit.
+Preview framing and history never enter clean Output. Screen 12's grid snap,
+mesh/pattern tools, projector status, and decorative telemetry are not implemented.
+The new local HTML export is the existing approved screen, not a Stitch revision.
 
 All current screen references remain in Stitch. Only the references above are
 exported locally; the manifest is not a full offline archive of every mockup.

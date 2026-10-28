@@ -31,9 +31,13 @@ import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import com.lumis.editor.CornerOverlay
+import com.lumis.editor.EditHistory
+import com.lumis.editor.PreviewTransform
+import com.lumis.editor.PreviewGestures
 import com.lumis.geometry.OutputCanvas
 import com.lumis.geometry.Point
 import com.lumis.geometry.Quad
+import com.lumis.geometry.Viewport
 import com.lumis.media.MediaFailure
 import com.lumis.media.MediaSource
 import com.lumis.media.SamplePlayer
@@ -111,9 +115,24 @@ class MainActivity : Activity() {
     private val autosave = Runnable { saveProject() }
     val currentProjectId: String? get() = project?.id
     val currentProjectName: String? get() = project?.name
+    private class EditSession(val history: EditHistory<ProjectState> = EditHistory())
+    private var editSession = EditSession()
+    private var editDepth = 0
+    private var editBefore: ProjectState? = null
+    var previewTransform = PreviewTransform()
+        private set
+    private lateinit var undoButton: Button
+    private lateinit var redoButton: Button
+    private lateinit var zoomLabel: TextView
+    private lateinit var zoomOutButton: Button
+    private lateinit var zoomInButton: Button
+    val canUndo: Boolean get() = editSession.history.canUndo
+    val canRedo: Boolean get() = editSession.history.canRedo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        editSession = lastNonConfigurationInstance as? EditSession ?: EditSession()
+        savedInstanceState?.getDoubleArray("preview")?.let { previewTransform = PreviewTransform(it[0], it[1], it[2]) }
         projectStore = ProjectStore(File(filesDir, "projects"))
         setContentView(text(getString(R.string.loading), 18, Color.WHITE).apply {
             setBackgroundColor(this@MainActivity.background)
@@ -198,6 +217,79 @@ class MainActivity : Activity() {
         },
         sessions.mapNotNull { (id, session) -> session.missing?.let { id to it } }.toMap())
 
+    private fun beginEdit() {
+        if (editDepth++ == 0) editBefore = projectState()
+        refreshHistory()
+    }
+
+    private fun endEdit() {
+        if (editDepth == 0 || --editDepth > 0) return
+        val before = requireNotNull(editBefore)
+        editBefore = null
+        val after = projectState()
+        if (before.scene.surfaces != after.scene.surfaces) editSession.history.record(before, after)
+        refreshHistory()
+    }
+
+    private inline fun edit(action: () -> Unit) {
+        beginEdit()
+        try { action() } finally { endEdit() }
+    }
+
+    private fun refreshHistory() {
+        if (!::undoButton.isInitialized) return
+        undoButton.isEnabled = canUndo && editDepth == 0
+        redoButton.isEnabled = canRedo && editDepth == 0
+    }
+
+    fun undoEdit() {
+        if (editDepth != 0) return
+        editSession.history.undo()?.let(::restoreEdit)
+    }
+
+    fun redoEdit() {
+        if (editDepth != 0) return
+        editSession.history.redo()?.let(::restoreEdit)
+    }
+
+    private fun restoreEdit(state: ProjectState) {
+        val next = state.scene.copy(nextId = maxOf(scene.nextId, state.scene.nextId))
+        sessions.keys.toList().filter { id -> next.surfaces.none { it.id == id } }.forEach { sessions.remove(it)?.player?.release() }
+        next.surfaces.forEach { layer ->
+            val old = scene.surfaces.find { it.id == layer.id }
+            if (old == null || old.source != layer.source) {
+                sessions.remove(layer.id)?.player?.release()
+                val session = newSession(layer.id)
+                state.playback[layer.id]?.let { session.player.restore(it.playing, it.position) }
+                session.missing = state.missing[layer.id]
+                session.failure = if (session.missing == null) null else MediaFailure.UNAVAILABLE
+            }
+        }
+        scene = next
+        renderer.updateScene(scene)
+        refreshEditor()
+        refreshHistory()
+    }
+
+    fun setPreviewTransform(transform: PreviewTransform) {
+        previewTransform = transform
+        renderer.setPreview(transform)
+        overlay.update()
+        zoomLabel.text = getString(R.string.zoom_percent, (transform.zoom * 100).toInt())
+        zoomOutButton.isEnabled = transform.zoom > PreviewTransform.MIN_ZOOM
+        zoomInButton.isEnabled = transform.zoom < PreviewTransform.MAX_ZOOM
+    }
+
+    private fun navigatePreview(factor: Double, from: Point, to: Point) {
+        val base = Viewport.fit(glView.width, glView.height, CornerOverlay.INSET_DP * resources.displayMetrics.density)
+        setPreviewTransform(previewTransform.navigate(base, factor, from, to))
+    }
+
+    private fun zoomPreview(factor: Double) {
+        val center = Point(glView.width / 2.0, glView.height / 2.0)
+        navigatePreview(factor, center, center)
+    }
+
     private fun scheduleSave() {
         if (loading || leaving || paused) return
         revision++
@@ -270,6 +362,7 @@ class MainActivity : Activity() {
         return MediaSession(mediaPlayer).also { sessions[id] = it }
     }
 
+    @android.annotation.SuppressLint("ClickableViewAccessibility") // Navigation has button equivalents; single-finger canvas taps do nothing.
     private fun buildUi() {
         val landscape = resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
         root = LinearLayout(this).apply {
@@ -347,10 +440,14 @@ class MainActivity : Activity() {
         glView.renderMode = GLSurfaceView.RENDERMODE_WHEN_DIRTY
         renderer.updateScene(scene)
         stage.addView(glView, FrameLayout.LayoutParams(-1, -1))
-        overlay = CornerOverlay(this, { quad }, ::moveCorner) {
+        overlay = CornerOverlay(this, { quad }, ::moveCorner, { previewTransform }, ::beginEdit, ::endEdit) {
             Toast.makeText(this, R.string.invalid_quad, Toast.LENGTH_SHORT).show()
         }
         overlay.id = R.id.corner_overlay
+        val navigation = PreviewGestures(::navigatePreview)
+        glView.setOnTouchListener { _, event ->
+            if (!outputMode) navigation.touch(event) else false
+        }
         stage.addView(overlay, FrameLayout.LayoutParams(-1, -1))
         emptyCanvas = text(getString(R.string.empty_canvas), 16, secondary).apply {
             id = R.id.empty_canvas
@@ -361,6 +458,40 @@ class MainActivity : Activity() {
         body.addView(stage, if (landscape) LinearLayout.LayoutParams(0, -1, 1f) else LinearLayout.LayoutParams(-1, 0, 1f))
 
         val panel = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        val navigationPanel = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        val editing = LinearLayout(this).apply { isBaselineAligned = false }
+        undoButton = button(R.string.undo, false).apply {
+            id = R.id.undo
+            setOnClickListener { undoEdit() }
+        }
+        redoButton = button(R.string.redo, false).apply {
+            id = R.id.redo
+            setOnClickListener { redoEdit() }
+        }
+        editing.addView(undoButton, LinearLayout.LayoutParams(0, -2, 1f).apply { marginEnd = dp(8) })
+        editing.addView(redoButton, LinearLayout.LayoutParams(0, -2, 1f))
+        navigationPanel.addView(editing)
+        zoomLabel = text("", 14, cyan).apply { id = R.id.zoom_level; gravity = Gravity.CENTER }
+        navigationPanel.addView(zoomLabel)
+        val navigationButtons = LinearLayout(this).apply { isBaselineAligned = false }
+        zoomOutButton = button(R.string.zoom_out, false).apply {
+            id = R.id.zoom_out
+            setOnClickListener { zoomPreview(1 / 1.25) }
+        }
+        zoomInButton = button(R.string.zoom_in, false).apply {
+            id = R.id.zoom_in
+            setOnClickListener { zoomPreview(1.25) }
+        }
+        listOf(zoomOutButton, zoomInButton, button(R.string.fit_canvas, false).apply {
+            id = R.id.fit_canvas
+            setOnClickListener { setPreviewTransform(PreviewTransform()) }
+        }).forEach { navigationButtons.addView(it, LinearLayout.LayoutParams(0, -2, 1f).apply { marginEnd = dp(4) }) }
+        navigationPanel.addView(navigationButtons)
+        navigationPanel.addView(button(R.string.pan_canvas, false).apply {
+            id = R.id.pan_canvas
+            setOnClickListener { showPanControls() }
+        })
+        navigationPanel.addView(text(getString(R.string.navigation_hint), 12, secondary))
         val scroll = object : ScrollView(this) {
             override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
                 val boundedHeight = if (!landscape && View.MeasureSpec.getMode(heightMeasureSpec) == View.MeasureSpec.AT_MOST) {
@@ -482,6 +613,7 @@ class MainActivity : Activity() {
             }
         }, if (landscape) LinearLayout.LayoutParams(-1, -2) else LinearLayout.LayoutParams(0, -2, 1f))
         panel.addView(controls)
+        panel.addView(navigationPanel, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(12) })
 
         val diagnosticRow = LinearLayout(this).apply {
             gravity = Gravity.CENTER_VERTICAL
@@ -510,6 +642,22 @@ class MainActivity : Activity() {
         panel.addView(projectControls)
         if (!landscape) panel.addView(text(getString(R.string.offline_note), 11, secondary).apply { gravity = Gravity.CENTER })
         setContentView(root)
+        setPreviewTransform(previewTransform)
+        refreshHistory()
+    }
+
+    private fun showPanControls() {
+        val panel = dialogPanel()
+        listOf(R.string.move_left to Point(-.1, 0.0), R.string.move_right to Point(.1, 0.0),
+            R.string.move_up to Point(0.0, -.1), R.string.move_down to Point(0.0, .1)).forEach { (label, delta) ->
+            panel.addView(button(label, false).apply {
+                setOnClickListener {
+                    val base = Viewport.fit(glView.width, glView.height, CornerOverlay.INSET_DP * resources.displayMetrics.density)
+                    navigatePreview(1.0, Point(0.0, 0.0), Point(delta.x * base.width, delta.y * base.height))
+                }
+            }, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(8) })
+        }
+        showPanel(R.string.pan_canvas, panel)
     }
 
     private fun modeSwitch() = LinearLayout(this).apply {
@@ -703,15 +851,17 @@ class MainActivity : Activity() {
             bitmap.recycle()
         }
         val selected = scene.selected
-        if (selected == null) addSurface(next) else {
-            val session = requireNotNull(sessions[selected.id])
-            session.player.release()
-            session.ready = false
-            session.failure = null
-            session.missing = null
-            session.player.restore(true, 0)
-            updateSurface(selected.copy(source = next))
-            if (next == selected.source) renderer.surfaceFor(selected.id)?.let { attachSource(selected.id, it) }
+        edit {
+            if (selected == null) addSurface(next) else {
+                val session = requireNotNull(sessions[selected.id])
+                session.player.release()
+                session.ready = false
+                session.failure = null
+                session.missing = null
+                session.player.restore(true, 0)
+                updateSurface(selected.copy(source = next))
+                if (next == selected.source) renderer.surfaceFor(selected.id)?.let { attachSource(selected.id, it) }
+            }
         }
     }
 
@@ -882,20 +1032,20 @@ class MainActivity : Activity() {
         refreshEditor()
     }
 
-    fun updateSurface(surface: SceneSurface) {
+    fun updateSurface(surface: SceneSurface) = edit {
         scene = scene.update(surface)
         renderer.updateScene(scene)
         refreshEditor()
     }
 
-    fun addSurface(source: MediaSource = MediaSource.BundledSample) {
+    fun addSurface(source: MediaSource = MediaSource.BundledSample) = edit {
         scene = scene.add(source)
         newSession(requireNotNull(scene.selectedId))
         renderer.updateScene(scene)
         refreshEditor()
     }
 
-    fun duplicateSurface() {
+    fun duplicateSurface() = edit {
         val originalId = requireNotNull(scene.selectedId)
         val original = requireNotNull(sessions[originalId])
         scene = scene.duplicate()
@@ -908,7 +1058,7 @@ class MainActivity : Activity() {
         refreshEditor()
     }
 
-    private fun deleteSurface(id: Long) {
+    private fun deleteSurface(id: Long) = edit {
         sessions.remove(id)?.player?.release()
         scene = scene.delete(id)
         renderer.updateScene(scene)
@@ -993,8 +1143,8 @@ class MainActivity : Activity() {
                     opacityLabel.text = getString(R.string.opacity_percent, progress)
                     scene.surfaces.find { it.id == id }?.let { updateSurface(it.copy(opacity = progress / 100f)) }
                 }
-                override fun onStartTrackingTouch(seekBar: SeekBar?) = Unit
-                override fun onStopTrackingTouch(seekBar: SeekBar?) = Unit
+                override fun onStartTrackingTouch(seekBar: SeekBar?) = beginEdit()
+                override fun onStopTrackingTouch(seekBar: SeekBar?) = endEdit()
             })
         }, LinearLayout.LayoutParams(-1, dp(48)))
         val backward = button(R.string.move_backward, false).apply { this.id = R.id.move_backward }
@@ -1006,7 +1156,7 @@ class MainActivity : Activity() {
         }
         listOf(backward to false, forward to true).forEach { (view, ahead) ->
             view.setOnClickListener {
-                scene = scene.move(id, ahead)
+                edit { scene = scene.move(id, ahead) }
                 renderer.updateScene(scene)
                 updateOrderButtons()
                 scheduleSave()
@@ -1061,7 +1211,7 @@ class MainActivity : Activity() {
         val moved = quad.moveCorner(index, point) ?: return false
         if (moved === quad) return true
         val selected = scene.selected ?: return false
-        scene = scene.update(selected.copy(quad = moved))
+        edit { scene = scene.update(selected.copy(quad = moved)) }
         renderer.updateScene(scene)
         overlay.update()
         scheduleSave()
@@ -1105,7 +1255,9 @@ class MainActivity : Activity() {
             session.player.release()
             session.ready = false
             session.player.restore(true, 0)
-            updateSurface(selected.copy(source = MediaSource.BundledSample))
+            scene = scene.update(selected.copy(source = MediaSource.BundledSample))
+            renderer.updateScene(scene)
+            refreshEditor()
         }
         refreshPlayback()
         errorMessage.setText(
@@ -1170,6 +1322,7 @@ class MainActivity : Activity() {
             super.onPause()
             return
         }
+        while (editDepth > 0) endEdit()
         if (!leaving && !saveFailed) saveProject()
         sessions.values.forEach { it.player.release(); it.ready = false }
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -1183,6 +1336,9 @@ class MainActivity : Activity() {
         compositionDialog?.dismiss()
         super.onDestroy()
     }
+
+    @Deprecated("Retained only for in-memory edit history across configuration changes")
+    override fun onRetainNonConfigurationInstance(): Any = editSession
 
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -1211,6 +1367,7 @@ class MainActivity : Activity() {
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putString("project_id", project?.id ?: intent.getStringExtra("project_id"))
         outState.putBoolean("save_failed", saveFailed)
+        outState.putDoubleArray("preview", doubleArrayOf(previewTransform.zoom, previewTransform.panX, previewTransform.panY))
         if (!editorReady) {
             super.onSaveInstanceState(outState)
             return

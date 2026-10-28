@@ -9,6 +9,7 @@ import android.opengl.GLUtils
 import android.util.Log
 import android.view.Surface
 import com.lumis.geometry.Homography
+import com.lumis.editor.PreviewTransform
 import com.lumis.geometry.Viewport
 import com.lumis.media.MediaSource
 import com.lumis.scene.Scene
@@ -46,10 +47,12 @@ class VideoRenderer(
         val matrix = GLES20.glGetUniformLocation(id, "uTextureMatrix")
         val sampler = GLES20.glGetUniformLocation(id, "uMedia")
         val opacity = GLES20.glGetUniformLocation(id, "uOpacity")
+        val viewport = GLES20.glGetUniformLocation(id, "uViewport")
     }
 
     @Volatile private var layers: List<Layer> = emptyList()
     @Volatile private var selectedId: Long? = null
+    @Volatile private var preview = PreviewTransform()
     private val surfaces = ConcurrentHashMap<Long, Surface>()
     private val pendingImages = ConcurrentHashMap<Long, ImageUpload>()
     private val frameCounts = ConcurrentHashMap<Long, Long>()
@@ -97,6 +100,11 @@ class VideoRenderer(
         requestFrame()
     }
 
+    fun setPreview(transform: PreviewTransform) {
+        preview = transform
+        requestFrame()
+    }
+
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         failed = false
         metricsStart = System.nanoTime()
@@ -121,10 +129,11 @@ class VideoRenderer(
 
     override fun onDrawFrame(gl: GL10?) {
         val output = outputMode
-        val fitted = Viewport.fit(surfaceWidth, surfaceHeight, if (output) 0.0 else editInset)
+        val base = Viewport.fit(surfaceWidth, surfaceHeight, if (output) 0.0 else editInset)
+        val fitted = if (output) base else preview.apply(base)
         viewport = fitted
-        GLES20.glViewport(fitted.left.roundToInt(), (surfaceHeight - fitted.top - fitted.height).roundToInt(),
-            fitted.width.roundToInt(), fitted.height.roundToInt())
+        // Keep the hardware viewport screen-sized even when the editor camera zooms beyond it.
+        GLES20.glViewport(0, 0, surfaceWidth, surfaceHeight)
         if (output) GLES20.glClearColor(0f, 0f, 0f, 1f) else GLES20.glClearColor(9f / 255, 11f / 255, 16f / 255, 1f)
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
         GLES20.glEnable(GLES20.GL_SCISSOR_TEST)
@@ -219,6 +228,11 @@ class VideoRenderer(
         GLES20.glBindTexture(if (image) GLES20.GL_TEXTURE_2D else GLES11Ext.GL_TEXTURE_EXTERNAL_OES, texture.id)
         GLES20.glUniform1i(program.sampler, 0)
         GLES20.glUniform1f(program.opacity, layer.surface.opacity)
+        val fitted = viewport
+        GLES20.glUniform4f(program.viewport,
+            (fitted.width / surfaceWidth).toFloat(), (fitted.height / surfaceHeight).toFloat(),
+            ((2 * fitted.left + fitted.width) / surfaceWidth - 1).toFloat(),
+            (1 - (2 * fitted.top + fitted.height) / surfaceHeight).toFloat())
         GLES20.glUniformMatrix3fv(program.homography, 1, false, layer.transform, 0)
         if (!image) GLES20.glUniformMatrix4fv(program.matrix, 1, false, texture.matrix, 0)
         GLES20.glEnableVertexAttribArray(program.position)
@@ -295,21 +309,25 @@ class VideoRenderer(
         private const val VIDEO_VERTEX_SHADER = """
             attribute vec2 aSource;
             uniform mat3 uHomography;
+            uniform vec4 uViewport;
             uniform mat4 uTextureMatrix;
             varying vec2 vTexture;
             void main() {
                 vec3 p = uHomography * vec3(aSource, 1.0);
                 gl_Position = vec4(2.0 * p.x - p.z, p.z - 2.0 * p.y, 0.0, p.z);
+                gl_Position.xy = gl_Position.xy * uViewport.xy + uViewport.zw * gl_Position.w;
                 vTexture = (uTextureMatrix * vec4(aSource.x, 1.0 - aSource.y, 0.0, 1.0)).xy;
             }
         """
         private const val IMAGE_VERTEX_SHADER = """
             attribute vec2 aSource;
             uniform mat3 uHomography;
+            uniform vec4 uViewport;
             varying vec2 vTexture;
             void main() {
                 vec3 p = uHomography * vec3(aSource, 1.0);
                 gl_Position = vec4(2.0 * p.x - p.z, p.z - 2.0 * p.y, 0.0, p.z);
+                gl_Position.xy = gl_Position.xy * uViewport.xy + uViewport.zw * gl_Position.w;
                 vTexture = aSource;
             }
         """
