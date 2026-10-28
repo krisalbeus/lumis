@@ -37,13 +37,18 @@ Use [the Stitch workflow](design/README.md) for missing screens and assets.
 - [x] Preserve mode across rotation and backgrounding; exit Output on errors.
 - [x] Test clean fullscreen output without editing chrome or diagnostic overlays.
 
-## Milestone 2 - Media import (next)
+## Milestone 2 - Media import (complete)
 
-- [ ] Use the Android photo picker for images/videos.
-- [ ] Import and replace sources; handle unsupported/denied/missing media.
-- [ ] Preserve original media and retain scene state on failures.
+- [x] Use Android's system visual picker flow (Photo Picker on Android 13+,
+  document-picker fallback on older versions) for images/videos.
+- [x] Import and replace sources while preserving quad geometry and output mode.
+- [x] Render imported images with the same projective mapping path as video.
+- [x] Handle unsupported, unavailable, and missing sources with explicit recovery
+  UI and a Replace-media action.
+- [x] Preserve current media and scene state on import failures; if a restored
+  source is missing, fall back to the bundled sample and keep mapping unchanged.
 
-## Milestone 3 - Scene composition
+## Milestone 3 - Scene composition (next)
 
 - [ ] Add multiple surfaces, selection, visibility, opacity, and z-order.
 - [ ] Duplicate/delete with confirmation or undo.
@@ -70,6 +75,21 @@ Use [the Stitch workflow](design/README.md) for missing screens and assets.
 - [ ] Physical projector-assisted calibration (requires hardware).
 
 ## Verification log
+
+### Milestone 2
+
+Verified on 2026-10-29 with the same `e2e_playstore` AVD (Android 16 / API 36).
+
+| Check | Result |
+|---|---|
+| Unit tests | 15 passed |
+| Android lint | 0 errors; 3 warnings (version advisories only) |
+| Connected tests, 1080x2400 / density 420 | 24 passed (13 rendering proof + 6 Output + 5 media import) |
+| Compact tests, 720x1280 / density 320 / font scale 1.5 | 13 passed (all 5 media-import tests + 6 Output + 2 rendering checks) |
+| Import image/video | Imported PNG and MP4 sources replaced live scene without resetting corners |
+| Failure handling | Unsupported and unavailable imports surfaced explicit recovery UI and retained existing scene |
+| Missing restored source | Deleted imported image on disk, recreated activity, observed fallback to bundled sample with Replace-media prompt and preserved mapping |
+| Renderer path parity | Imported images and videos render through the same homography/viewport path used by existing GPU tests |
 
 ### Milestone 1
 

@@ -2,22 +2,34 @@ package com.lumis.media
 
 import android.content.Context
 import android.media.MediaPlayer
+import android.net.Uri
 import android.util.Log
 import android.view.Surface
 import com.lumis.R
+import java.io.FileNotFoundException
 import java.io.IOException
 
 class SamplePlayer(
     private val context: Context,
     private val onState: (Boolean, Boolean) -> Unit,
-    private val onFailure: () -> Unit,
+    private val onFailure: (MediaFailure) -> Unit,
 ) {
     private var player: MediaPlayer? = null
     private var prepared = false
+    var source: MediaSource = MediaSource.BundledSample
+        private set
     var wantsToPlay = true
         private set
     var resumePosition = 0
         private set
+
+    fun setSource(source: MediaSource, resetPosition: Boolean = true) {
+        require(source is MediaSource.BundledSample || source is MediaSource.Video) {
+            "SamplePlayer only supports video sources."
+        }
+        this.source = source
+        if (resetPosition) resumePosition = 0
+    }
 
     fun restore(playing: Boolean, position: Int) {
         wantsToPlay = playing
@@ -31,8 +43,12 @@ class SamplePlayer(
         player = next
         try {
             require(surface.isValid) { "Video output surface is unavailable." }
-            context.resources.openRawResourceFd(R.raw.prism_waves).use {
-                next.setDataSource(it.fileDescriptor, it.startOffset, it.length)
+            when (val currentSource = source) {
+                MediaSource.BundledSample -> context.resources.openRawResourceFd(R.raw.prism_waves).use {
+                    next.setDataSource(it.fileDescriptor, it.startOffset, it.length)
+                }
+                is MediaSource.Video -> next.setDataSource(context, currentSource.uri)
+                is MediaSource.Image -> error("Unexpected image source in SamplePlayer.")
             }
             next.setSurface(surface)
             next.isLooping = true
@@ -47,16 +63,20 @@ class SamplePlayer(
             next.setOnErrorListener { _, what, extra ->
                 Log.e("LumisPlayer", "Video decoder error: what=$what extra=$extra")
                 release(preservePosition = false)
-                onFailure()
+                onFailure(MediaFailure.DECODER)
                 true
             }
             next.prepareAsync()
+        } catch (error: SecurityException) {
+            fail(error, MediaFailure.UNAVAILABLE)
+        } catch (error: FileNotFoundException) {
+            fail(error, MediaFailure.UNAVAILABLE)
         } catch (error: IOException) {
-            fail(error)
+            fail(error, MediaFailure.UNSUPPORTED)
         } catch (error: IllegalStateException) {
-            fail(error)
+            fail(error, MediaFailure.DECODER)
         } catch (error: IllegalArgumentException) {
-            fail(error)
+            fail(error, MediaFailure.UNSUPPORTED)
         }
     }
 
@@ -67,7 +87,7 @@ class SamplePlayer(
             if (wantsToPlay) player?.start() else player?.pause()
             onState(true, wantsToPlay)
         } catch (error: IllegalStateException) {
-            fail(error)
+            fail(error, MediaFailure.DECODER)
         }
     }
 
@@ -88,9 +108,9 @@ class SamplePlayer(
         player = null
     }
 
-    private fun fail(error: Exception) {
+    private fun fail(error: Exception, failure: MediaFailure) {
         Log.e("LumisPlayer", "Unable to play bundled sample", error)
         release(preservePosition = false)
-        onFailure()
+        onFailure(failure)
     }
 }

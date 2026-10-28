@@ -1,14 +1,16 @@
 # Lumis
 
 An Android-first, offline projection-mapping app. Currently implemented:
-**Milestone 0, the rendering proof**, and **Milestone 1, the virtual projector
-canvas**. This is intentionally not the complete MVP.
+**Milestone 0, the rendering proof**, **Milestone 1, the virtual projector
+canvas**, and **Milestone 2, media import**. This is intentionally not the
+complete MVP.
 
 Play a bundled video, independently drag its four corners, and watch the GPU
 preserve perspective in real time. Switch between **Edit** and a clean,
 fullscreen **Output** of the same fixed 1920x1080 scene. Includes Play/Pause,
 Reset corners, optional measured FPS, portrait/landscape layouts, and accessible
-corner-movement actions.
+corner-movement actions. Import local images/videos and replace unavailable media
+without losing corner mapping.
 No projector, account, network access, or media permissions are required.
 
 - [Implementation checklist](IMPLEMENTATION.md)
@@ -54,6 +56,14 @@ are test-only dependencies; the first build needs access to Gradle/Maven artifac
   handles, outlines, labels, FPS, buttons, or system bars. Press or gesture
   **Back** to return to Edit. Output ignores touches so the projected scene
   cannot be edited accidentally.
+- **Import media** opens Android's system visual picker: Photo Picker on Android
+  13+ and document picker fallback on older versions. Supported media are local
+  images and videos.
+- Imported images and videos use the same mapped quad, and replacing media keeps
+  geometry unchanged.
+- Unavailable or unsupported files produce explicit recovery UI. If a previously
+  imported source is missing on restore, Lumis falls back to the bundled sample
+  for continuity and prompts **Replace media** while preserving mapping.
 - The first time Android enters immersive mode, the OS may show its own
   one-time "Viewing full screen" tutorial over the app. Dismiss it before
   projecting; it is system UI, not Lumis output.
@@ -88,10 +98,13 @@ editing handles           projective transform + presentation viewport
                                ^
                                |
 MediaPlayer -> Surface -> SurfaceTexture / external OES texture
+Bitmap decode -> GL texture upload -> same homography path
 ```
 
 - Android's decoder writes directly to a GPU-backed surface. Video pixels do not
   pass through Kotlin/Java arrays, JavaScript, or regenerated bitmaps.
+- Imported still images are decoded once, uploaded to a 2D GL texture, and
+  rendered with the exact same homography and viewport path as video.
 - A unit-square homography maps source coordinates into the convex destination
   quad. The vertex shader retains homogeneous `w` in `gl_Position`, allowing
   correct perspective interpolation across both triangles without a diagonal seam.
@@ -151,6 +164,9 @@ Android's system input pipeline.
   reset, absolute video orientation, GPU pixel comparison against a homography,
   recreation/rotation, repeated backgrounding, accessible actions, invalid geometry,
   multi-touch ownership, and explicit error/retry without scene loss.
+- [Media import tests](app/src/androidTest/java/com/lumis/MediaImportTest.kt)
+  cover image/video replacement, unsupported and unavailable-source handling,
+  preserved mapping on failures, and missing-source restore flow.
 - [Output tests](app/src/androidTest/java/com/lumis/OutputModeTest.kt) cover
   the 1920x1080 caption and preview aspect, fullscreen immersive output with all
   editor chrome/diagnostics hidden, Back returning to the same editing session,
@@ -181,9 +197,9 @@ sh tools/generate-sample.sh
 
 ## Not implemented yet
 
-Project management/saving, imported media, multiple surfaces, undo/redo, viewport
-pan/zoom, external Output displays, shaders, masks, cameras, and external displays are
-not part of this build. Physical Pixel 9 Pro performance, thermal behavior,
+Project management/saving, multiple surfaces, undo/redo, viewport pan/zoom,
+external Output displays, shaders, masks, and cameras are not part of this
+build. Physical Pixel 9 Pro performance, thermal behavior,
 hardware-specific decoding, and projector output still need device testing.
 Follow the [milestone checklist](IMPLEMENTATION.md) rather than expanding everything
 at once. Missing future UI designs must be created in the existing Stitch project.

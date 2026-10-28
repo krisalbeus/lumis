@@ -1,12 +1,17 @@
 package com.lumis
 
 import android.app.Activity
+import android.content.Intent
 import android.content.res.ColorStateList
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
+import android.net.Uri
 import android.opengl.GLSurfaceView
 import android.os.Bundle
+import android.provider.OpenableColumns
+import android.webkit.MimeTypeMap
 import android.util.Log
 import android.view.Gravity
 import android.view.KeyEvent
@@ -24,8 +29,11 @@ import com.lumis.editor.CornerOverlay
 import com.lumis.geometry.OutputCanvas
 import com.lumis.geometry.Point
 import com.lumis.geometry.Quad
+import com.lumis.media.MediaFailure
+import com.lumis.media.MediaSource
 import com.lumis.media.SamplePlayer
 import com.lumis.renderer.VideoRenderer
+import java.io.FileNotFoundException
 
 class MainActivity : Activity() {
     var quad = Quad.DEFAULT
@@ -41,6 +49,10 @@ class MainActivity : Activity() {
     private lateinit var metrics: TextView
     private lateinit var errorPanel: LinearLayout
     private lateinit var errorMessage: TextView
+    private lateinit var sourceLabel: TextView
+    private lateinit var sourceDetail: TextView
+    private lateinit var sourceAction: Button
+    private lateinit var errorAction: Button
     private lateinit var root: LinearLayout
     private lateinit var editModeButton: Button
     private lateinit var outputModeButton: Button
@@ -51,20 +63,44 @@ class MainActivity : Activity() {
     private var resumed = false
     private var rendererFailed = false
     private var showFps = false
+    private var source: MediaSource = MediaSource.BundledSample
+    private var pendingMissingSource: MediaSource? = null
+    private var errorFailure: MediaFailure? = null
+    private var restoreFailureOnResume = false
     private val background = Color.rgb(9, 11, 16)
     private val surface = Color.rgb(20, 24, 33)
     private val cyan = Color.rgb(103, 232, 249)
     private val violet = Color.rgb(167, 139, 250)
     private val secondary = Color.rgb(156, 168, 186)
+    val currentSource: MediaSource get() = source
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         savedInstanceState?.getDoubleArray("quad")?.let { quad = Quad.fromCoordinates(it) }
         showFps = savedInstanceState?.getBoolean("fps") ?: false
-        player = SamplePlayer(this, ::playbackChanged) { showError(false) }
+        source = when (savedInstanceState?.getString("source_type")) {
+            "video" -> savedInstanceState.getString("source_uri")?.let { MediaSource.Video(Uri.parse(it)) } ?: MediaSource.BundledSample
+            "image" -> savedInstanceState.getString("source_uri")?.let { MediaSource.Image(Uri.parse(it)) } ?: MediaSource.BundledSample
+            else -> MediaSource.BundledSample
+        }
+        pendingMissingSource = savedInstanceState?.getString("missing_uri")?.let { uri ->
+            when (savedInstanceState.getString("missing_type")) {
+                "video" -> MediaSource.Video(Uri.parse(uri))
+                "image" -> MediaSource.Image(Uri.parse(uri))
+                else -> null
+            }
+        }
+        player = SamplePlayer(this, ::playbackChanged) { failure ->
+            showError(failure, source, fallbackToSample = failure == MediaFailure.UNAVAILABLE)
+        }
+        if (source is MediaSource.Video || source is MediaSource.BundledSample) {
+            player.setSource(source)
+        }
         player.restore(savedInstanceState?.getBoolean("playing") ?: true, savedInstanceState?.getInt("position") ?: 0)
         buildUi()
         setOutputMode(savedInstanceState?.getBoolean("output") ?: false)
+        updateSourceUi()
+        restoreFailureOnResume = savedInstanceState?.getBoolean("show_missing_error") ?: false
     }
 
     private fun buildUi() {
@@ -122,7 +158,7 @@ class MainActivity : Activity() {
                     if (resumed && renderer.currentSurface === videoSurface) {
                         rendererFailed = false
                         errorPanel.visibility = View.GONE
-                        player.attach(videoSurface)
+                        attachCurrentSource(videoSurface)
                     }
                 }
             },
@@ -178,10 +214,11 @@ class MainActivity : Activity() {
         }
         errorMessage = text("", 14, Color.WHITE)
         errorPanel.addView(errorMessage)
-        errorPanel.addView(button(R.string.retry, false).apply {
+        errorAction = button(R.string.retry, false).apply {
             id = R.id.retry_playback
-            setOnClickListener { retry() }
-        })
+            setOnClickListener { recoverError() }
+        }
+        errorPanel.addView(errorAction)
         panel.addView(errorPanel)
 
         val source = LinearLayout(this).apply {
@@ -193,7 +230,8 @@ class MainActivity : Activity() {
             orientation = if (resources.configuration.fontScale > 1.3f) LinearLayout.VERTICAL else LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
         }
-        sourceHeader.addView(text(getString(R.string.sample_label), 16, Color.WHITE, true),
+        sourceLabel = text("", 16, Color.WHITE, true).apply { id = R.id.source_label }
+        sourceHeader.addView(sourceLabel,
             if (sourceHeader.orientation == LinearLayout.VERTICAL) LinearLayout.LayoutParams(-1, -2)
             else LinearLayout.LayoutParams(0, -2, 1f))
         status = text(getString(R.string.loading), 12, cyan).apply {
@@ -202,7 +240,16 @@ class MainActivity : Activity() {
         }
         sourceHeader.addView(status)
         source.addView(sourceHeader)
-        source.addView(text(getString(R.string.sample_detail), 12, secondary).apply { setPadding(0, dp(5), 0, 0) })
+        sourceDetail = text("", 12, secondary).apply {
+            id = R.id.source_detail
+            setPadding(0, dp(5), 0, 0)
+        }
+        source.addView(sourceDetail)
+        sourceAction = button(R.string.import_media, false).apply {
+            id = R.id.import_media
+            setOnClickListener { launchPicker() }
+        }
+        source.addView(sourceAction, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(10) })
         panel.addView(source)
 
         val controls = LinearLayout(this).apply {
@@ -383,6 +430,182 @@ class MainActivity : Activity() {
         else window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
+    private fun launchPicker() {
+        val intent = if (android.os.Build.VERSION.SDK_INT >= 33) {
+            Intent(android.provider.MediaStore.ACTION_PICK_IMAGES)
+        } else {
+            Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                type = "*/*"
+                putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "video/*"))
+            }
+        }
+        try {
+            startActivityForResult(intent, REQUEST_PICK_MEDIA)
+        } catch (error: RuntimeException) {
+            Log.e("Lumis", "Unable to launch media picker", error)
+            showError(MediaFailure.UNAVAILABLE, fallbackToSample = false)
+        }
+    }
+
+    fun importFromUri(uri: Uri) {
+        try {
+            contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        } catch (_: SecurityException) {
+            // Photo Picker Uris are often transient; continue with best-effort access.
+        } catch (_: IllegalArgumentException) {
+            // Not all Uris support persistable permissions.
+        }
+        val result = inspectUri(uri)
+        when (result.kind) {
+            InspectedKind.IMAGE -> {
+                val bitmap = decodeImage(uri) ?: return
+                errorFailure = null
+                applySource(MediaSource.Image(uri))
+                renderer.setImage(bitmap)
+                errorPanel.visibility = View.GONE
+                playbackChanged(ready = false, playing = false)
+            }
+            InspectedKind.VIDEO -> {
+                errorFailure = null
+                applySource(MediaSource.Video(uri))
+                renderer.clearImage()
+                errorPanel.visibility = View.GONE
+                renderer.currentSurface?.let { player.attach(it) }
+            }
+            InspectedKind.UNSUPPORTED -> {
+                showError(MediaFailure.UNSUPPORTED)
+                return
+            }
+            InspectedKind.UNAVAILABLE -> {
+                showError(MediaFailure.UNAVAILABLE, fallbackToSample = false)
+                return
+            }
+        }
+        pendingMissingSource = null
+        restoreFailureOnResume = false
+        updateSourceUi()
+    }
+
+    private fun attachCurrentSource(surface: android.view.Surface) {
+        when (val current = source) {
+            MediaSource.BundledSample, is MediaSource.Video -> {
+                player.setSource(current)
+                renderer.clearImage()
+                player.attach(surface)
+            }
+            is MediaSource.Image -> {
+                player.release()
+                playbackChanged(ready = false, playing = false)
+                val bitmap = decodeImage(current.uri)
+                if (bitmap == null) {
+                    showError(MediaFailure.UNAVAILABLE, current, fallbackToSample = true)
+                    player.setSource(MediaSource.BundledSample)
+                    player.attach(surface)
+                    return
+                }
+                renderer.setImage(bitmap)
+                errorPanel.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun applySource(next: MediaSource) {
+        source = next
+        if (next is MediaSource.Video || next is MediaSource.BundledSample) {
+            player.setSource(next)
+        }
+        updateSourceUi()
+    }
+
+    private enum class InspectedKind { IMAGE, VIDEO, UNSUPPORTED, UNAVAILABLE }
+
+    private data class InspectResult(val kind: InspectedKind)
+
+    private fun inspectUri(uri: Uri): InspectResult {
+        return try {
+            val resolverType = contentResolver.getType(uri)
+            if (resolverType?.startsWith("image/") == true) return InspectResult(InspectedKind.IMAGE)
+            if (resolverType?.startsWith("video/") == true) return InspectResult(InspectedKind.VIDEO)
+            val extension = MimeTypeMap.getFileExtensionFromUrl(uri.toString())
+            if (!extension.isNullOrBlank()) {
+                val guessed = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension.lowercase())
+                if (guessed?.startsWith("image/") == true) return InspectResult(InspectedKind.IMAGE)
+                if (guessed?.startsWith("video/") == true) return InspectResult(InspectedKind.VIDEO)
+            }
+            contentResolver.openInputStream(uri)?.use { stream ->
+                val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+                BitmapFactory.decodeStream(stream, null, options)
+                if (options.outWidth > 0 && options.outHeight > 0) return InspectResult(InspectedKind.IMAGE)
+            } ?: return InspectResult(InspectedKind.UNAVAILABLE)
+            val retriever = android.media.MediaMetadataRetriever()
+            try {
+                retriever.setDataSource(this, uri)
+                val width = retriever.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)
+                val duration = retriever.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_DURATION)
+                if (!width.isNullOrBlank() || !duration.isNullOrBlank()) InspectResult(InspectedKind.VIDEO)
+                else InspectResult(InspectedKind.UNSUPPORTED)
+            } finally {
+                retriever.release()
+            }
+        } catch (_: FileNotFoundException) {
+            InspectResult(InspectedKind.UNAVAILABLE)
+        } catch (_: SecurityException) {
+            InspectResult(InspectedKind.UNAVAILABLE)
+        } catch (_: IllegalArgumentException) {
+            InspectResult(InspectedKind.UNSUPPORTED)
+        } catch (_: RuntimeException) {
+            InspectResult(InspectedKind.UNSUPPORTED)
+        }
+    }
+
+    private fun decodeImage(uri: Uri) = try {
+        contentResolver.openInputStream(uri)?.use { stream ->
+            BitmapFactory.decodeStream(stream)
+        }?.takeIf { it.width > 0 && it.height > 0 } ?: run {
+            showError(MediaFailure.UNSUPPORTED)
+            null
+        }
+    } catch (_: FileNotFoundException) {
+        showError(MediaFailure.UNAVAILABLE)
+        null
+    } catch (_: SecurityException) {
+        showError(MediaFailure.UNAVAILABLE)
+        null
+    }
+
+    private fun mediaName(uri: Uri): String {
+        if (uri.scheme == "android.resource") return getString(R.string.custom_source)
+        return try {
+            contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use { cursor ->
+                if (cursor.moveToFirst()) cursor.getString(0)
+                else null
+            } ?: getString(R.string.custom_source)
+        } catch (_: RuntimeException) {
+            getString(R.string.custom_source)
+        }
+    }
+
+    private fun updateSourceUi() {
+        when (val current = source) {
+            MediaSource.BundledSample -> {
+                sourceLabel.setText(R.string.sample_label)
+                sourceDetail.setText(R.string.sample_detail)
+                sourceAction.setText(R.string.import_media)
+            }
+            is MediaSource.Video -> {
+                sourceLabel.text = mediaName(current.uri)
+                sourceDetail.setText(R.string.imported_video)
+                sourceAction.setText(R.string.replace_media)
+            }
+            is MediaSource.Image -> {
+                sourceLabel.text = mediaName(current.uri)
+                sourceDetail.setText(R.string.imported_image)
+                sourceAction.setText(R.string.replace_media)
+            }
+        }
+    }
+
     private fun moveCorner(index: Int, point: Point): Boolean {
         val moved = quad.moveCorner(index, point) ?: return false
         if (moved === quad) return true
@@ -393,29 +616,82 @@ class MainActivity : Activity() {
     }
 
     private fun playbackChanged(ready: Boolean, playing: Boolean) {
-        playButton.isEnabled = ready
-        playButton.setText(if (playing) R.string.pause else R.string.play)
-        status.setText(if (!ready) R.string.loading else if (playing) R.string.playing else R.string.paused)
+        val image = source is MediaSource.Image
+        playButton.isEnabled = ready && !image
+        playButton.setText(if (playing && !image) R.string.pause else R.string.play)
+        status.setText(
+            when {
+                image -> R.string.still_image
+                !ready -> R.string.loading
+                playing -> R.string.playing
+                else -> R.string.paused
+            },
+        )
         if (playing || outputMode) window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         else window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         if (!playing) metrics.setText(R.string.paused)
     }
 
-    private fun showError(gpu: Boolean) {
+    private fun showError(
+        failure: MediaFailure,
+        fallbackSource: MediaSource = source,
+        fallbackToSample: Boolean = false,
+    ) {
         // Recovery UI belongs to the editor, never to clean output.
         if (outputMode) setOutputMode(false)
-        rendererFailed = gpu
-        player.release()
+        rendererFailed = false
+        errorFailure = failure
+        pendingMissingSource = if (failure == MediaFailure.UNAVAILABLE && fallbackToSample) fallbackSource else null
+        if (failure == MediaFailure.UNAVAILABLE && fallbackToSample) {
+            applySource(MediaSource.BundledSample)
+            renderer.clearImage()
+        }
+        player.release(preservePosition = false)
         playButton.isEnabled = false
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        errorMessage.setText(if (gpu) R.string.renderer_error else R.string.video_error)
+        errorMessage.setText(
+            when (failure) {
+                MediaFailure.UNAVAILABLE -> R.string.source_unavailable
+                MediaFailure.UNSUPPORTED -> R.string.source_unsupported
+                MediaFailure.DECODER -> R.string.video_error
+            },
+        )
         status.setText(R.string.error_title)
+        errorAction.setText(if (failure == MediaFailure.UNAVAILABLE) R.string.replace_media else R.string.retry)
         errorPanel.visibility = View.VISIBLE
+        restoreFailureOnResume = failure == MediaFailure.UNAVAILABLE && fallbackToSample
     }
 
-    private fun retry() {
+    private fun showError(gpu: Boolean) {
+        if (gpu) {
+            if (outputMode) setOutputMode(false)
+            rendererFailed = true
+            errorFailure = null
+            player.release()
+            playButton.isEnabled = false
+            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            errorMessage.setText(R.string.renderer_error)
+            status.setText(R.string.error_title)
+            errorAction.setText(R.string.retry)
+            errorPanel.visibility = View.VISIBLE
+            return
+        }
+        showError(MediaFailure.DECODER)
+    }
+
+    private fun recoverError() {
         if (rendererFailed) {
             recreate()
+            return
+        }
+        if (errorFailure == MediaFailure.UNAVAILABLE) {
+            launchPicker()
+            return
+        }
+        if (source is MediaSource.Image) {
+            errorPanel.visibility = View.GONE
+            restoreFailureOnResume = false
+            renderer.currentSurface?.let { attachCurrentSource(it) }
         } else {
             renderer.currentSurface?.let {
                 errorPanel.visibility = View.GONE
@@ -428,6 +704,9 @@ class MainActivity : Activity() {
         super.onResume()
         resumed = true
         glView.onResume()
+        if (restoreFailureOnResume && pendingMissingSource != null && errorPanel.visibility != View.VISIBLE) {
+            showError(MediaFailure.UNAVAILABLE, pendingMissingSource!!, fallbackToSample = true)
+        }
     }
 
     override fun onPause() {
@@ -439,12 +718,43 @@ class MainActivity : Activity() {
         super.onPause()
     }
 
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode != REQUEST_PICK_MEDIA || resultCode != RESULT_OK) return
+        val uri = data?.data ?: return
+        importFromUri(uri)
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putDoubleArray("quad", quad.toCoordinates())
         outState.putBoolean("playing", player.wantsToPlay)
         outState.putInt("position", player.position())
         outState.putBoolean("fps", showFps)
         outState.putBoolean("output", outputMode)
+        when (val current = source) {
+            MediaSource.BundledSample -> outState.putString("source_type", "sample")
+            is MediaSource.Video -> {
+                outState.putString("source_type", "video")
+                outState.putString("source_uri", current.uri.toString())
+            }
+            is MediaSource.Image -> {
+                outState.putString("source_type", "image")
+                outState.putString("source_uri", current.uri.toString())
+            }
+        }
+        when (val missing = pendingMissingSource) {
+            is MediaSource.Video -> {
+                outState.putString("missing_type", "video")
+                outState.putString("missing_uri", missing.uri.toString())
+            }
+            is MediaSource.Image -> {
+                outState.putString("missing_type", "image")
+                outState.putString("missing_uri", missing.uri.toString())
+            }
+            else -> {}
+        }
+        outState.putBoolean("show_missing_error", restoreFailureOnResume)
         super.onSaveInstanceState(outState)
     }
 
@@ -477,4 +787,8 @@ class MainActivity : Activity() {
     }
 
     private fun dp(value: Int) = (value * resources.displayMetrics.density).toInt()
+
+    companion object {
+        private const val REQUEST_PICK_MEDIA = 2030
+    }
 }

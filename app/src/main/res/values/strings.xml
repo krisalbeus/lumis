@@ -8,6 +8,12 @@
     <string name="output_description">Projector output. Press Back to return to editing.</string>
     <string name="sample_label">Prism waves</string>
     <string name="sample_detail">Bundled sample • Looping • Silent</string>
+    <string name="custom_source">Imported source</string>
+    <string name="imported_video">Imported video • Local</string>
+    <string name="imported_image">Imported image • Local</string>
+    <string name="import_media">Import media</string>
+    <string name="replace_media">Replace media</string>
+    <string name="still_image">Still image</string>
     <string name="pause">Pause</string>
     <string name="play">Play</string>
     <string name="reset">Reset corners</string>
@@ -27,6 +33,8 @@
     <string name="invalid_quad">Keep the corners apart and the surface unfolded.</string>
     <string name="retry">Retry</string>
     <string name="video_error">The sample video could not play. Your corner positions are unchanged.</string>
+    <string name="source_unavailable">This media file is unavailable. Replace it to keep your current mapping.</string>
+    <string name="source_unsupported">This file type is not supported. Choose an image or video.</string>
     <string name="renderer_error">The video renderer could not start. Your corner positions are unchanged.</string>
     <string name="error_title">Let’s try that again</string>
 </resources>

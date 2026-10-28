@@ -20,4 +20,7 @@
     <item name="mode_edit" type="id" />
     <item name="mode_output" type="id" />
     <item name="output_caption" type="id" />
+    <item name="import_media" type="id" />
+    <item name="source_label" type="id" />
+    <item name="source_detail" type="id" />
 </resources>
