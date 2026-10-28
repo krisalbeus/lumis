@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lumis Projection Studio - Delete Project Confirmation</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration matching the exact Design Tokens -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-lowest": "#0c0e13",
+            "on-tertiary-fixed": "#002114",
+            "on-error": "#690005",
+            "surface-bright": "#37393f",
+            "surface-container": "#1e1f25",
+            "inverse-on-surface": "#2e3036",
+            "secondary-container": "#02aebe",
+            "on-surface-variant": "#cac4d4",
+            "tertiary-container": "#00b37e",
+            "outline-variant": "#494552",
+            "on-error-container": "#ffdad6",
+            "on-primary-fixed": "#21005e",
+            "tertiary-fixed": "#68fcbf",
+            "secondary": "#54d8e8",
+            "on-tertiary": "#003825",
+            "on-primary-fixed-variant": "#4f319c",
+            "primary-container": "#a78bfa",
+            "on-secondary-fixed-variant": "#004f57",
+            "surface": "#111318",
+            "on-surface": "#e2e2e9",
+            "inverse-surface": "#e2e2e9",
+            "outline": "#948e9d",
+            "tertiary-fixed-dim": "#45dfa4",
+            "surface-container-low": "#1a1b21",
+            "on-primary": "#381385",
+            "surface-variant": "#33353a",
+            "secondary-fixed": "#91f1ff",
+            "on-background": "#e2e2e9",
+            "primary-fixed": "#e8ddff",
+            "primary-fixed-dim": "#cebdff",
+            "on-secondary": "#00363c",
+            "surface-dim": "#111318",
+            "primary": "#cebdff",
+            "on-secondary-container": "#003b42",
+            "on-tertiary-fixed-variant": "#005137",
+            "on-tertiary-container": "#003d28",
+            "secondary-fixed-dim": "#54d8e8",
+            "surface-container-highest": "#33353a",
+            "background": "#111318",
+            "on-primary-container": "#3c1989",
+            "error-container": "#93000a",
+            "tertiary": "#45dfa4",
+            "surface-tint": "#cebdff",
+            "surface-container-high": "#282a2f",
+            "on-secondary-fixed": "#001f23",
+            "error": "#ffb4ab",
+            "inverse-primary": "#674bb5"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter": "0.75rem",
+            "space-xl": "2rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "space-xs": "0.25rem",
+            "margin": "1rem",
+            "space-sm": "0.5rem"
+          },
+          "fontFamily": {
+            "title-sm": ["Plus Jakarta Sans"],
+            "headline-xl": ["Space Grotesk"],
+            "headline-md": ["Space Grotesk"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "headline-lg": ["Space Grotesk"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "label-code-sm": ["JetBrains Mono"],
+            "body-md": ["Plus Jakarta Sans"],
+            "label-code-md": ["JetBrains Mono"]
+          },
+          "fontSize": {
+            "title-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "label-lg": ["13px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "label-code-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "label-code-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-lowest text-on-surface antialiased font-body-md flex justify-center items-center min-h-screen p-0 sm:p-6 overflow-hidden select-none">
+<!-- Mobile Viewport Frame (Pixel 9 Pro Bounds 412x924 dp profile) -->
+<div class="relative w-full max-w-[412px] h-[924px] max-h-screen bg-surface overflow-hidden flex flex-col justify-between shadow-2xl sm:rounded-[40px] border border-outline-variant/30">
+<!-- BACKGROUND VIEWPORT: Dimmed Studio Home & Project List Canvas -->
+<div class="absolute inset-0 flex flex-col pointer-events-none filter blur-[2px] opacity-25">
+<!-- Android Hardware Safe Area Cutout & Status Row -->
+<div class="h-12 w-full pt-3 px-6 flex justify-between items-center text-outline font-label-code-sm text-label-code-sm">
+<span>09:41</span>
+<div class="w-4 h-4 rounded-full bg-surface-container-highest mx-auto opacity-50"></div>
+<div class="flex items-center space-x-1.5">
+<span class="material-symbols-outlined text-[14px]">wifi</span>
+<span class="material-symbols-outlined text-[14px]">battery_charging_full</span>
+</div>
+</div>
+<!-- Background TopAppBar Component (from Shared Component Blueprint) -->
+<header class="bg-surface text-primary border-b border-outline-variant flex justify-between items-center w-full px-space-md pt-space-md pb-space-sm max-w-full">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-secondary" data-icon="videocam">videocam</span>
+<span class="text-headline-md font-headline-md font-bold tracking-tight text-on-surface">Lumis</span>
+</div>
+<div class="flex items-center space-x-2">
+<div class="px-2 py-0.5 rounded bg-surface-container-high border border-outline-variant flex items-center space-x-1 text-label-code-sm font-label-code-sm text-tertiary">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+<span>12ms</span>
+</div>
+<span class="material-symbols-outlined text-outline" data-icon="settings">settings</span>
+</div>
+</header>
+<!-- Background Simulated Projects Canvas -->
+<div class="flex-1 p-space-md space-y-space-md">
+<!-- Target Project Being Deleted -->
+<div class="p-space-md rounded-xl bg-surface-container border border-outline-variant space-y-space-sm">
+<div class="flex justify-between items-start">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Living room test</h2>
+<span class="font-label-code-sm text-label-code-sm text-outline">Optoma GT1080HDR • 3 SURFACES</span>
+</div>
+<span class="material-symbols-outlined text-error" data-icon="more_vert">more_vert</span>
+</div>
+<div class="h-28 rounded-lg bg-surface-container-lowest border border-outline-variant/40 flex items-center justify-center">
+<span class="material-symbols-outlined text-outline text-[32px]">view_in_ar</span>
+</div>
+</div>
+<!-- Another Project Card -->
+<div class="p-space-md rounded-xl bg-surface-container-low border border-outline-variant/40 space-y-space-sm">
+<div class="flex justify-between items-start">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Gallery Facade Nov24</h2>
+<span class="font-label-code-sm text-label-code-sm text-outline">Barco UDM-4K22 • 1 SURFACE</span>
+</div>
+</div>
+<div class="h-20 rounded-lg bg-surface-container-lowest border border-outline-variant/40"></div>
+</div>
+</div>
+</div>
+<!-- MODAL SCRIM OVERLAY -->
+<div class="absolute inset-0 bg-[#090B10]/85 backdrop-blur-md z-20 flex flex-col justify-end p-margin pb-8">
+<!-- Top dismissal touch handler / anchor backdrop -->
+<div class="flex-1 flex items-center justify-center">
+<!-- Live Keystone Grid Calibration Vector Graphic (Atmospheric Studio Visual) -->
+<div class="w-20 h-20 rounded-full border border-outline-variant/30 flex items-center justify-center opacity-30">
+<span class="material-symbols-outlined text-outline text-[40px]">grid_4x4</span>
+</div>
+</div>
+<!-- CONFIRMATION ALERT SHEET / DIALOG CONTAINER -->
+<!-- Surface Level 2 (#1C2230) with 1px border stroke and elevated drop shadow -->
+<div class="w-full bg-[#1C2230] rounded-xl border border-outline-variant/50 p-space-md shadow-2xl relative z-30 space-y-space-md animate-in fade-in zoom-in-95 duration-200">
+<!-- Header row: Warning Badge + Project Scope Metadata -->
+<div class="flex items-start justify-between">
+<!-- Warning / Alert Icon: Dark red tonal container with warning indicator -->
+<div class="w-12 h-12 rounded-lg bg-error-container/30 border border-error/30 flex items-center justify-center text-error">
+<span class="material-symbols-outlined text-[26px]" data-icon="delete_forever">delete_forever</span>
+</div>
+<!-- Calibration Tag & Node Count Pill -->
+<div class="flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-[#141821] border border-outline-variant text-label-code-sm font-label-code-sm text-outline">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span>3 MESH MATRICES</span>
+</div>
+</div>
+<!-- Dialog Headline (Explicit Named Project in Space Grotesk) -->
+<div class="space-y-1">
+<h1 class="font-headline-md text-headline-md text-on-surface tracking-tight">
+            Delete “Living room test”?
+          </h1>
+<p class="font-label-code-sm text-label-code-sm text-outline">
+            PROJECT ID: <span class="text-on-surface-variant font-label-code-md">PRJ-8842-LR</span>
+</p>
+</div>
+<!-- Scope Guarantee Bento Breakdown: Local Storage Protection vs Calibration Data Removal -->
+<div class="space-y-space-xs">
+<!-- Item 1: Lumis Mesh Destruction (Warning State) -->
+<div class="p-space-sm rounded-lg bg-surface-container-lowest/80 border border-outline-variant/60 flex items-start space-x-3">
+<div class="mt-0.5 text-error">
+<span class="material-symbols-outlined text-[18px]" data-icon="layers_clear">layers_clear</span>
+</div>
+<div class="flex-1">
+<p class="font-title-sm text-body-md font-semibold text-on-surface">Mesh data removal</p>
+<p class="font-body-sm text-body-sm text-outline mt-0.5">
+                Permanently removes keystone nodes, corner pins, and 3 mapped surface geometries from Lumis.
+              </p>
+</div>
+</div>
+<!-- Item 2: Device Gallery Safe Guarantee (Preserved State) -->
+<div class="p-space-sm rounded-lg bg-surface-container-lowest/80 border border-tertiary-container/30 flex items-start space-x-3">
+<div class="mt-0.5 text-tertiary">
+<span class="material-symbols-outlined text-[18px]" data-icon="verified_user">verified_user</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center space-x-1.5">
+<p class="font-title-sm text-body-md font-semibold text-on-surface">Device gallery safe</p>
+<span class="px-1.5 py-0.2 rounded text-[10px] font-label-code-sm bg-tertiary/10 text-tertiary border border-tertiary/30">PRESERVED</span>
+</div>
+<p class="font-body-sm text-body-sm text-outline mt-0.5">
+                Original video and photo files stored in your Android device gallery are <span class="text-on-surface font-semibold">not deleted</span> or modified.
+              </p>
+</div>
+</div>
+</div>
+<!-- Detailed Warning Body Text -->
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+          This removes this project and its 3 mapped surfaces from Lumis. Original media in your device gallery is not deleted.
+        </p>
+<!-- ACTION BUTTONS: Safety-First Ordering (48dp Minimum Touch Target Hitboxes) -->
+<div class="pt-space-xs space-y-space-sm">
+<!-- Primary Safe Button: Cancel / Keep Project (Neutral elevated level 2 surface, Default focus) -->
+<button class="w-full h-12 min-h-[48px] px-space-md rounded-lg bg-surface-container-high hover:bg-surface-bright active:scale-[0.98] transition-all duration-150 border border-outline-variant flex items-center justify-center space-x-2 text-on-surface cursor-pointer focus:outline-none focus:ring-2 focus:ring-secondary" type="button">
+<span class="material-symbols-outlined text-[20px] text-secondary" data-icon="arrow_back">arrow_back</span>
+<span class="font-label-lg text-label-lg font-bold">Keep project</span>
+</button>
+<!-- Destructive Button: Delete project (Stark destructive background, unmistakable consequence) -->
+<button class="w-full h-12 min-h-[48px] px-space-md rounded-lg bg-[#dc2626] hover:bg-[#b91c1c] active:scale-[0.97] transition-all duration-150 flex items-center justify-center space-x-2 text-white shadow-lg shadow-error/20 cursor-pointer focus:outline-none" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
+<span class="font-label-lg text-label-lg font-bold">Delete project</span>
+</button>
+</div>
+</div>
+<!-- Android Bottom Gesture Pill Inset Safe-Area -->
+<div class="h-6 w-full flex items-center justify-center pt-2">
+<div class="w-32 h-1 bg-outline-variant/60 rounded-full"></div>
+</div>
+</div>
+</div>
+</body></html>

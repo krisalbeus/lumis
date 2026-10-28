@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lumis — Project Actions</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..900&family=Plus+Jakarta+Sans:wght@100..900&family=Space+Grotesk:wght@100..900&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-lowest": "#0c0e13",
+            "on-tertiary-fixed": "#002114",
+            "on-error": "#690005",
+            "surface-bright": "#37393f",
+            "surface-container": "#1e1f25",
+            "inverse-on-surface": "#2e3036",
+            "secondary-container": "#02aebe",
+            "on-surface-variant": "#cac4d4",
+            "tertiary-container": "#00b37e",
+            "outline-variant": "#494552",
+            "on-error-container": "#ffdad6",
+            "on-primary-fixed": "#21005e",
+            "tertiary-fixed": "#68fcbf",
+            "secondary": "#54d8e8",
+            "on-tertiary": "#003825",
+            "on-primary-fixed-variant": "#4f319c",
+            "primary-container": "#a78bfa",
+            "on-secondary-fixed-variant": "#004f57",
+            "surface": "#111318",
+            "on-surface": "#e2e2e9",
+            "inverse-surface": "#e2e2e9",
+            "outline": "#948e9d",
+            "tertiary-fixed-dim": "#45dfa4",
+            "surface-container-low": "#1a1b21",
+            "on-primary": "#381385",
+            "surface-variant": "#33353a",
+            "secondary-fixed": "#91f1ff",
+            "on-background": "#e2e2e9",
+            "primary-fixed": "#e8ddff",
+            "primary-fixed-dim": "#cebdff",
+            "on-secondary": "#00363c",
+            "surface-dim": "#111318",
+            "primary": "#cebdff",
+            "on-secondary-container": "#003b42",
+            "on-tertiary-fixed-variant": "#005137",
+            "on-tertiary-container": "#003d28",
+            "secondary-fixed-dim": "#54d8e8",
+            "surface-container-highest": "#33353a",
+            "background": "#111318",
+            "on-primary-container": "#3c1989",
+            "error-container": "#93000a",
+            "tertiary": "#45dfa4",
+            "surface-tint": "#cebdff",
+            "surface-container-high": "#282a2f",
+            "on-secondary-fixed": "#001f23",
+            "error": "#ffb4ab",
+            "inverse-primary": "#674bb5"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter": "0.75rem",
+            "space-xl": "2rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "space-xs": "0.25rem",
+            "margin": "1rem",
+            "space-sm": "0.5rem"
+          },
+          "fontFamily": {
+            "title-sm": ["Plus Jakarta Sans"],
+            "headline-xl": ["Space Grotesk"],
+            "headline-md": ["Space Grotesk"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "headline-lg": ["Space Grotesk"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "label-code-sm": ["JetBrains Mono"],
+            "body-md": ["Plus Jakarta Sans"],
+            "label-code-md": ["JetBrains Mono"]
+          },
+          "fontSize": {
+            "title-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "label-lg": ["13px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "label-code-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "label-code-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 20px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-lowest text-on-surface antialiased font-body-md min-h-screen flex justify-center items-center p-0 selection:bg-primary selection:text-on-primary">
+<!-- Mobile Viewport Mockup Shell (Pixel 9 Pro Bounds 412 x 924 dp) -->
+<main class="relative w-full max-w-[412px] h-[924px] bg-surface overflow-hidden flex flex-col shadow-2xl rounded-[32px] border border-outline-variant">
+<!-- BACKGROUND CANVAS & HOME SCREEN VIEWPORT (Dimmed Under Scrim) -->
+<div class="absolute inset-0 flex flex-col z-0 opacity-40 filter blur-[1px] pointer-events-none select-none">
+<!-- Top Android Status Bar Clearance (48dp safe area inset) -->
+<div class="h-12 w-full pt-3 px-space-md flex justify-between items-center text-outline font-label-code-sm text-label-code-sm">
+<span>21:42</span>
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span>12ms</span>
+<span class="material-symbols-outlined text-[16px] ml-1" data-icon="wifi">wifi</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="battery_full">battery_full</span>
+</div>
+</div>
+<!-- TopAppBar Shared Component Blueprint -->
+<header class="bg-surface dark:bg-surface border-b border-outline-variant dark:border-outline-variant docked full-width top-0 flat no shadows flex justify-between items-center w-full px-space-md pt-space-md pb-space-sm max-w-full">
+<div class="flex items-center gap-2">
+<button class="w-12 h-12 flex items-center justify-center rounded-lg hover:bg-surface-container-high dark:hover:bg-surface-container-high transition-colors duration-150 active:scale-95 transition-transform duration-100 text-primary dark:text-primary">
+<span class="material-symbols-outlined" data-icon="videocam">videocam</span>
+</button>
+<span class="text-headline-md font-headline-md font-bold tracking-tight text-on-surface dark:text-on-surface">Lumis</span>
+</div>
+<div class="flex items-center gap-1">
+<button class="w-12 h-12 flex items-center justify-center rounded-lg hover:bg-surface-container-high dark:hover:bg-surface-container-high transition-colors duration-150 active:scale-95 transition-transform duration-100 text-outline dark:text-outline">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+</header>
+<!-- Projects Grid Content Area (Background) -->
+<div class="flex-1 px-space-md pt-space-md space-y-space-md overflow-hidden">
+<div class="flex items-center justify-between">
+<span class="font-headline-md text-headline-md text-on-surface">Local Projects</span>
+<span class="font-label-code-sm text-label-code-sm text-outline">3 items</span>
+</div>
+<!-- Selected Target Project Card: Living room test -->
+<div class="w-full bg-surface-container-high rounded-xl border-2 border-secondary shadow-lg overflow-hidden relative">
+<div class="h-32 w-full bg-surface-container-lowest relative overflow-hidden flex items-center justify-center">
+<div class="w-full h-full bg-cover bg-center opacity-80" data-alt="A dark moody architectural living room illuminated by three vivid cyan and violet spatial light projection mapping grids on geometric walls, shot at night with crisp isometric perspectives and cinematic shadows." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCpapPiIKgVshf8FcNoWg-HT_j1AQ8LfAcvCM0x5WmRh_dwVYLyEXQQc_NilImLhJhN1gOCYcpH9EzSkd75yG1EyOm7g54Rpl6muDKXyeSp5aTJ9QWHtHgLfnk5x81msf3RPZaMmffEbtVjugIYOlm5N1Faq3nh_FgYBYd6V4fBBSGULArG7Zu4JQzl231RkDKbXhLW3JREfd7T4c7RPRjmrsa_cZcOPYMc3umJl9nF1vn4aoCBrgzsIus_EGwWWMLQjJMxEyNPw7c')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-high via-transparent to-transparent"></div>
+<div class="absolute top-2 right-2 px-2 py-0.5 rounded bg-surface-container-lowest/80 border border-outline-variant font-label-code-sm text-label-code-sm text-secondary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+              Selected
+            </div>
+</div>
+<div class="p-space-md">
+<h2 class="font-title-sm text-title-sm text-on-surface">Living room test</h2>
+<p class="font-label-code-sm text-label-code-sm text-outline mt-1">Edited 22m ago • 1920 × 1080 • 3 surfaces</p>
+</div>
+</div>
+<!-- Unselected Secondary Card -->
+<div class="w-full bg-surface-container-low rounded-xl border border-outline-variant p-space-md opacity-50">
+<h2 class="font-title-sm text-title-sm text-on-surface">Studio Gallery Mockup</h2>
+<p class="font-label-code-sm text-label-code-sm text-outline mt-1">Edited 3d ago • 3840 × 2160 • 8 surfaces</p>
+</div>
+</div>
+</div>
+<!-- BACKDROP SCRIM OVERLAY -->
+<div class="absolute inset-0 bg-surface-container-lowest/75 backdrop-blur-[3px] z-10 transition-opacity"></div>
+<!-- 04 — PROJECT ACTIONS BOTTOM SHEET -->
+<div class="absolute inset-x-0 bottom-0 z-20 flex flex-col justify-end">
+<!-- Modal Sheet Container -->
+<section aria-label="Project Actions" class="w-full bg-surface-container-low border-t border-outline-variant rounded-t-[28px] shadow-2xl flex flex-col overflow-hidden pb-8 pt-3">
+<!-- Drag Handle Indicator Pill -->
+<div class="w-full flex justify-center py-1.5 cursor-grab">
+<div class="w-10 h-1 rounded-full bg-outline-variant"></div>
+</div>
+<!-- Sheet Header: Mini project card and telemetry metadata -->
+<div class="px-space-md pt-space-sm pb-space-md border-b border-outline-variant/60 flex items-center gap-space-md">
+<!-- Project Thumbnail Graphic Preview -->
+<div class="w-16 h-12 rounded-lg bg-surface-container-lowest border border-outline-variant relative overflow-hidden flex-shrink-0 flex items-center justify-center">
+<div class="w-full h-full bg-cover bg-center" data-alt="A detailed digital spatial projection keystone test on a minimalist white living room wall, showing accurate geometric grid lines and cyan alignment crosshairs under dark studio lighting." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC0B_SBUPFtS7jK2ZhHstSWhaoGXVZJD5GZVGCwE7sBIM8SoaMMfMojZ87oeepVAe5IsOdo4vikYK3AIMVAoXibjh3E2X4efWYFi4yj319M9uU-qPy2NieYGP_Kb07tOs5nJxCj3DrvRVLTsFMxdM8Iyc5WSeHkW1N5sGqQ6Slkpd6dDGakIlxBYPujxeYwRMEcqGp4xp0KYLsPmlcWLkF-dGM8NOBV6QAiwJI1s5KbvgtdM8ctlBopBn2ABafnbK4sdOkbi4AxVXo')"></div>
+<!-- Keystone Node Overlay -->
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary shadow-[0_0_8px_#67E8F9] ring-2 ring-white/80"></span>
+</div>
+</div>
+<!-- Metadata Identification -->
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2">
+<h1 class="font-headline-md text-headline-md text-on-surface truncate">Living room test</h1>
+<span class="px-1.5 py-0.5 rounded bg-surface-container border border-outline-variant font-label-code-sm text-label-code-sm text-outline flex-shrink-0">LOCAL</span>
+</div>
+<p class="font-label-code-sm text-label-code-sm text-outline truncate mt-0.5">
+              Edited 22m ago • 1920 × 1080 • 3 surfaces
+            </p>
+</div>
+</div>
+<!-- Action Menu Item List (Strictly 48dp+ Minimum Hit Targets) -->
+<div class="px-gutter pt-space-xs pb-space-xs flex flex-col">
+<!-- Action 1: Open canvas -->
+<button class="w-full min-h-[52px] px-space-md py-3 flex items-center justify-between rounded-lg hover:bg-surface-container-high active:scale-[0.98] transition-all duration-150 group" type="button">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-secondary group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="crop_free">crop_free</span>
+</div>
+<div class="flex flex-col text-left">
+<span class="font-label-lg text-label-lg text-on-surface group-hover:text-primary transition-colors">Open canvas</span>
+<span class="font-body-sm text-body-sm text-outline">Enter spatial projection matrix</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-on-surface transition-colors" data-icon="chevron_right">chevron_right</span>
+</button>
+<!-- Action 2: Rename -->
+<button class="w-full min-h-[52px] px-space-md py-3 flex items-center justify-between rounded-lg hover:bg-surface-container-high active:scale-[0.98] transition-all duration-150 group" type="button">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-outline group-hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</div>
+<div class="flex flex-col text-left">
+<span class="font-label-lg text-label-lg text-on-surface group-hover:text-on-surface transition-colors">Rename</span>
+<span class="font-body-sm text-body-sm text-outline">Change local project name</span>
+</div>
+</div>
+<span class="font-label-code-sm text-label-code-sm text-outline">F2</span>
+</button>
+<!-- Action 3: Duplicate project -->
+<button class="w-full min-h-[52px] px-space-md py-3 flex items-center justify-between rounded-lg hover:bg-surface-container-high active:scale-[0.98] transition-all duration-150 group" type="button">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-outline group-hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="content_copy">content_copy</span>
+</div>
+<div class="flex flex-col text-left">
+<span class="font-label-lg text-label-lg text-on-surface group-hover:text-on-surface transition-colors">Duplicate project</span>
+<span class="font-body-sm text-body-sm text-outline">Creates local duplicate</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded bg-surface-container-highest font-label-code-sm text-label-code-sm text-on-surface-variant">Clone</span>
+</button>
+<!-- Structured Divider Line -->
+<div class="my-space-xs mx-space-md h-px bg-outline-variant/60"></div>
+<!-- Action 4: Delete project (Destructive Variant) -->
+<button class="w-full min-h-[52px] px-space-md py-3 flex items-center justify-between rounded-lg hover:bg-error-container/20 active:scale-[0.98] transition-all duration-150 group" type="button">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-error-container/30 border border-error/20 flex items-center justify-center text-error">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+</div>
+<div class="flex flex-col text-left">
+<span class="font-label-lg text-label-lg text-error">Delete project</span>
+<span class="font-body-sm text-body-sm text-error/80">Permanent removal from device memory</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded bg-error/10 border border-error/30 font-label-code-sm text-label-code-sm text-error">
+              Destructive
+            </span>
+</button>
+</div>
+<!-- Cancel / Dismiss Bottom Control -->
+<div class="px-space-md pt-space-sm">
+<button class="w-full h-12 bg-surface-container-high hover:bg-surface-variant border border-outline-variant rounded-lg flex items-center justify-center font-label-lg text-label-lg text-on-surface active:scale-[0.97] transition-all duration-100" type="button">
+            Cancel
+          </button>
+</div>
+<!-- Gesture pill navigation bar inset (32dp clear space) -->
+<div class="w-full flex justify-center pt-4">
+<div class="w-32 h-1 rounded-full bg-outline-variant/70"></div>
+</div>
+</section>
+</div>
+</main>
+</body></html>

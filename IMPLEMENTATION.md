@@ -60,12 +60,20 @@ Use [the Stitch workflow](design/README.md) for missing screens and assets.
 - [x] Test actual GPU alpha/order/orientation, per-layer resource isolation,
   missing-media recovery, native controls, and compact/large-font behavior.
 
-## Milestone 4 - Persistence (next)
+## Milestone 4 - Persistence (complete)
 
-- [ ] Add versioned local projects, reopen, autosave, and recovery.
-- [ ] Add project create/rename/duplicate/delete and explicit save failure states.
+- [x] Add versioned local project documents with scene/media/playback state.
+- [x] Reopen projects from a native launcher project list.
+- [x] Add off-main-thread, serial, debounced autosave and background flush.
+- [x] Atomically publish synced snapshots with checked errors and a previous
+  valid recovery copy; require confirmation before restoring an older snapshot.
+- [x] Add project create/rename/duplicate/delete and explicit save/load failure
+  states; preserve media and live edits.
+- [x] Preserve failed-save status and unsaved session edits across recreation.
+- [x] Verify precise paused playback position, cold reopen, actual force-stop
+  restart, corruption/unknown versions, recovery, failed writes/retry, and CRUD.
 
-## Milestone 5 - Editing polish
+## Milestone 5 - Editing polish (next)
 
 - [ ] Add viewport zoom/pan without modifying scene coordinates.
 - [ ] Add undo/redo with one history entry per continuous gesture.
@@ -81,6 +89,45 @@ Use [the Stitch workflow](design/README.md) for missing screens and assets.
 - [ ] Physical projector-assisted calibration (requires hardware).
 
 ## Verification log
+
+### Milestone 4
+
+Verified on 2026-10-29 with the same `e2e_playstore` AVD (Android 16 / API 36).
+
+| Check | Result |
+|---|---|
+| Unit tests | 23 passed (existing geometry and scene tests) |
+| Android lint | 0 errors; 3 existing SDK/Gradle/back-attribute warnings |
+| Connected tests, 1080x2400 / density 420 | 46 passed (33 regression + 13 persistence) |
+| Compact tests, 720x1280 / density 320 / font scale 1.5 | 28 passed (13 persistence + 9 composition + 6 Output) |
+| Document round trip | Mixed image/video and empty scenes retained IDs/next ID, order, selection, geometry, visibility, opacity, source/missing URIs, and playback |
+| Autosave | Latest edits written after 500ms debounce; backgrounding flushed immediately; 12 queued saves retained the newest snapshot |
+| Corruption/recovery | Truncated primary recovered from previous valid snapshot only after consent; invalid/unknown-version data remained untouched before recovery |
+| Write failure | Controlled publication failure retained original disk state and live edits; visible Retry succeeded; failed-save status/geometry survived activity recreation |
+| Media recovery | Missing image on cold open preserved mapping, switched only its source to sample, and kept the Replace-media prompt across saves/reopens |
+| Cold-open GPU | Actual red image pixels verified after closing and reopening a warped mixed scene |
+| Paused decoder position | Restored position tested against the actual player within 80ms, not only saved metadata |
+| Real process restart | Force-stopped Lumis after autosave, relaunched via Projects, reopened two warped videos; scene/selection/order/playback intent retained and paused position exactly 5331ms -> 5331ms |
+| Project UI | Create/blank-name validation, rename, duplicate, delete cancel/confirm, open, and Back-to-Projects save barrier exercised |
+| Visual review | Project/empty cards, create/rename/actions/delete, recovery, save failure/retry/status, clean Output, compact 150% font, and landscape inspected |
+
+Failure injection exposed that Android `AtomicFile.finishWrite()` can log
+publication errors without throwing. Saves now use an explicitly synced
+temporary file, checked `Os.rename`, and directory sync; a failed write cannot
+produce a success-shaped UI result. Force-stop review also exposed default
+keyframe seeking that could restart a video too early. The player now waits for
+closest-frame seek completion before reporting ready or starting playback.
+
+Cold-opened projects enter Edit for safety; Edit/Output mode still survives
+rotation within the current session. New projects start with one bundled sample
+at fixed 1920x1080. The project list and save controls are editor UI only.
+Media is referenced, not copied; gallery files are never deleted.
+
+Pending/failed writes are not durable; force-stopping before a successful save
+can lose unsaved edits. Clearing app data/uninstall removes local projects;
+backup/export/cloud sync are not implemented. Android 8/9 compatibility,
+provider-specific permissions, physical-device performance, thermal behavior,
+and projector output still require device testing.
 
 ### Milestone 3
 

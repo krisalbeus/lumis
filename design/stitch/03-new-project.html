@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lumis - New Project</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-lowest": "#0c0e13",
+            "on-tertiary-fixed": "#002114",
+            "on-error": "#690005",
+            "surface-bright": "#37393f",
+            "surface-container": "#1e1f25",
+            "inverse-on-surface": "#2e3036",
+            "secondary-container": "#02aebe",
+            "on-surface-variant": "#cac4d4",
+            "tertiary-container": "#00b37e",
+            "outline-variant": "#494552",
+            "on-error-container": "#ffdad6",
+            "on-primary-fixed": "#21005e",
+            "tertiary-fixed": "#68fcbf",
+            "secondary": "#54d8e8",
+            "on-tertiary": "#003825",
+            "on-primary-fixed-variant": "#4f319c",
+            "primary-container": "#a78bfa",
+            "on-secondary-fixed-variant": "#004f57",
+            "surface": "#111318",
+            "on-surface": "#e2e2e9",
+            "inverse-surface": "#e2e2e9",
+            "outline": "#948e9d",
+            "tertiary-fixed-dim": "#45dfa4",
+            "surface-container-low": "#1a1b21",
+            "on-primary": "#381385",
+            "surface-variant": "#33353a",
+            "secondary-fixed": "#91f1ff",
+            "on-background": "#e2e2e9",
+            "primary-fixed": "#e8ddff",
+            "primary-fixed-dim": "#cebdff",
+            "on-secondary": "#00363c",
+            "surface-dim": "#111318",
+            "primary": "#cebdff",
+            "on-secondary-container": "#003b42",
+            "on-tertiary-fixed-variant": "#005137",
+            "on-tertiary-container": "#003d28",
+            "secondary-fixed-dim": "#54d8e8",
+            "surface-container-highest": "#33353a",
+            "background": "#111318",
+            "on-primary-container": "#3c1989",
+            "error-container": "#93000a",
+            "tertiary": "#45dfa4",
+            "surface-tint": "#cebdff",
+            "surface-container-high": "#282a2f",
+            "on-secondary-fixed": "#001f23",
+            "error": "#ffb4ab",
+            "inverse-primary": "#674bb5"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter": "0.75rem",
+            "space-xl": "2rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "space-xs": "0.25rem",
+            "margin": "1rem",
+            "space-sm": "0.5rem"
+          },
+          "fontFamily": {
+            "title-sm": ["Plus Jakarta Sans"],
+            "headline-xl": ["Space Grotesk"],
+            "headline-md": ["Space Grotesk"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "headline-lg": ["Space Grotesk"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "label-code-sm": ["JetBrains Mono"],
+            "body-md": ["Plus Jakarta Sans"],
+            "label-code-md": ["JetBrains Mono"]
+          },
+          "fontSize": {
+            "title-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "label-lg": ["13px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "label-code-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "label-code-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    /* Blinking optical caret animation */
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .animate-caret {
+      animation: blink 1s step-end infinite;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-lowest text-on-surface antialiased min-h-screen flex justify-center items-center overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- Mobile Viewport Canvas (Android bounds: 412x924px standard aspect frame) -->
+<div class="relative w-full max-w-[412px] h-[924px] max-h-screen bg-surface-container-lowest flex flex-col justify-between overflow-hidden shadow-2xl border border-outline-variant/30">
+<!-- LAYER 1: Dimmed Background (Projects Home Screen State Behind Scrim) -->
+<div class="absolute inset-0 z-0 flex flex-col select-none pointer-events-none opacity-40 filter blur-[1px]">
+<!-- Top Android System Bar Inset -->
+<div class="h-12 w-full flex items-center justify-between px-space-md pt-2">
+<span class="font-label-code-sm text-label-code-sm text-outline">09:41</span>
+<div class="w-24 h-4 bg-surface-container-high rounded-full mx-auto opacity-40"></div>
+<div class="flex items-center gap-1.5 text-outline">
+<span class="material-symbols-outlined text-[14px]">wifi</span>
+<span class="material-symbols-outlined text-[14px]">battery_full</span>
+</div>
+</div>
+<!-- Simulated App Header from JSON: TopAppBar -->
+<header class="flex justify-between items-center w-full px-space-md pt-space-md pb-space-sm max-w-full border-b border-outline-variant bg-surface">
+<div class="flex items-center gap-space-sm">
+<button class="w-12 h-12 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">videocam</span>
+</button>
+<span class="text-headline-md font-headline-md font-bold tracking-tight text-on-surface">Lumis</span>
+</div>
+<button class="w-12 h-12 flex items-center justify-center text-outline">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</header>
+<!-- Simulated Home Projects List Background -->
+<main class="flex-1 p-space-md space-y-space-md overflow-hidden">
+<div class="flex justify-between items-end pb-2">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Project Library</h1>
+<p class="font-body-sm text-body-sm text-outline">Local workspace • 3 active stages</p>
+</div>
+</div>
+<!-- Project Card Dummy 1 -->
+<div class="bg-surface-container-low border border-outline-variant/40 rounded-xl p-space-md flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<div>
+<span class="font-title-sm text-title-sm text-on-surface block">Atrium Quad Mapping</span>
+<span class="font-label-code-sm text-label-code-sm text-secondary">1920 × 1080 • 1 Surface</span>
+</div>
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+</div>
+<div class="h-20 bg-surface-container rounded-lg border border-outline-variant/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-outline text-3xl">grid_4x4</span>
+</div>
+</div>
+<!-- Project Card Dummy 2 -->
+<div class="bg-surface-container-low border border-outline-variant/40 rounded-xl p-space-md flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<div>
+<span class="font-title-sm text-title-sm text-on-surface block">Stage Backdrop Test</span>
+<span class="font-label-code-sm text-label-code-sm text-outline">1920 × 1080 • 1 Surface</span>
+</div>
+</div>
+<div class="h-16 bg-surface-container rounded-lg border border-outline-variant/20"></div>
+</div>
+</main>
+</div>
+<!-- LAYER 2: Modal Dim Scrim -->
+<div class="absolute inset-0 z-10 bg-surface-container-lowest/80 backdrop-blur-[2px] transition-opacity duration-300"></div>
+<!-- LAYER 3: Android System Status Bar (Active Foreground Over Scrim) -->
+<div class="relative z-20 h-12 w-full flex items-center justify-between px-space-md pt-2 select-none">
+<span class="font-label-code-sm text-label-code-sm text-on-surface font-medium">09:41</span>
+<!-- Camera Punch-Hole Simulation -->
+<div class="w-4 h-4 rounded-full bg-black border border-outline-variant/50"></div>
+<div class="flex items-center gap-2 text-on-surface">
+<span class="font-label-code-sm text-label-code-sm text-outline">5G</span>
+<span class="material-symbols-outlined text-[15px]">signal_cellular_alt</span>
+<span class="material-symbols-outlined text-[16px]">battery_full</span>
+</div>
+</div>
+<!-- LAYER 4: Bottom Sheet Modal Overlay -->
+<div class="relative z-20 flex-1 flex flex-col justify-end">
+<!-- Bottom Sheet Container (Level 1 Surface with Level 2 elevation aura) -->
+<div class="w-full bg-surface-container-low rounded-t-xl border-t border-x border-outline-variant shadow-[0_-12px_40px_rgba(0,0,0,0.85)] flex flex-col max-h-[850px] overflow-hidden">
+<!-- Drag Handle Indicator Pill -->
+<div class="w-full pt-3 pb-1 flex justify-center items-center cursor-grab active:cursor-grabbing">
+<div class="w-10 h-1 rounded-full bg-outline-variant"></div>
+</div>
+<!-- Sheet Header Bar -->
+<div class="px-space-md py-space-sm flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">add_box</span>
+<h2 class="font-headline-md text-headline-md text-on-surface tracking-tight">New project</h2>
+</div>
+<!-- Close / Cancel Icon button (Material 48dp touch target) -->
+<button aria-label="Cancel and close dialog" class="w-12 h-12 -mr-2 rounded-full flex items-center justify-center text-outline hover:text-on-surface hover:bg-surface-container transition-colors duration-150 active:scale-95">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- Sheet Content Scroll/Form Area -->
+<div class="px-space-md pt-2 pb-space-md space-y-space-lg overflow-y-auto">
+<!-- Input Group: Project Name -->
+<div class="space-y-1.5">
+<div class="flex justify-between items-center">
+<label class="font-label-lg text-label-lg text-on-surface flex items-center gap-1.5" for="project-name">
+<span>Project name</span>
+<span class="text-primary-container text-xs">*</span>
+</label>
+<span class="font-label-code-sm text-label-code-sm text-outline">AUTO-INDEX 04</span>
+</div>
+<!-- Focused Input Field with Violet Accent & Pulsing Cursor -->
+<div class="relative group">
+<div class="w-full bg-surface-container-lowest border-2 border-primary-container rounded-lg px-space-md py-3 flex items-center justify-between shadow-[0_0_0_1px_rgba(167,139,250,0.3)] transition-all">
+<div class="flex items-center flex-1 overflow-hidden">
+<span class="material-symbols-outlined text-secondary text-[18px] mr-2.5">drive_file_rename_outline</span>
+<input class="bg-transparent border-0 p-0 text-on-surface font-body-md text-body-md focus:ring-0 focus:outline-none w-auto max-w-[200px]" id="project-name" placeholder="Enter project name..." type="text" value="Living room projection"/>
+<!-- Active Visual Caret / Cursor indicator -->
+<span class="w-[2px] h-4 bg-primary-container inline-block animate-caret ml-0.5"></span>
+</div>
+<!-- Clear Text Button (48dp target via padding) -->
+<button aria-label="Clear text" class="w-8 h-8 rounded-full flex items-center justify-center text-outline hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-[16px]">cancel</span>
+</button>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-outline">info</span>
+              Workspace label used across stage monitors and presets.
+            </p>
+</div>
+<!-- Canvas Configuration Card (Strictly Fixed Default MVP Spec) -->
+<div class="bg-surface-container rounded-xl border border-outline-variant/60 p-space-md space-y-space-md">
+<!-- Section Header within Card -->
+<div class="flex items-center justify-between border-b border-outline-variant/30 pb-space-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[18px]">aspect_ratio</span>
+<span class="font-label-lg text-label-lg text-on-surface font-semibold">Canvas Format</span>
+</div>
+<!-- MVP Fixed Lock Badge -->
+<div class="flex items-center gap-1 bg-surface-container-highest px-2 py-0.5 rounded-full border border-outline-variant/50">
+<span class="material-symbols-outlined text-[11px] text-outline">lock</span>
+<span class="font-label-code-sm text-label-code-sm text-outline">MVP FIXED</span>
+</div>
+</div>
+<!-- Resolution and Aspect Display -->
+<div class="flex items-center justify-between bg-surface-container-lowest p-space-sm rounded-lg border border-outline-variant/40">
+<div class="space-y-0.5">
+<span class="font-label-code-sm text-label-code-sm text-outline block">TARGET OUTPUT RESOLUTION</span>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-md text-headline-md text-on-surface font-semibold tracking-tight">1920 × 1080</span>
+<span class="font-label-code-md text-label-code-md text-secondary">(16:9)</span>
+</div>
+</div>
+<!-- Fixed Aspect Ratio Diagram Iconography -->
+<div class="w-14 h-9 rounded bg-surface-container-high border border-secondary/40 flex items-center justify-center relative overflow-hidden">
+<div class="absolute inset-0 bg-secondary/5"></div>
+<span class="font-label-code-sm text-[10px] text-secondary font-mono">16:9</span>
+</div>
+</div>
+<!-- MVP Specification Informative Caption -->
+<div class="bg-surface-container-low/70 rounded-lg p-2.5 border border-outline-variant/30 flex items-start gap-2.5">
+<span class="material-symbols-outlined text-outline text-[16px] mt-0.5 shrink-0">verified</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                Standard Full HD output. Fixed 16:9 projection canvas for standard projectors.
+              </p>
+</div>
+<!-- Default Surface Indicator Pill/Row -->
+<div class="pt-1 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-[18px]">texture</span>
+<span class="font-body-sm text-body-sm text-on-surface">Surface preset initialized:</span>
+</div>
+<span class="font-label-code-sm text-label-code-sm text-tertiary bg-tertiary/10 border border-tertiary/20 px-2 py-0.5 rounded">
+                1 Quad mesh ready
+              </span>
+</div>
+</div>
+<!-- Offline & Storage Footnote -->
+<div class="flex items-center justify-center gap-1.5 py-1">
+<span class="material-symbols-outlined text-[14px] text-tertiary">cloud_off</span>
+<span class="font-label-code-sm text-label-code-sm text-outline">
+              Saved locally on device • No cloud latency
+            </span>
+</div>
+<!-- Bottom Action Cluster (Keyboard & Touch-Aware Stack) -->
+<div class="space-y-space-sm pt-2">
+<!-- Primary Action Button (Electric Violet #a78bfa) -->
+<button class="w-full min-h-[48px] h-12 bg-primary-container text-on-primary-container rounded-lg font-label-lg text-label-lg font-bold flex items-center justify-center gap-2 shadow-[0_2px_12px_rgba(167,139,250,0.25)] hover:bg-primary transition-all duration-150 active:scale-[0.98]">
+<span class="material-symbols-outlined text-[18px]">add_circle</span>
+<span>Create project</span>
+</button>
+<!-- Secondary CTA (Subtle outline/ghost button) -->
+<button class="w-full min-h-[48px] h-12 bg-surface-container-high/40 border border-outline-variant text-on-surface rounded-lg font-label-lg text-label-lg flex items-center justify-center hover:bg-surface-container-high transition-colors duration-150 active:scale-[0.98]">
+<span>Cancel</span>
+</button>
+</div>
+</div>
+<!-- Android Bottom Gesture Pill Inset Safe Area (32dp) -->
+<div class="h-8 w-full flex justify-center items-center pb-2 pt-1 select-none">
+<div class="w-32 h-1 bg-outline-variant/80 rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -50,7 +50,7 @@ internal fun <T> read(scenario: ActivityScenario<MainActivity>, block: (MainActi
 internal fun await(scenario: ActivityScenario<MainActivity>, condition: (MainActivity) -> Boolean) {
     val deadline = SystemClock.uptimeMillis() + 12_000
     while (SystemClock.uptimeMillis() < deadline) {
-        if (read(scenario, condition)) return
+        if (read(scenario) { it.editorReady && condition(it) }) return
         SystemClock.sleep(50)
     }
     fail("Timed out waiting for video or UI state: " + read(scenario) {

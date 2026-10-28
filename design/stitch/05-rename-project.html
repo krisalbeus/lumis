@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lumis — Rename Project</title>
+<!-- Google Fonts: Space Grotesk, Plus Jakarta Sans, JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration verbatim from Design System -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-lowest": "#0c0e13",
+            "on-tertiary-fixed": "#002114",
+            "on-error": "#690005",
+            "surface-bright": "#37393f",
+            "surface-container": "#1e1f25",
+            "inverse-on-surface": "#2e3036",
+            "secondary-container": "#02aebe",
+            "on-surface-variant": "#cac4d4",
+            "tertiary-container": "#00b37e",
+            "outline-variant": "#494552",
+            "on-error-container": "#ffdad6",
+            "on-primary-fixed": "#21005e",
+            "tertiary-fixed": "#68fcbf",
+            "secondary": "#54d8e8",
+            "on-tertiary": "#003825",
+            "on-primary-fixed-variant": "#4f319c",
+            "primary-container": "#a78bfa",
+            "on-secondary-fixed-variant": "#004f57",
+            "surface": "#111318",
+            "on-surface": "#e2e2e9",
+            "inverse-surface": "#e2e2e9",
+            "outline": "#948e9d",
+            "tertiary-fixed-dim": "#45dfa4",
+            "surface-container-low": "#1a1b21",
+            "on-primary": "#381385",
+            "surface-variant": "#33353a",
+            "secondary-fixed": "#91f1ff",
+            "on-background": "#e2e2e9",
+            "primary-fixed": "#e8ddff",
+            "primary-fixed-dim": "#cebdff",
+            "on-secondary": "#00363c",
+            "surface-dim": "#111318",
+            "primary": "#cebdff",
+            "on-secondary-container": "#003b42",
+            "on-tertiary-fixed-variant": "#005137",
+            "on-tertiary-container": "#003d28",
+            "secondary-fixed-dim": "#54d8e8",
+            "surface-container-highest": "#33353a",
+            "background": "#111318",
+            "on-primary-container": "#3c1989",
+            "error-container": "#93000a",
+            "tertiary": "#45dfa4",
+            "surface-tint": "#cebdff",
+            "surface-container-high": "#282a2f",
+            "on-secondary-fixed": "#001f23",
+            "error": "#ffb4ab",
+            "inverse-primary": "#674bb5"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter": "0.75rem",
+            "space-xl": "2rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "space-xs": "0.25rem",
+            "margin": "1rem",
+            "space-sm": "0.5rem"
+          },
+          "fontFamily": {
+            "title-sm": ["Plus Jakarta Sans"],
+            "headline-xl": ["Space Grotesk"],
+            "headline-md": ["Space Grotesk"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "headline-lg": ["Space Grotesk"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "label-code-sm": ["JetBrains Mono"],
+            "body-md": ["Plus Jakarta Sans"],
+            "label-code-md": ["JetBrains Mono"]
+          },
+          "fontSize": {
+            "title-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "label-lg": ["13px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "label-code-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "label-code-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 20px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+      user-select: none;
+    }
+
+    /* Caret pulse animation for active input field */
+    @keyframes cursor-blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .custom-cursor {
+      display: inline-block;
+      width: 2px;
+      height: 18px;
+      background-color: #a78bfa;
+      animation: cursor-blink 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      vertical-align: middle;
+      margin-left: 1px;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-lowest text-on-surface antialiased min-h-screen flex justify-center items-center p-0 md:p-6 overflow-hidden select-none">
+<!-- Mobile Viewport Container (Pixel 9 Pro target: 412x924 dp standard) -->
+<div class="relative w-full max-w-[412px] h-[924px] max-h-screen bg-surface-dim overflow-hidden shadow-2xl flex flex-col justify-between">
+<!-- LAYER 0 & 1: Underlay Screen (Dimmed Projects View) -->
+<div class="absolute inset-0 flex flex-col pointer-events-none filter brightness-50 contrast-90">
+<!-- Android Hardware Status Inset Bar (48dp safe top zone) -->
+<div class="h-12 w-full pt-3 px-space-md flex items-center justify-between z-10">
+<span class="font-label-code-sm text-label-code-sm text-outline tracking-wider">09:41</span>
+<div class="flex items-center space-x-2">
+<!-- Projector Telemetry Pill -->
+<div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-surface-container border border-outline-variant/40">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+<span class="font-label-code-sm text-label-code-sm text-tertiary">OPTOMA·12ms</span>
+</div>
+<span class="material-symbols-outlined text-outline" style="font-size: 16px;">wifi</span>
+<span class="material-symbols-outlined text-outline" style="font-size: 16px;">battery_full</span>
+</div>
+</div>
+<!-- TopAppBar Shared Component Blueprint (Exact properties from JSON) -->
+<header class="bg-surface dark:bg-surface border-b border-outline-variant dark:border-outline-variant flex justify-between items-center w-full px-space-md pt-space-md pb-space-sm max-w-full">
+<div class="flex items-center gap-3">
+<button aria-label="Projects" class="w-12 h-12 flex items-center justify-center rounded-lg hover:bg-surface-container-high dark:hover:bg-surface-container-high transition-colors duration-150 active:scale-95 transition-transform duration-100 text-outline dark:text-outline">
+<span class="material-symbols-outlined">videocam</span>
+</button>
+<span class="text-headline-md font-headline-md font-bold tracking-tight text-on-surface dark:text-on-surface">Lumis</span>
+</div>
+<button aria-label="Settings" class="w-12 h-12 flex items-center justify-center rounded-lg hover:bg-surface-container-high dark:hover:bg-surface-container-high transition-colors duration-150 active:scale-95 transition-transform duration-100 text-outline dark:text-outline">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</header>
+<!-- Background Projects Dashboard Content Canvas -->
+<main class="flex-1 px-space-md py-4 space-y-4 overflow-hidden">
+<!-- Sub-header & Filter Chips -->
+<div class="flex items-center justify-between">
+<h2 class="font-headline-md text-headline-md text-on-surface">All Projects</h2>
+<span class="font-label-code-sm text-label-code-sm text-outline">3 DEPLOYED</span>
+</div>
+<!-- Dimmed Active Target Project Card ('Living room test') -->
+<div class="rounded-xl bg-surface-container-low border border-primary-container/40 p-4 space-y-3 relative overflow-hidden shadow-lg">
+<div class="flex justify-between items-start">
+<div class="space-y-1">
+<span class="inline-block px-2 py-0.5 rounded font-label-code-sm text-label-code-sm bg-surface-container-highest text-secondary border border-secondary/20">
+                ACTIVE MESH
+              </span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Living room test</h3>
+<p class="font-body-sm text-body-sm text-outline">Modified 14m ago · Quad Keystone</p>
+</div>
+<button class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-outline">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<!-- Mini Canvas Wireframe Graphic -->
+<div class="w-full h-28 rounded-lg bg-surface-container-lowest border border-outline-variant/30 relative flex items-center justify-center overflow-hidden">
+<!-- Simulated grid lines -->
+<div class="absolute inset-0 grid grid-cols-6 grid-rows-3 opacity-20">
+<div class="border-r border-b border-outline"></div>
+<div class="border-r border-b border-outline"></div>
+<div class="border-r border-b border-outline"></div>
+<div class="border-r border-b border-outline"></div>
+<div class="border-r border-b border-outline"></div>
+<div class="border-b border-outline"></div>
+<div class="border-r border-b border-outline"></div>
+<div class="border-r border-b border-outline"></div>
+<div class="border-r border-b border-outline"></div>
+<div class="border-r border-b border-outline"></div>
+<div class="border-r border-b border-outline"></div>
+<div class="border-b border-outline"></div>
+</div>
+<!-- Keystone polygon graphic -->
+<svg class="w-4/5 h-4/5 stroke-primary-container fill-primary-container/10" viewbox="0 0 200 80">
+<polygon points="20,15 185,8 165,72 35,68" stroke-dasharray="3 3" stroke-width="1.5"></polygon>
+<circle class="fill-secondary" cx="20" cy="15" r="4"></circle>
+<circle class="fill-secondary" cx="185" cy="8" r="4"></circle>
+<circle class="fill-secondary" cx="165" cy="72" r="4"></circle>
+<circle class="fill-secondary" cx="35" cy="68" r="4"></circle>
+</svg>
+<span class="absolute bottom-2 right-2 font-label-code-sm text-label-code-sm text-outline">1920×1080 @ 60Hz</span>
+</div>
+</div>
+<!-- Secondary Ghost Card -->
+<div class="rounded-xl bg-surface-container-low border border-outline-variant/40 p-4 space-y-2 opacity-60">
+<div class="flex justify-between items-center">
+<h4 class="font-title-sm text-title-sm text-on-surface">Gallery Facade Mapping</h4>
+<span class="font-label-code-sm text-label-code-sm text-outline">12 NODES</span>
+</div>
+<p class="font-body-sm text-body-sm text-outline">Updated yesterday · Multi-Surface Warp</p>
+</div>
+</main>
+</div>
+<!-- Scrim Backdrop (Deep Charcoal Ambient Dimmer) -->
+<div class="absolute inset-0 bg-[#090B10]/85 backdrop-blur-[3px] z-20 transition-opacity"></div>
+<!-- MODAL / BOTTOM SHEET CONTAINER (Level 2 Elevation: Keyboard-Aware Mobile Layout) -->
+<div class="relative z-30 w-full mt-auto flex flex-col justify-end">
+<section aria-labelledby="modal-headline" aria-modal="true" class="w-full bg-surface-container-low border-t border-outline-variant/50 rounded-t-[20px] p-space-md pt-3 shadow-[0px_-8px_32px_rgba(0,0,0,0.7)] flex flex-col gap-4" role="dialog">
+<!-- Sheet Handle Drag Pill -->
+<div class="w-full flex justify-center py-1">
+<div class="w-10 h-1 rounded-full bg-outline-variant/60"></div>
+</div>
+<!-- Header Block: Modal Title & Close Glyph -->
+<div class="flex items-start justify-between">
+<div class="space-y-1">
+<h1 class="font-headline-md text-headline-md text-on-surface tracking-tight" id="modal-headline">
+              Rename project
+            </h1>
+<p class="font-body-sm text-body-sm text-outline">
+              Enter a new title for this projection project.
+            </p>
+</div>
+<!-- Fast Dismiss Tool Icon with 48dp Touch Target -->
+<button aria-label="Close dialog" class="w-12 h-12 -mr-2 -mt-1 flex items-center justify-center rounded-lg text-outline hover:text-on-surface hover:bg-surface-container-high transition-colors active:scale-95 duration-100" type="button">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Focused Coordinate/Name Input Field Container -->
+<div class="space-y-1.5 pt-1">
+<label class="block font-label-code-sm text-label-code-sm text-primary" for="project-name-input">
+            PROJECT IDENTIFIER
+          </label>
+<div class="relative flex items-center rounded-lg bg-surface-container-lowest border-2 border-primary-container px-3.5 py-2.5 transition-all shadow-[0_0_12px_rgba(167,139,250,0.25)]">
+<!-- Leading Semantic Icon -->
+<span class="material-symbols-outlined text-primary-container mr-2.5" style="font-size: 20px;">edit</span>
+<!-- Text Content and Animated Cursor -->
+<div class="flex-1 flex items-center overflow-hidden">
+<span class="font-body-lg text-body-lg text-on-surface tracking-normal font-medium whitespace-nowrap" id="editable-text">Living room test</span>
+<span aria-hidden="true" class="custom-cursor"></span>
+</div>
+<!-- Quick Clear Button ('✕') with Minimum 48dp Touch Bound -->
+<button aria-label="Clear input text" class="w-12 h-12 -mr-3 flex items-center justify-center rounded-lg text-outline hover:text-on-surface hover:bg-surface-container transition-colors active:scale-90" id="clear-btn" type="button">
+<span class="material-symbols-outlined" style="font-size: 18px;">cancel</span>
+</button>
+</div>
+<!-- Helper Microcopy & Length Tabular Counter -->
+<div class="flex items-center justify-between px-0.5 pt-0.5">
+<span class="font-body-sm text-body-sm text-outline text-[11px] leading-tight flex items-center gap-1">
+<span class="material-symbols-outlined text-outline" style="font-size: 13px;">info</span>
+              Project names must be unique locally. Max 40 characters.
+            </span>
+<span class="font-label-code-sm text-label-code-sm text-outline-variant pl-2">16/40</span>
+</div>
+</div>
+<!-- Action Buttons (Strict 48dp Minimum Touch Heights) -->
+<div class="grid grid-cols-2 gap-space-sm pt-2 pb-1">
+<!-- Secondary Action: Cancel -->
+<button class="h-12 w-full rounded-lg bg-surface-container border border-outline-variant/60 font-label-lg text-label-lg text-on-surface hover:bg-surface-container-high transition-colors active:scale-[0.97] duration-100 flex items-center justify-center" type="button">
+            Cancel
+          </button>
+<!-- Primary Action: Save (Solid Violet Button) -->
+<button class="h-12 w-full rounded-lg bg-primary-container font-label-lg text-label-lg text-on-primary-container font-bold hover:brightness-110 shadow-[0_0_14px_rgba(167,139,250,0.3)] transition-all active:scale-[0.97] duration-100 flex items-center justify-center" type="button">
+            Save
+          </button>
+</div>
+<!-- Virtual Mobile Keyboard Representation (Utilitarian Dark Spatial Layout) -->
+<div class="w-full pt-2 -mx-space-md px-space-md border-t border-outline-variant/20 bg-surface-container-lowest flex flex-col gap-1.5 select-none">
+<!-- Suggestion Strip -->
+<div class="flex items-center justify-around py-1 text-outline font-label-code-sm text-label-code-sm border-b border-outline-variant/15">
+<span class="text-on-surface">"Living room test"</span>
+<span class="text-outline/70">"Living room 2"</span>
+<span class="text-outline/70">"Living mapping"</span>
+</div>
+<!-- Keyboard Row 1 -->
+<div class="flex justify-center gap-1.5 pt-1">
+<span class="w-[30px] h-[38px] rounded bg-surface-container flex items-center justify-center font-label-code-md text-label-code-md text-on-surface">q</span>
+<span class="w-[30px] h-[38px] rounded bg-surface-container flex items-center justify-center font-label-code-md text-label-code-md text-on-surface">w</span>
+<span class="w-[30px] h-[38px] rounded bg-surface-container flex items-center justify-center font-label-code-md text-label-code-md text-on-surface">e</span>
+<span class="w-[30px] h-[38px] rounded bg-surface-container flex items-center justify-center font-label-code-md text-label-code-md text-on-surface">r</span>
+<span class="w-[30px] h-[38px] rounded bg-surface-container flex items-center justify-center font-label-code-md text-label-code-md text-on-surface">t</span>
+<span class="w-[30px] h-[38px] rounded bg-surface-container flex items-center justify-center font-label-code-md text-label-code-md text-on-surface">y</span>
+<span class="w-[30px] h-[38px] rounded bg-surface-container flex items-center justify-center font-label-code-md text-label-code-md text-on-surface">u</span>
+<span class="w-[30px] h-[38px] rounded bg-surface-container flex items-center justify-center font-label-code-md text-label-code-md text-on-surface">i</span>
+<span class="w-[30px] h-[38px] rounded bg-surface-container flex items-center justify-center font-label-code-md text-label-code-md text-on-surface">o</span>
+<span class="w-[30px] h-[38px] rounded bg-surface-container flex items-center justify-center font-label-code-md text-label-code-md text-on-surface">p</span>
+</div>
+<!-- Keyboard Row 2 -->
+<div class="flex justify-center gap-1.5">
+<span class="w-[30px] h-[38px] rounded bg-surface-container flex items-center justify-center font-label-code-md text-label-code-md text-on-surface">a</span>
+<span class="w-[30px] h-[38px] rounded bg-surface-container flex items-center justify-center font-label-code-md text-label-code-md text-on-surface">s</span>
+<span class="w-[30px] h-[38px] rounded bg-surface-container flex items-center justify-center font-label-code-md text-label-code-md text-on-surface">d</span>
+<span class="w-[30px] h-[38px] rounded bg-surface-container flex items-center justify-center font-label-code-md text-label-code-md text-on-surface">f</span>
+<span class="w-[30px] h-[38px] rounded bg-surface-container flex items-center justify-center font-label-code-md text-label-code-md text-on-surface">g</span>
+<span class="w-[30px] h-[38px] rounded bg-surface-container flex items-center justify-center font-label-code-md text-label-code-md text-on-surface">h</span>
+<span class="w-[30px] h-[38px] rounded bg-surface-container flex items-center justify-center font-label-code-md text-label-code-md text-on-surface">j</span>
+<span class="w-[30px] h-[38px] rounded bg-surface-container flex items-center justify-center font-label-code-md text-label-code-md text-on-surface">k</span>
+<span class="w-[30px] h-[38px] rounded bg-surface-container flex items-center justify-center font-label-code-md text-label-code-md text-on-surface">l</span>
+</div>
+<!-- Keyboard Row 3 -->
+<div class="flex justify-center gap-1.5 items-center">
+<span class="w-[42px] h-[38px] rounded bg-surface-variant flex items-center justify-center text-outline">
+<span class="material-symbols-outlined" style="font-size: 18px;">keyboard_capslock</span>
+</span>
+<span class="w-[30px] h-[38px] rounded bg-surface-container flex items-center justify-center font-label-code-md text-label-code-md text-on-surface">z</span>
+<span class="w-[30px] h-[38px] rounded bg-surface-container flex items-center justify-center font-label-code-md text-label-code-md text-on-surface">x</span>
+<span class="w-[30px] h-[38px] rounded bg-surface-container flex items-center justify-center font-label-code-md text-label-code-md text-on-surface">c</span>
+<span class="w-[30px] h-[38px] rounded bg-surface-container flex items-center justify-center font-label-code-md text-label-code-md text-on-surface">v</span>
+<span class="w-[30px] h-[38px] rounded bg-surface-container flex items-center justify-center font-label-code-md text-label-code-md text-on-surface">b</span>
+<span class="w-[30px] h-[38px] rounded bg-surface-container flex items-center justify-center font-label-code-md text-label-code-md text-on-surface">n</span>
+<span class="w-[30px] h-[38px] rounded bg-surface-container flex items-center justify-center font-label-code-md text-label-code-md text-on-surface">m</span>
+<span class="w-[42px] h-[38px] rounded bg-surface-variant flex items-center justify-center text-outline">
+<span class="material-symbols-outlined" style="font-size: 18px;">backspace</span>
+</span>
+</div>
+<!-- Keyboard Bottom Row -->
+<div class="flex justify-center items-center gap-2 pt-0.5">
+<span class="w-12 h-9 rounded bg-surface-variant flex items-center justify-center font-label-code-sm text-label-code-sm text-outline">?123</span>
+<span class="flex-1 h-9 rounded bg-surface-container flex items-center justify-center font-body-sm text-body-sm text-outline">space</span>
+<span class="w-16 h-9 rounded bg-primary-container flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined" style="font-size: 18px;">keyboard_return</span>
+</span>
+</div>
+<!-- Android Bottom Gesture Pill Area (32dp standard bottom safe clearance) -->
+<div class="h-8 w-full flex items-center justify-center">
+<div class="w-32 h-1 rounded-full bg-outline-variant/60"></div>
+</div>
+</div>
+</section>
+</div>
+</div>
+<!-- Micro-interaction Script for Quick Clear Functionality -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const clearBtn = document.getElementById('clear-btn');
+      const textElement = document.getElementById('editable-text');
+
+      if (clearBtn && textElement) {
+        clearBtn.addEventListener('click', () => {
+          textElement.textContent = '';
+        });
+      }
+    });
+  </script>
+</body></html>

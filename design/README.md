@@ -89,6 +89,13 @@ metadata is 3840x2160, the same aspect ratio at twice the resolution.
 
 ## Local exports
 
+- [Projects / Home](stitch/01-projects-home.html)
+- [New project](stitch/03-new-project.html)
+- [Project actions](stitch/04-project-actions.html)
+- [Rename project](stitch/05-rename-project.html)
+- [Delete project confirmation](stitch/06-delete-project.html)
+- [Project recovery](stitch/07-project-recovery.html)
+- [Save failure / Retry](stitch/31-save-failure-retry.html)
 - [Logo and app-icon board](stitch/26-brand-logo-app-icon.html)
 - [Splash and empty-state board](stitch/27-splash-empty-state-assets.html)
 - [Component and interaction-state board](stitch/28-components-interaction-states.html)
@@ -127,6 +134,18 @@ diagnostics are not. Only the selected visible surface gets editing handles;
 no dialog, handle, label, or empty-state message enters clean Output.
 The three composition HTML exports are existing approved references, not new
 screen revisions.
+
+Milestone 4 reuses screens 01/02 for Projects/Empty, 03-06 for project CRUD,
+07/23 for recovery/load errors, and 31 for save failure/retry. These are native
+scrollable project cards and dialogs using the existing brand tokens. New
+projects keep the current fixed 1920x1080 canvas and bundled sample; arbitrary
+canvas sizes, thumbnails, projector status, technical telemetry, templates,
+and cloud/export controls in generated references are not implemented.
+Autosave is debounced at 500ms rather than the decorative 30-second copy in
+screen 07. Recovery copy explicitly warns that an older snapshot can lose recent
+edits; it does not repeat the mockup's unsupported "No data was lost" claim.
+Save/load errors and project navigation never enter clean Output.
+The persistence exports are the approved existing references, not new revisions.
 
 All current screen references remain in Stitch. Only the references above are
 exported locally; the manifest is not a full offline archive of every mockup.

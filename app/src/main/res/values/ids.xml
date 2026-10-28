@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <item name="projects" type="id" />
+    <item name="project_status" type="id" />
+    <item name="save_project" type="id" />
+    <item name="new_project" type="id" />
+    <item name="project_list" type="id" />
+    <item name="project_name" type="id" />
     <item name="video_canvas" type="id" />
     <item name="corner_overlay" type="id" />
     <item name="corner_a" type="id" />

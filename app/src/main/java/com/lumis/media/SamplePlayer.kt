@@ -55,10 +55,13 @@ class SamplePlayer(
             next.setVolume(0f, 0f)
             next.setOnPreparedListener {
                 if (player !== it) return@setOnPreparedListener
-                prepared = true
-                it.seekTo(resumePosition)
-                if (wantsToPlay) it.start()
-                onState(true, wantsToPlay)
+                it.setOnSeekCompleteListener { sought ->
+                    if (player !== sought) return@setOnSeekCompleteListener
+                    prepared = true
+                    if (wantsToPlay) sought.start()
+                    onState(true, wantsToPlay)
+                }
+                it.seekTo(resumePosition.toLong(), MediaPlayer.SEEK_CLOSEST)
             }
             next.setOnErrorListener { failedPlayer, what, extra ->
                 if (player !== failedPlayer) return@setOnErrorListener true

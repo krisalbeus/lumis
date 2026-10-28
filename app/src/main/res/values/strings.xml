@@ -1,5 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="projects_heading">Lumis / Projects</string>
+    <string name="projects">Projects</string>
+    <string name="projects_description">On-device projects. Your media stays on your device.</string>
+    <string name="projects_empty">No projects yet. Create a project to start mapping.</string>
+    <string name="new_project">New project</string>
+    <string name="create_project">Create project</string>
+    <string name="open_project">Open project</string>
+    <string name="project_actions">Project actions</string>
+    <string name="rename_project">Rename project</string>
+    <string name="duplicate_project">Duplicate project</string>
+    <string name="delete_project">Delete project</string>
+    <string name="keep_project">Keep project</string>
+    <string name="delete_named_project">Delete “%1$s”?</string>
+    <string name="delete_project_message">This removes the project and its saved corner mappings from Lumis. Original media files are not changed or deleted.</string>
+    <string name="project_name">Project name</string>
+    <string name="project_summary">%1$s · 1920 × 1080\nSaved %2$s</string>
+    <plurals name="project_surface_count">
+        <item quantity="one">%d surface</item>
+        <item quantity="other">%d surfaces</item>
+    </plurals>
+    <string name="project_name_required">Enter a project name.</string>
+    <string name="save_project">Save now</string>
+    <string name="cancel">Cancel</string>
+    <string name="keep_editing">Keep editing</string>
+    <string name="open_named_project">Open project %1$s</string>
+    <string name="actions_named_project">Actions for project %1$s</string>
+    <string name="project_needs_recovery">Project needs recovery. Open to review the last saved copy.</string>
+    <string name="project_operation_failed">Project operation failed</string>
+    <string name="project_load_failed">Could not open project</string>
+    <string name="project_recovery_title">Recover project?</string>
+    <string name="project_recovery_message">The latest project file could not be read. A previous valid snapshot is available. Recovering it may lose the latest edits. The original files stay untouched until you choose Recover.</string>
+    <string name="recover_project">Recover</string>
+    <string name="project_saved">%1$s · Saved on device</string>
+    <string name="project_saving">%1$s · Saving…</string>
+    <string name="project_save_failed">Could not save. Your edits are still open. Retry before leaving.</string>
+    <string name="untitled_project">Untitled project</string>
     <string name="app_name">Lumis</string>
     <string name="instructions">Select in Layers, then drag the four corners. Output projects fullscreen; Back returns to Edit.</string>
     <string name="mode_edit">Edit</string>

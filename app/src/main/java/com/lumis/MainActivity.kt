@@ -12,6 +12,8 @@ import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.opengl.GLSurfaceView
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.OpenableColumns
 import android.webkit.MimeTypeMap
 import android.util.Log
@@ -38,6 +40,13 @@ import com.lumis.media.SamplePlayer
 import com.lumis.renderer.VideoRenderer
 import com.lumis.scene.Scene
 import com.lumis.scene.SceneSurface
+import com.lumis.project.LoadedProject
+import com.lumis.project.PlaybackState
+import com.lumis.project.Project
+import com.lumis.project.ProjectIo
+import com.lumis.project.ProjectState
+import com.lumis.project.ProjectStore
+import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
 
@@ -88,9 +97,54 @@ class MainActivity : Activity() {
     private val violet = Color.rgb(167, 139, 250)
     private val secondary = Color.rgb(156, 168, 186)
     val currentSource: MediaSource get() = source
+    val editorReady: Boolean get() = ::renderer.isInitialized
+    private lateinit var projectStore: ProjectStore
+    private var project: Project? = null
+    private var projectStatus: TextView? = null
+    private var saveButton: Button? = null
+    private val saveHandler = Handler(Looper.getMainLooper())
+    private var revision = 0L
+    private var saveFailed = false
+    private var leaving = false
+    private var loading = true
+    private var paused = true
+    private val autosave = Runnable { saveProject() }
+    val currentProjectId: String? get() = project?.id
+    val currentProjectName: String? get() = project?.name
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        projectStore = ProjectStore(File(filesDir, "projects"))
+        setContentView(text(getString(R.string.loading), 18, Color.WHITE).apply {
+            setBackgroundColor(this@MainActivity.background)
+            gravity = Gravity.CENTER
+        })
+        val id = savedInstanceState?.getString("project_id") ?: intent.getStringExtra("project_id")
+        ProjectIo.run({
+            if (id == null) LoadedProject(projectStore.create(getString(R.string.untitled_project)))
+            else projectStore.load(id)
+        }) { result ->
+            if (isFinishing || isDestroyed) return@run
+            result.fold({ loaded ->
+                if (loaded.recovered) {
+                    compositionDialog = AlertDialog.Builder(this).setTitle(R.string.project_recovery_title)
+                        .setMessage(R.string.project_recovery_message)
+                        .setNegativeButton(R.string.projects) { _, _ -> goToProjects() }
+                        .setPositiveButton(R.string.recover_project) { _, _ ->
+                            ProjectIo.run({ projectStore.save(loaded.project); loaded.project }) { recovered ->
+                                recovered.fold({ initializeEditor(it, savedInstanceState) }, { showLoadFailure(it) })
+                            }
+                        }.setCancelable(false).show()
+                } else initializeEditor(loaded.project, savedInstanceState)
+            }, { showLoadFailure(it) })
+        }
+    }
+
+    private fun initializeEditor(loaded: Project, savedInstanceState: Bundle?) {
+        if (isFinishing || isDestroyed) return
+        project = loaded
+        scene = loaded.state.scene
+        saveFailed = savedInstanceState?.getBoolean("save_failed") ?: false
         showFps = savedInstanceState?.getBoolean("fps") ?: false
         savedInstanceState?.getBundle("scene")?.let { saved ->
             val layers = requireNotNull(saved.getLongArray("ids")).map { id ->
@@ -102,6 +156,9 @@ class MainActivity : Activity() {
         }
         scene.surfaces.forEach { layer ->
             val session = newSession(layer.id)
+            loaded.state.playback[layer.id]?.let { session.player.restore(it.playing, it.position) }
+            session.missing = loaded.state.missing[layer.id]
+            if (session.missing != null) session.failure = MediaFailure.UNAVAILABLE
             savedInstanceState?.getBundle("scene")?.getBundle(layer.id.toString())?.let {
                 session.player.restore(it.getBoolean("playing"), it.getInt("position"))
                 session.missing = it.getBundle("missing")?.let(::readSource)
@@ -113,6 +170,90 @@ class MainActivity : Activity() {
         buildUi()
         setOutputMode(savedInstanceState?.getBoolean("output") ?: false)
         refreshEditor()
+        loading = false
+        if (saveFailed) {
+            projectStatus?.setText(R.string.project_save_failed)
+            saveButton?.setText(R.string.retry)
+            if (!paused) showSaveFailure()
+        } else {
+            showSaveStatus()
+            if (savedInstanceState?.containsKey("scene") == true) scheduleSave()
+        }
+        if (!paused) glView.onResume() else glView.onPause()
+    }
+
+    private fun showLoadFailure(error: Throwable) {
+        if (isFinishing || isDestroyed) return
+        compositionDialog = AlertDialog.Builder(this).setTitle(R.string.project_load_failed)
+            .setMessage(error.localizedMessage)
+            .setNegativeButton(R.string.projects) { _, _ -> goToProjects() }
+            .setPositiveButton(R.string.retry) { _, _ -> recreate() }
+            .setCancelable(false).show()
+    }
+
+    private fun projectState(): ProjectState = ProjectState(scene,
+        scene.surfaces.associate { layer ->
+            val session = requireNotNull(sessions[layer.id])
+            layer.id to PlaybackState(session.player.wantsToPlay, session.player.position())
+        },
+        sessions.mapNotNull { (id, session) -> session.missing?.let { id to it } }.toMap())
+
+    private fun scheduleSave() {
+        if (loading || leaving || paused) return
+        revision++
+        saveHandler.removeCallbacks(autosave)
+        if (!saveFailed) {
+            projectStatus?.text = getString(R.string.project_saving, project?.name)
+            saveHandler.postDelayed(autosave, 500)
+        }
+    }
+
+    fun saveProject(afterSave: (() -> Unit)? = null) {
+        if (loading || leaving) return
+        if (saveFailed) compositionDialog?.dismiss()
+        saveHandler.removeCallbacks(autosave)
+        val snapshot = requireNotNull(project).copy(state = projectState(), updatedAt = System.currentTimeMillis())
+        val savingRevision = revision
+        projectStatus?.text = getString(R.string.project_saving, snapshot.name)
+        ProjectIo.run({ projectStore.save(snapshot) }) { result ->
+            if (isFinishing || isDestroyed) return@run
+            result.fold({
+                project = snapshot
+                saveFailed = false
+                if (savingRevision == revision) {
+                    showSaveStatus()
+                    afterSave?.invoke()
+                } else {
+                    if (afterSave != null) saveProject(afterSave) else scheduleSave()
+                }
+            }, {
+                saveFailed = true
+                if (outputMode) setOutputMode(false)
+                projectStatus?.setText(R.string.project_save_failed)
+                saveButton?.setText(R.string.retry)
+                if (!paused) showSaveFailure()
+            })
+        }
+    }
+
+    private fun showSaveFailure() {
+        compositionDialog?.dismiss()
+        compositionDialog = AlertDialog.Builder(this).setTitle(R.string.project_operation_failed)
+            .setMessage(R.string.project_save_failed)
+            .setNegativeButton(R.string.keep_editing, null)
+            .setPositiveButton(R.string.retry) { _, _ -> saveProject() }.show()
+    }
+
+    private fun showSaveStatus() {
+        projectStatus?.text = getString(R.string.project_saved, project?.name)
+        saveButton?.setText(R.string.save_project)
+    }
+
+    private fun goToProjects() {
+        leaving = true
+        saveHandler.removeCallbacks(autosave)
+        startActivity(Intent(this, ProjectsActivity::class.java))
+        finish()
     }
 
     private fun newSession(id: Long): MediaSession {
@@ -302,6 +443,24 @@ class MainActivity : Activity() {
             setOnClickListener { showProperties() }
         }
         panel.addView(propertiesButton, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(8) })
+        val projectControls = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(0, dp(12), 0, 0)
+        }
+        projectStatus = text("", 12, secondary).apply {
+            id = R.id.project_status
+            accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_POLITE
+        }.also { projectControls.addView(it) }
+        val projectActions = LinearLayout(this).apply { isBaselineAligned = false }
+        projectActions.addView(button(R.string.projects, false).apply {
+            id = R.id.projects
+            setOnClickListener { saveProject { goToProjects() } }
+        }, LinearLayout.LayoutParams(0, -2, 1f).apply { marginEnd = dp(8) })
+        saveButton = button(R.string.save_project, false).apply {
+            id = R.id.save_project
+            setOnClickListener { saveProject() }
+        }.also { projectActions.addView(it, LinearLayout.LayoutParams(0, -2, 1f)) }
+        projectControls.addView(projectActions)
 
         val controls = LinearLayout(this).apply {
             orientation = if (landscape) LinearLayout.VERTICAL else LinearLayout.HORIZONTAL
@@ -348,6 +507,7 @@ class MainActivity : Activity() {
         }
         diagnosticRow.addView(metrics, LinearLayout.LayoutParams(0, dp(48), 1f))
         panel.addView(diagnosticRow)
+        panel.addView(projectControls)
         if (!landscape) panel.addView(text(getString(R.string.offline_note), 11, secondary).apply { gravity = Gravity.CENTER })
         setContentView(root)
     }
@@ -453,20 +613,21 @@ class MainActivity : Activity() {
     private fun updateBackHandling() {
         if (android.os.Build.VERSION.SDK_INT < 33) return
         val dispatcher = onBackInvokedDispatcher
-        if (outputMode && backCallback == null) {
-            val callback = android.window.OnBackInvokedCallback { setOutputMode(false) }
+        if (backCallback == null) {
+            val callback = android.window.OnBackInvokedCallback {
+                if (outputMode) setOutputMode(false) else saveProject { goToProjects() }
+            }
             dispatcher.registerOnBackInvokedCallback(android.window.OnBackInvokedDispatcher.PRIORITY_DEFAULT, callback)
             backCallback = callback
-        } else if (!outputMode) {
-            (backCallback as? android.window.OnBackInvokedCallback)?.let { dispatcher.unregisterOnBackInvokedCallback(it) }
-            backCallback = null
         }
     }
 
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
         // Android 13+ uses OnBackInvokedCallback; older versions still deliver Back as a key.
-        if (android.os.Build.VERSION.SDK_INT < 33 && outputMode && event.keyCode == KeyEvent.KEYCODE_BACK) {
-            if (event.action == KeyEvent.ACTION_UP && !event.isCanceled) setOutputMode(false)
+        if (android.os.Build.VERSION.SDK_INT < 33 && editorReady && event.keyCode == KeyEvent.KEYCODE_BACK) {
+            if (event.action == KeyEvent.ACTION_UP && !event.isCanceled) {
+                if (outputMode) setOutputMode(false) else saveProject { goToProjects() }
+            }
             return true
         }
         return super.dispatchKeyEvent(event)
@@ -711,6 +872,7 @@ class MainActivity : Activity() {
                 })
                 errorAction.setText(if (it == MediaFailure.UNAVAILABLE) R.string.replace_media else R.string.retry)
             }
+            scheduleSave()
         }
     }
 
@@ -847,6 +1009,7 @@ class MainActivity : Activity() {
                 scene = scene.move(id, ahead)
                 renderer.updateScene(scene)
                 updateOrderButtons()
+                scheduleSave()
             }
             panel.addView(view, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(8) })
         }
@@ -901,6 +1064,7 @@ class MainActivity : Activity() {
         scene = scene.update(selected.copy(quad = moved))
         renderer.updateScene(scene)
         overlay.update()
+        scheduleSave()
         return true
     }
 
@@ -923,6 +1087,7 @@ class MainActivity : Activity() {
         )
         updateKeepScreenOn()
         if (!playing) metrics.setText(R.string.paused)
+        scheduleSave()
     }
 
     private fun showError(
@@ -990,12 +1155,22 @@ class MainActivity : Activity() {
 
     override fun onResume() {
         super.onResume()
+        paused = false
         resumed = true
-        glView.onResume()
+        if (editorReady) {
+            glView.onResume()
+            if (saveFailed) showSaveFailure()
+        }
     }
 
     override fun onPause() {
+        paused = true
         resumed = false
+        if (!editorReady) {
+            super.onPause()
+            return
+        }
+        if (!leaving && !saveFailed) saveProject()
         sessions.values.forEach { it.player.release(); it.ready = false }
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         glView.queueEvent { renderer.release() }
@@ -1004,6 +1179,7 @@ class MainActivity : Activity() {
     }
 
     override fun onDestroy() {
+        saveHandler.removeCallbacks(autosave)
         compositionDialog?.dismiss()
         super.onDestroy()
     }
@@ -1033,6 +1209,12 @@ class MainActivity : Activity() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString("project_id", project?.id ?: intent.getStringExtra("project_id"))
+        outState.putBoolean("save_failed", saveFailed)
+        if (!editorReady) {
+            super.onSaveInstanceState(outState)
+            return
+        }
         outState.putBoolean("fps", showFps)
         outState.putBoolean("output", outputMode)
         outState.putBoolean("picker_add", pickerAddsSurface)

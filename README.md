@@ -2,7 +2,8 @@
 
 An Android-first, offline projection-mapping app. Currently implemented:
 **Milestone 0, the rendering proof**, **Milestone 1, the virtual projector
-canvas**, **Milestone 2, media import**, and **Milestone 3, scene composition**. This is intentionally not the
+canvas**, **Milestone 2, media import**, **Milestone 3, scene composition**,
+and **Milestone 4, local project persistence**. This is intentionally not the
 complete MVP.
 
 Play a bundled video, independently drag its four corners, and watch the GPU
@@ -36,7 +37,7 @@ Alternatively:
 ```sh
 ./gradlew :app:assembleDebug
 adb install -r app/build/outputs/apk/debug/app-debug.apk
-adb shell am start -n com.lumis/.MainActivity
+adb shell am start -n com.lumis/.ProjectsActivity
 ```
 
 For this Mac's existing environment (its inherited `JAVA_HOME` is stale):
@@ -53,6 +54,13 @@ are test-only dependencies; the first build needs access to Gradle/Maven artifac
 
 ## Controls
 
+- The launcher opens **Projects**. **New project** creates a named local project
+  with one bundled sample surface; project names must contain 1-100 characters.
+  **Open project** restores its saved composition. **Project actions** offers
+  rename, independent project duplication, and confirmed deletion.
+- **Projects** in the editor, or **Back** from Edit, saves the current snapshot
+  before returning to the project list. **Save now** flushes immediately.
+  All these controls are in the scrollable editor panel.
 - **Edit | Output** switches presentation without restarting video or changing
   geometry. Output is immersive and black outside the mapped video. It has no
   handles, outlines, labels, FPS, buttons, or system bars. Press or gesture
@@ -98,11 +106,38 @@ are test-only dependencies; the first build needs access to Gradle/Maven artifac
   selection, geometry, visibility, opacity, each video's playback intent/position,
   and Edit/Output mode. A playback or renderer error exits Output so recovery UI
   never appears in clean output.
-  Android saved-instance-state also survives activity recreation; permanent
-  project persistence is a later milestone.
+  Saved-instance-state preserves the current editing session across recreation.
+  Cold-opened projects intentionally enter Edit rather than immediately projecting.
 
 The video is deliberately silent and loops. A playback/rendering error leaves
 geometry intact and shows an explicit Retry action.
+
+## Local saving and recovery
+
+- Scene/selection/property/playback changes autosave after 500ms without another
+  change; backgrounding also queues an immediate snapshot. Writes run serially off
+  the UI thread, so queued older snapshots cannot overwrite newer edits.
+- Version 1 JSON documents in private app storage contain project ID/name,
+  timestamp, fixed-canvas scene order, stable surface IDs/next ID, selection,
+  geometry, visibility, opacity, source URIs, per-video playback intent/position,
+  and missing-media references. UI chrome and GPU/decoder objects are not stored.
+- Each write syncs a temporary file, atomically renames it into place with checked
+  errors, and syncs the directory. A separate previous valid snapshot provides
+  recovery. Incomplete temporary writes are never treated as projects.
+- If the latest document is corrupt but a previous valid snapshot exists, Lumis
+  asks before recovery. Recovery may lose the latest edits. Unknown versions and
+  invalid scene data are rejected explicitly, never silently replaced by defaults.
+  Unreadable projects stay listed so the user can review their error or delete them.
+- Save failures exit Output, show **Retry / Keep editing**, and retain live edits.
+  Navigation back to Projects waits for a successful save. Force-stopping during
+  a pending/failed save can still lose unsaved edits; no app can guarantee their
+  durability before the write completes.
+- Media stays at its original URI. Duplicating projects shares media references,
+  not files; deleting a project never deletes gallery media. Providers may revoke
+  access despite a persistence request; missing sources retain mapping and a
+  Replace-media prompt across saves/reopens.
+- Projects are local only: no cloud sync/export, cross-device backup, or recovery
+  after uninstall/clearing app data. Android backup remains disabled.
 
 ## Rendering architecture
 
@@ -154,6 +189,8 @@ Key source:
 
 - [Quad, homography, and viewport math](app/src/main/java/com/lumis/geometry/Quad.kt)
 - [Immutable scene and surface operations](app/src/main/java/com/lumis/scene/Scene.kt)
+- [Versioned local project store](app/src/main/java/com/lumis/project/ProjectStore.kt)
+- [Project manager](app/src/main/java/com/lumis/ProjectsActivity.kt)
 - [GPU video renderer](app/src/main/java/com/lumis/renderer/VideoRenderer.kt)
 - [Decoder lifecycle](app/src/main/java/com/lumis/media/SamplePlayer.kt)
 - [Corner editing and accessibility](app/src/main/java/com/lumis/editor/CornerOverlay.kt)
@@ -200,6 +237,11 @@ Android's system input pipeline.
 - [Scene unit tests](app/src/test/java/com/lumis/scene/SceneTest.kt) cover stable
   IDs, selection, independent duplication, ordering, visibility, opacity,
   validation, hit testing, deletion, and more than four surfaces.
+- [Persistence tests](app/src/androidTest/java/com/lumis/ProjectPersistenceTest.kt)
+  cover versioned mixed/empty round trips, CRUD, name validation, corruption and
+  unknown versions, previous-snapshot recovery consent, save failure/retry,
+  latest-edit ordering, background flush, missing-media cold reopen, actual GPU
+  pixels after cold reopen, and paused decoder position restoration within 80ms.
 - [Composition tests](app/src/androidTest/java/com/lumis/SceneCompositionTest.kt)
   verify four independently advancing videos with actual GPU pixels, six image
   surfaces without a four-surface cap, absolute image orientation, transparent
@@ -237,7 +279,7 @@ sh tools/generate-sample.sh
 
 ## Not implemented yet
 
-Project management/saving, undo/redo, viewport pan/zoom,
+Undo/redo, viewport pan/zoom,
 external Output displays, shaders, masks, and cameras are not part of this
 build. Physical Pixel 9 Pro performance, thermal behavior,
 hardware-specific decoding, and projector output still need device testing.

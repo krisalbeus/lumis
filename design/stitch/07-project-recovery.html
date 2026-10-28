@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lumis — Project Recovery</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-lowest": "#0c0e13",
+            "on-tertiary-fixed": "#002114",
+            "on-error": "#690005",
+            "surface-bright": "#37393f",
+            "surface-container": "#1e1f25",
+            "inverse-on-surface": "#2e3036",
+            "secondary-container": "#02aebe",
+            "on-surface-variant": "#cac4d4",
+            "tertiary-container": "#00b37e",
+            "outline-variant": "#494552",
+            "on-error-container": "#ffdad6",
+            "on-primary-fixed": "#21005e",
+            "tertiary-fixed": "#68fcbf",
+            "secondary": "#54d8e8",
+            "on-tertiary": "#003825",
+            "on-primary-fixed-variant": "#4f319c",
+            "primary-container": "#a78bfa",
+            "on-secondary-fixed-variant": "#004f57",
+            "surface": "#111318",
+            "on-surface": "#e2e2e9",
+            "inverse-surface": "#e2e2e9",
+            "outline": "#948e9d",
+            "tertiary-fixed-dim": "#45dfa4",
+            "surface-container-low": "#1a1b21",
+            "on-primary": "#381385",
+            "surface-variant": "#33353a",
+            "secondary-fixed": "#91f1ff",
+            "on-background": "#e2e2e9",
+            "primary-fixed": "#e8ddff",
+            "primary-fixed-dim": "#cebdff",
+            "on-secondary": "#00363c",
+            "surface-dim": "#111318",
+            "primary": "#cebdff",
+            "on-secondary-container": "#003b42",
+            "on-tertiary-fixed-variant": "#005137",
+            "on-tertiary-container": "#003d28",
+            "secondary-fixed-dim": "#54d8e8",
+            "surface-container-highest": "#33353a",
+            "background": "#111318",
+            "on-primary-container": "#3c1989",
+            "error-container": "#93000a",
+            "tertiary": "#45dfa4",
+            "surface-tint": "#cebdff",
+            "surface-container-high": "#282a2f",
+            "on-secondary-fixed": "#001f23",
+            "error": "#ffb4ab",
+            "inverse-primary": "#674bb5"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter": "0.75rem",
+            "space-xl": "2rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "space-xs": "0.25rem",
+            "margin": "1rem",
+            "space-sm": "0.5rem"
+          },
+          "fontFamily": {
+            "title-sm": ["Plus Jakarta Sans"],
+            "headline-xl": ["Space Grotesk"],
+            "headline-md": ["Space Grotesk"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "headline-lg": ["Space Grotesk"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "label-code-sm": ["JetBrains Mono"],
+            "body-md": ["Plus Jakarta Sans"],
+            "label-code-md": ["JetBrains Mono"]
+          },
+          "fontSize": {
+            "title-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "label-lg": ["13px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "label-code-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "label-code-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    @keyframes pulse-halo {
+      0%, 100% {
+        box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.45);
+      }
+      50% {
+        box-shadow: 0 0 0 8px rgba(56, 189, 248, 0);
+      }
+    }
+    .badge-pulse {
+      animation: pulse-halo 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-lowest text-on-surface antialiased min-h-screen flex justify-center items-center selection:bg-primary-container selection:text-on-primary-container">
+<!-- Mobile Viewport Shell (Pixel 9 Pro Bounds 412x924 dp) -->
+<main class="relative w-full max-w-[412px] h-[924px] max-h-screen bg-surface-container-lowest overflow-hidden flex flex-col justify-between shadow-2xl border border-outline-variant/30 select-none">
+<!-- Top System Inset / Android Camera Punch-Hole & Telemetry Status -->
+<div class="w-full pt-3 px-space-md pb-1 flex justify-between items-center text-outline z-10 shrink-0">
+<div class="flex items-center space-x-1.5 font-label-code-sm text-label-code-sm">
+<span class="text-on-surface font-semibold">10:18</span>
+<span class="text-outline">AM</span>
+</div>
+<!-- Center Camera Cutout Representation -->
+<div class="w-3.5 h-3.5 rounded-full bg-black border border-outline-variant/40"></div>
+<div class="flex items-center space-x-2 font-label-code-sm text-label-code-sm">
+<span class="material-symbols-outlined text-[16px] text-tertiary">wifi</span>
+<span class="material-symbols-outlined text-[16px] text-on-surface">battery_charging_90</span>
+</div>
+</div>
+<!-- BACKGROUND: Home Screen / Studio Canvas (Dimmed & Blurred Backdrop) -->
+<div class="absolute inset-0 flex flex-col pointer-events-none select-none filter blur-[3px] brightness-[0.28] contrast-[1.1]">
+<!-- TopAppBar Shared Component from JSON Blueprint -->
+<header class="bg-surface border-b border-outline-variant flat no shadows flex justify-between items-center w-full px-space-md pt-space-md pb-space-sm max-w-full">
+<div class="flex items-center space-x-2">
+<div class="w-10 h-10 flex items-center justify-center rounded-lg text-primary">
+<span class="material-symbols-outlined text-[22px]">videocam</span>
+</div>
+<span class="text-headline-md font-headline-md font-bold tracking-tight text-on-surface">Lumis</span>
+</div>
+<div class="flex items-center space-x-2">
+<div class="w-10 h-10 flex items-center justify-center rounded-lg text-outline">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</div>
+</div>
+</header>
+<!-- Mock Studio Dashboard Content in Background -->
+<div class="p-space-md space-y-4">
+<!-- Telemetry Pill in Background -->
+<div class="flex items-center justify-between bg-surface-container-low px-3 py-2 rounded-lg border border-outline-variant/50">
+<div class="flex items-center space-x-2">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="font-label-code-sm text-label-code-sm text-on-surface">OPTOMA-4K-OPTICAL</span>
+</div>
+<span class="font-label-code-sm text-label-code-sm text-secondary">12ms • 60Hz</span>
+</div>
+<!-- Previous Sessions & Grid Mock -->
+<div class="grid grid-cols-2 gap-3 pt-2">
+<div class="h-36 rounded-xl bg-surface-container-low border border-outline-variant/40 p-3 flex flex-col justify-between">
+<div class="flex justify-between items-center">
+<span class="font-label-lg text-label-lg text-on-surface font-semibold">Exhibition Hall</span>
+<span class="material-symbols-outlined text-[16px] text-outline">more_vert</span>
+</div>
+<div class="w-full h-16 rounded border border-dashed border-outline-variant/50 bg-surface-container-lowest flex items-center justify-center">
+<span class="material-symbols-outlined text-outline/40 text-[28px]">grid_4x4</span>
+</div>
+<span class="font-label-code-sm text-label-code-sm text-outline">Yesterday</span>
+</div>
+<div class="h-36 rounded-xl bg-surface-container-low border border-outline-variant/40 p-3 flex flex-col justify-between">
+<div class="flex justify-between items-center">
+<span class="font-label-lg text-label-lg text-on-surface font-semibold">Facade West</span>
+<span class="material-symbols-outlined text-[16px] text-outline">more_vert</span>
+</div>
+<div class="w-full h-16 rounded border border-dashed border-outline-variant/50 bg-surface-container-lowest flex items-center justify-center">
+<span class="material-symbols-outlined text-outline/40 text-[28px]">view_in_ar</span>
+</div>
+<span class="font-label-code-sm text-label-code-sm text-outline">Oct 24</span>
+</div>
+</div>
+<div class="h-44 rounded-xl bg-surface-container-low border border-outline-variant/30 p-3">
+<span class="font-title-sm text-title-sm text-on-surface font-semibold">Workspace Calibrations</span>
+<div class="mt-3 w-full h-24 bg-surface-container-lowest rounded-lg border border-outline-variant/30 flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-[32px]">architecture</span>
+</div>
+</div>
+</div>
+</div>
+<!-- SEMANTIC MODAL OVERLAY: Dimming Scrim with Edge Vignette -->
+<div class="absolute inset-0 bg-black/60 pointer-events-none transition-opacity duration-300"></div>
+<!-- FOREGROUND MODAL / BOTTOM SHEET: 'Pick up where you left off' -->
+<section class="relative z-20 w-full mt-auto bg-surface-container-low rounded-t-[28px] border-t border-x border-outline-variant/50 shadow-[0_-12px_40px_rgba(0,0,0,0.85)] flex flex-col px-space-md pt-3 pb-8">
+<!-- Top Drag Affordance Pill -->
+<div class="w-full flex justify-center pb-3">
+<div class="w-10 h-1 rounded-full bg-outline-variant/70"></div>
+</div>
+<!-- Recovery Status Pill & Pulse Indicator -->
+<div class="flex items-center justify-between pb-2">
+<div class="inline-flex items-center space-x-2 px-2.5 py-1 rounded-full bg-[#38bdf8]/10 border border-[#38bdf8]/30">
+<span class="w-2 h-2 rounded-full bg-[#38bdf8] badge-pulse"></span>
+<span class="font-label-code-sm text-label-code-sm text-[#38bdf8] font-medium tracking-wide">AUTOSAVE RECOVERED</span>
+</div>
+<span class="font-label-code-sm text-label-code-sm text-outline">SESSION ID: #REC-8841</span>
+</div>
+<!-- Headline & Context -->
+<div class="space-y-1.5 pt-1.5">
+<h1 class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">
+          Pick up where you left off
+        </h1>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+          Lumis recovered an unsaved session from an unexpected shutdown or app interruption. No data was lost.
+        </p>
+</div>
+<!-- Recovered Project Summary Card (Level 2 Elevation Surface) -->
+<div class="mt-4 p-3.5 rounded-xl bg-surface-container border border-outline-variant/60 shadow-lg">
+<div class="flex items-start justify-between gap-3">
+<!-- Textual Metadata -->
+<div class="flex-1 space-y-1">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-[18px] text-primary" data-icon="folder">folder</span>
+<h2 class="font-title-sm text-title-sm text-on-surface font-semibold">Living room test</h2>
+</div>
+<p class="font-label-code-sm text-label-code-sm text-secondary flex items-center gap-1.5 pt-0.5">
+<span class="material-symbols-outlined text-[13px]">schedule</span>
+<span>Autosaved today at 10:14 AM (4 mins before exit)</span>
+</p>
+</div>
+</div>
+<!-- Wireframe Quad Preview Container -->
+<div class="mt-3 relative w-full h-24 rounded-lg bg-surface-container-lowest border border-outline-variant/50 overflow-hidden flex items-center justify-center">
+<!-- Background Grid Texture (Optic Projection Grid) -->
+<div class="absolute inset-0 bg-[radial-gradient(#282a2f_1px,transparent_1px)] [background-size:12px_12px] opacity-70"></div>
+<!-- Keystone Projected Quad Mesh Simulation -->
+<div class="relative w-48 h-16">
+<!-- Vector lines / trapezoid projection polygon -->
+<svg class="absolute inset-0 w-full h-full" fill="none" viewbox="0 0 192 64" xmlns="http://www.w3.org/2000/svg">
+<!-- Mapped polygon fill & perimeter stroke -->
+<polygon class="fill-[#a78bfa]/10 stroke-[#67e8f9] stroke-[1.5]" points="14,14 178,8 164,54 28,50"></polygon>
+<!-- Diagonal warp calibration guides -->
+<line stroke="#494552" stroke-dasharray="3 3" stroke-width="1" x1="14" x2="164" y1="14" y2="54"></line>
+<line stroke="#494552" stroke-dasharray="3 3" stroke-width="1" x1="178" x2="28" y1="8" y2="50"></line>
+<!-- Keystone Vertex Anchors with Cyan Optical Highlight -->
+<circle class="fill-white stroke-[#54d8e8] stroke-2" cx="14" cy="14" r="3.5"></circle>
+<circle class="fill-white stroke-[#54d8e8] stroke-2" cx="178" cy="8" r="3.5"></circle>
+<circle class="fill-white stroke-[#54d8e8] stroke-2" cx="164" cy="54" r="3.5"></circle>
+<circle class="fill-white stroke-[#54d8e8] stroke-2" cx="28" cy="50" r="3.5"></circle>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="font-label-code-sm text-label-code-sm text-primary/80 bg-surface-container-lowest/80 px-2 py-0.5 rounded border border-outline-variant/40">
+                SURFACE_01 [WARP ACTIVE]
+              </span>
+</div>
+</div>
+<!-- Bottom-right micro badge -->
+<div class="absolute bottom-1.5 right-2 px-1.5 py-0.5 rounded bg-surface-container-high/90 text-outline border border-outline-variant/40 font-label-code-sm text-[10px]">
+            1920×1080
+          </div>
+</div>
+<!-- State Snapshot Details Pill-Row -->
+<div class="mt-3 pt-2.5 border-t border-outline-variant/40 flex items-center gap-1.5 font-label-code-sm text-label-code-sm text-on-surface-variant flex-wrap">
+<span class="inline-flex items-center text-on-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary inline-block mr-1"></span>
+            3 mapped surfaces
+          </span>
+<span class="text-outline">•</span>
+<span class="inline-flex items-center text-on-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary inline-block mr-1"></span>
+            1 active video loop
+          </span>
+<span class="text-outline">•</span>
+<span class="text-outline">Calibration matrix intact</span>
+</div>
+</div>
+<!-- Action Buttons (Strict 48dp Minimum Touch Target Heights) -->
+<div class="mt-5 space-y-2.5">
+<!-- Primary Action: Restore project -->
+<button class="w-full h-12 min-h-[48px] px-4 rounded-lg bg-primary-container text-on-primary-container font-label-lg text-label-lg font-bold flex items-center justify-center space-x-2 shadow-md hover:brightness-110 active:scale-[0.98] transition-all duration-150 cursor-pointer" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="history" data-weight="fill" style="font-variation-settings: 'FILL' 1;">history</span>
+<span>Restore project</span>
+</button>
+<!-- Secondary Action: Discard draft / Not now -->
+<div class="flex items-center space-x-2">
+<button class="flex-1 h-12 min-h-[48px] px-4 rounded-lg bg-surface-container-high border border-outline-variant text-on-surface font-label-lg text-label-lg font-medium flex items-center justify-center space-x-1.5 hover:bg-surface-bright active:scale-[0.98] transition-all duration-150 cursor-pointer" type="button">
+<span class="material-symbols-outlined text-[18px] text-outline" data-icon="close">close</span>
+<span>Discard draft</span>
+</button>
+<button class="h-12 min-h-[48px] px-4 rounded-lg bg-transparent border border-transparent text-outline font-label-lg text-label-lg font-medium flex items-center justify-center hover:text-on-surface active:scale-[0.98] transition-colors duration-150 cursor-pointer" type="button">
+<span>Not now</span>
+</button>
+</div>
+</div>
+<!-- No Silent Data Loss Guarantee Note -->
+<div class="mt-4 pt-2 flex items-center justify-center space-x-1.5 text-center">
+<span class="material-symbols-outlined text-[15px] text-tertiary" data-icon="verified_user">verified_user</span>
+<p class="font-body-sm text-body-sm text-outline">
+          All projection mappings are saved locally every 30 seconds.
+        </p>
+</div>
+<!-- Android Home Navigation Gesture Pill -->
+<div class="w-full flex justify-center pt-5">
+<div class="w-32 h-1 bg-outline-variant/60 rounded-full"></div>
+</div>
+</section>
+</main>
+</body></html>

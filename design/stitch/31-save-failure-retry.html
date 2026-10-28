@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Lumis Studio — 31 — Save Failure / Retry</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-secondary": "#00363c",
+            "surface-container-low": "#1a1b21",
+            "on-surface": "#e2e2e9",
+            "on-surface-variant": "#cac4d4",
+            "on-secondary-container": "#003b42",
+            "outline": "#948e9d",
+            "on-tertiary-fixed-variant": "#005137",
+            "on-primary-fixed-variant": "#4f319c",
+            "tertiary-container": "#00b37e",
+            "on-background": "#e2e2e9",
+            "tertiary-fixed": "#68fcbf",
+            "on-error-container": "#ffdad6",
+            "secondary-container": "#02aebe",
+            "on-tertiary-fixed": "#002114",
+            "on-tertiary-container": "#003d28",
+            "error": "#ffb4ab",
+            "inverse-surface": "#e2e2e9",
+            "tertiary": "#45dfa4",
+            "on-tertiary": "#003825",
+            "primary-fixed": "#e8ddff",
+            "on-secondary-fixed-variant": "#004f57",
+            "on-primary-container": "#3c1989",
+            "surface-container": "#1e1f25",
+            "outline-variant": "#494552",
+            "surface-container-highest": "#33353a",
+            "secondary-fixed-dim": "#54d8e8",
+            "secondary": "#54d8e8",
+            "on-error": "#690005",
+            "surface-variant": "#33353a",
+            "on-primary": "#381385",
+            "surface-bright": "#37393f",
+            "secondary-fixed": "#91f1ff",
+            "surface-tint": "#cebdff",
+            "on-secondary-fixed": "#001f23",
+            "background": "#111318",
+            "surface-container-lowest": "#0c0e13",
+            "primary-fixed-dim": "#cebdff",
+            "surface-container-high": "#282a2f",
+            "primary": "#cebdff",
+            "tertiary-fixed-dim": "#45dfa4",
+            "primary-container": "#a78bfa",
+            "error-container": "#93000a",
+            "surface-dim": "#111318",
+            "on-primary-fixed": "#21005e",
+            "inverse-primary": "#674bb5",
+            "inverse-on-surface": "#2e3036",
+            "surface": "#111318"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-lg": "1.5rem",
+            "space-xl": "2rem",
+            "space-sm": "0.5rem",
+            "space-xs": "0.25rem",
+            "space-md": "1rem",
+            "gutter": "0.75rem",
+            "margin": "1rem"
+          },
+          "fontFamily": {
+            "headline-xl": ["Space Grotesk"],
+            "headline-md": ["Space Grotesk"],
+            "body-md": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "title-sm": ["Plus Jakarta Sans"],
+            "label-code-md": ["JetBrains Mono"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "headline-lg": ["Space Grotesk"],
+            "label-code-sm": ["JetBrains Mono"],
+            "body-sm": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "title-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "label-code-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "label-lg": ["13px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "label-code-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    /* Grid background styling */
+    .viewport-grid {
+      background-size: 24px 24px;
+      background-image:
+        linear-gradient(to right, rgba(73, 69, 82, 0.22) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(73, 69, 82, 0.22) 1px, transparent 1px);
+    }
+    .optical-pulse {
+      animation: alertPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes alertPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.65; transform: scale(0.96); }
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-lowest text-on-surface antialiased overflow-hidden font-body-md select-none">
+<!-- Target Android frame simulation wrapper (Pixel 9 Pro 412x924 dp bounds) -->
+<div class="relative w-full max-w-[412px] h-[924px] mx-auto bg-surface-container-lowest flex flex-col justify-between overflow-hidden shadow-2xl border border-outline-variant">
+<!-- Android Status Bar / Top Inset (48dp height with punch hole simulation) -->
+<div class="h-12 w-full pt-2 px-5 flex items-center justify-between text-outline z-50 shrink-0 bg-surface-container-low/95 backdrop-blur-md">
+<span class="font-label-code-sm text-label-code-sm font-medium tracking-tight text-on-surface">19:42</span>
+<!-- Center Camera Punchhole Anchor -->
+<div class="w-3.5 h-3.5 rounded-full bg-surface-container-lowest ring-1 ring-outline-variant/60 mx-auto"></div>
+<div class="flex items-center space-x-1.5 text-on-surface-variant">
+<span class="material-symbols-outlined text-[15px]" data-icon="wifi">wifi</span>
+<span class="material-symbols-outlined text-[15px]" data-icon="signal_cellular_alt">signal_cellular_alt</span>
+<span class="material-symbols-outlined text-[16px] text-error" data-icon="battery_alert">battery_alert</span>
+</div>
+</div>
+<!-- Top Navigation Anchor (Task Context: Back to Projects & Persistent Save Failure Indicator) -->
+<header class="px-space-md h-12 flex items-center justify-between bg-surface-container-low/95 backdrop-blur-md z-40 border-b border-outline-variant">
+<div class="flex items-center space-x-2">
+<button aria-label="Back to projects" class="flex items-center space-x-1 py-1 px-1 -ml-1 text-on-surface hover:text-secondary active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[20px]" data-icon="arrow_back">arrow_back</span>
+<span class="font-title-sm text-title-sm font-semibold tracking-wide text-on-surface">Projects</span>
+</button>
+<span class="text-outline-variant">/</span>
+<span class="font-body-md text-body-md font-medium text-on-surface-variant truncate max-w-[110px]">Living room test</span>
+</div>
+<!-- Persistent Non-Ambiguous Status Badge -->
+<div class="flex items-center">
+<div aria-live="assertive" class="flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-error-container/40 border border-error/50 shadow-sm" role="status">
+<span class="w-2 h-2 rounded-full bg-error optical-pulse"></span>
+<span class="font-label-code-sm text-label-code-sm font-semibold tracking-tight text-error uppercase">Save Failed</span>
+</div>
+</div>
+</header>
+<!-- Prominent Persistent Alert Banner (Storage Write Interruption) -->
+<section aria-label="Persistent save error alert" class="z-30 bg-surface-container border-b border-error/40 px-space-md py-2.5 shadow-lg shrink-0">
+<div class="flex items-start justify-between gap-2.5">
+<div class="flex items-start space-x-2.5">
+<div class="w-7 h-7 rounded-lg bg-error-container/50 border border-error/60 flex items-center justify-center shrink-0 mt-0.5 text-error">
+<span class="material-symbols-outlined text-[18px]" data-icon="warning" data-weight="fill" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div class="space-y-0.5">
+<div class="flex items-center space-x-2">
+<h1 class="font-title-sm text-title-sm font-semibold text-error tracking-tight">Changes aren't saved</h1>
+<span class="font-label-code-sm text-[10px] px-1.5 py-0.2 rounded bg-surface-container-highest text-on-surface-variant border border-outline-variant">0x80001004</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-tight">
+              Storage write failed: Device storage low / write permission interrupted. In-memory scene is preserved.
+            </p>
+</div>
+</div>
+</div>
+<!-- Quick Inline Banner Actions -->
+<div class="mt-2.5 pt-2 border-t border-outline-variant/40 flex items-center justify-between">
+<div class="flex items-center space-x-1.5 text-tertiary font-label-code-sm text-label-code-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+<span>RAM state intact &amp; editable</span>
+</div>
+<div class="flex items-center space-x-2">
+<button class="px-2.5 py-1 rounded bg-surface-container-highest border border-outline-variant text-on-surface font-label-code-sm text-label-code-sm hover:bg-surface-bright active:scale-95 transition-transform flex items-center space-x-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="info">info</span>
+<span>Details</span>
+</button>
+<button class="px-3 py-1 rounded bg-primary-container text-on-primary-container font-label-code-md text-label-code-md font-semibold hover:opacity-95 active:scale-95 transition-transform flex items-center space-x-1 shadow-sm">
+<span class="material-symbols-outlined text-[15px]" data-icon="sync">sync</span>
+<span>Retry</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Center Viewport (Spatial Editor Canvas & Interactive Projection Quad) -->
+<main class="relative flex-1 w-full viewport-grid overflow-hidden bg-surface-container-lowest flex items-center justify-center">
+<!-- Telemetry Status Overlay Bar (Android System Aesthetic) -->
+<div class="absolute top-3 inset-x-3 flex items-center justify-between z-20 pointer-events-none">
+<div class="flex items-center space-x-2 bg-surface-container-low/90 border border-outline-variant px-2.5 py-1 rounded-full backdrop-blur-md shadow-md pointer-events-auto">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="font-label-code-sm text-label-code-sm text-on-surface font-medium">RAM Cache: <span class="text-tertiary">Preserved (4.2 MB)</span></span>
+<span class="text-outline text-[10px]">•</span>
+<span class="font-label-code-sm text-label-code-sm text-outline">Last saved: 3m ago</span>
+</div>
+<div class="flex items-center space-x-1 bg-surface-container-low/90 border border-outline-variant px-2 py-1 rounded-full text-secondary font-label-code-sm text-label-code-sm backdrop-blur-md pointer-events-auto">
+<span class="material-symbols-outlined text-[14px]" data-icon="videocam">videocam</span>
+<span>OPTOMA-4K #1</span>
+</div>
+</div>
+<!-- Projection Mesh Quad (Visibly uncorrupted & active) -->
+<div class="relative w-[320px] h-[230px] my-auto">
+<!-- SVG Projection Beam & Warping Matrix Lines -->
+<svg class="absolute inset-0 w-full h-full overflow-visible pointer-events-none" viewbox="0 0 320 230">
+<defs>
+<lineargradient id="beamGradient" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#54d8e8" stop-opacity="0.35"></stop>
+<stop offset="100%" stop-color="#a78bfa" stop-opacity="0.15"></stop>
+</lineargradient>
+<radialgradient cx="50%" cy="50%" id="meshCenterGlow" r="50%">
+<stop offset="0%" stop-color="#02aebe" stop-opacity="0.25"></stop>
+<stop offset="100%" stop-color="#090b10" stop-opacity="0"></stop>
+</radialgradient>
+</defs>
+<!-- Perspective Mapped Polygon Shape -->
+<polygon fill="url(#beamGradient)" points="26,34 294,18 276,204 42,190" stroke="#54d8e8" stroke-dasharray="none" stroke-width="1.7"></polygon>
+<!-- Subdivision Grid Vectors -->
+<!-- Horizontal wires -->
+<line stroke="#54d8e8" stroke-dasharray="3 3" stroke-opacity="0.4" stroke-width="1" x1="31" x2="288" y1="86" y2="80"></line>
+<line stroke="#54d8e8" stroke-dasharray="3 3" stroke-opacity="0.4" stroke-width="1" x1="37" x2="282" y1="138" y2="142"></line>
+<!-- Vertical wires -->
+<line stroke="#54d8e8" stroke-dasharray="3 3" stroke-opacity="0.4" stroke-width="1" x1="115" x2="120" y1="28" y2="195"></line>
+<line stroke="#54d8e8" stroke-dasharray="3 3" stroke-opacity="0.4" stroke-width="1" x1="205" x2="198" y1="23" y2="199"></line>
+<!-- Center focal reticle -->
+<circle cx="160" cy="112" fill="url(#meshCenterGlow)" r="28" stroke="#a78bfa" stroke-opacity="0.7" stroke-width="1"></circle>
+<circle cx="160" cy="112" fill="#e8ddff" r="2"></circle>
+</svg>
+<!-- Quad Tag Badge -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-2.5 py-1 bg-surface-container/90 border border-secondary/40 rounded shadow-md pointer-events-none flex items-center space-x-1.5 backdrop-blur-sm">
+<span class="material-symbols-outlined text-secondary text-[14px]" data-icon="crop_free">crop_free</span>
+<span class="font-label-code-sm text-label-code-sm font-semibold text-secondary">Surface 1 [Warp Active]</span>
+</div>
+<!-- Keystone Corner Pins with Material 48dp Touch Targets -->
+<!-- Corner TL: (26, 34) -->
+<button aria-label="Keystone vertex Top Left" class="absolute -top-3 -left-3 w-12 h-12 flex items-center justify-center group focus:outline-none" style="transform: translate(26px, 34px) translate(-50%, -50%);">
+<div class="w-4 h-4 rounded-full border-2 border-secondary bg-surface-container-lowest flex items-center justify-center shadow-[0_0_12px_#54d8e8] group-hover:scale-110 group-active:scale-95 transition-all">
+<div class="w-1.5 h-1.5 rounded-full bg-white"></div>
+</div>
+</button>
+<!-- Corner TR: (294, 18) -->
+<button aria-label="Keystone vertex Top Right" class="absolute -top-3 -left-3 w-12 h-12 flex items-center justify-center group focus:outline-none" style="transform: translate(294px, 18px) translate(-50%, -50%);">
+<div class="w-4 h-4 rounded-full border-2 border-secondary bg-surface-container-lowest flex items-center justify-center shadow-[0_0_12px_#54d8e8] group-hover:scale-110 group-active:scale-95 transition-all">
+<div class="w-1.5 h-1.5 rounded-full bg-white"></div>
+</div>
+</button>
+<!-- Corner BR: (276, 204) -->
+<button aria-label="Keystone vertex Bottom Right" class="absolute -top-3 -left-3 w-12 h-12 flex items-center justify-center group focus:outline-none" style="transform: translate(276px, 204px) translate(-50%, -50%);">
+<div class="w-4 h-4 rounded-full border-2 border-secondary bg-surface-container-lowest flex items-center justify-center shadow-[0_0_12px_#54d8e8] group-hover:scale-110 group-active:scale-95 transition-all">
+<div class="w-1.5 h-1.5 rounded-full bg-white"></div>
+</div>
+</button>
+<!-- Corner BL: (42, 190) -->
+<button aria-label="Keystone vertex Bottom Left" class="absolute -top-3 -left-3 w-12 h-12 flex items-center justify-center group focus:outline-none" style="transform: translate(42px, 190px) translate(-50%, -50%);">
+<div class="w-4 h-4 rounded-full border-2 border-secondary bg-surface-container-lowest flex items-center justify-center shadow-[0_0_12px_#54d8e8] group-hover:scale-110 group-active:scale-95 transition-all">
+<div class="w-1.5 h-1.5 rounded-full bg-white"></div>
+</div>
+</button>
+</div>
+<!-- Quick Canvas Transform Floating Scrubber Tool Rack -->
+<div class="absolute bottom-3 left-3 right-3 flex items-center justify-between pointer-events-none">
+<div class="flex items-center space-x-1.5 bg-surface-container/85 border border-outline-variant/60 rounded-xl px-2 py-1 shadow-lg backdrop-blur-md pointer-events-auto">
+<button aria-label="Undo" class="w-9 h-9 rounded-lg flex items-center justify-center text-outline hover:text-on-surface hover:bg-surface-container-highest active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[19px]" data-icon="undo">undo</span>
+</button>
+<button aria-label="Redo" class="w-9 h-9 rounded-lg flex items-center justify-center text-outline hover:text-on-surface hover:bg-surface-container-highest active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[19px]" data-icon="redo">redo</span>
+</button>
+<div class="w-px h-5 bg-outline-variant"></div>
+<button aria-label="Mesh grid tool" class="w-9 h-9 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container-highest active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[19px]" data-icon="grid_4x4">grid_4x4</span>
+</button>
+<button aria-label="Snap to guides" class="w-9 h-9 rounded-lg flex items-center justify-center text-outline hover:text-on-surface hover:bg-surface-container-highest active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[19px]" data-icon="straighten">straighten</span>
+</button>
+</div>
+<div class="bg-surface-container/85 border border-outline-variant/60 rounded-xl px-3 py-1.5 shadow-lg backdrop-blur-md pointer-events-auto flex items-center space-x-2">
+<span class="font-label-code-sm text-label-code-sm text-outline">FPS:</span>
+<span class="font-label-code-sm text-label-code-sm font-semibold text-tertiary">59.8</span>
+<span class="text-outline-variant">|</span>
+<span class="font-label-code-sm text-label-code-sm text-outline">ZOOM:</span>
+<span class="font-label-code-sm text-label-code-sm font-medium text-on-surface">100%</span>
+</div>
+</div>
+</main>
+<!-- Bottom Sheet / Storage Failure Guidance Drawer (Jetpack Compose Pattern) -->
+<section aria-label="Storage Failure Guidance" class="bg-surface-container-low border-t border-outline-variant rounded-t-2xl shadow-[0_-8px_32px_rgba(0,0,0,0.65)] z-40 px-space-md pt-3 pb-4 shrink-0 transition-transform">
+<!-- Drag Handle Pill -->
+<div class="w-10 h-1 rounded-full bg-outline-variant mx-auto mb-3"></div>
+<!-- Header & Diagnostics Title -->
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-error text-[20px]" data-icon="sd_card_alert">sd_card_alert</span>
+<h2 class="font-headline-md text-headline-md font-semibold text-on-surface tracking-tight">Storage Failure Guidance</h2>
+</div>
+<span class="font-label-code-sm text-label-code-sm px-2 py-0.5 rounded bg-error-container text-on-error-container font-semibold">Critical Disk Low</span>
+</div>
+<!-- Diagnostic Telemetry Card: Internal Flash Capacity Gauge -->
+<div class="bg-surface-container rounded-xl p-3 border border-outline-variant/60 mb-3 space-y-2">
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-on-surface-variant flex items-center space-x-1">
+<span class="material-symbols-outlined text-[16px] text-outline" data-icon="hard_drive">hard_drive</span>
+<span>Device Internal Storage</span>
+</span>
+<span class="font-label-code-md text-label-code-md font-semibold text-error">42 MB of 8.0 GB free</span>
+</div>
+<!-- Progress Gauge Bar: 99.4% full -->
+<div class="w-full h-2 rounded-full bg-surface-container-highest overflow-hidden p-0.5">
+<div class="h-full rounded-full bg-error" style="width: 99.4%;"></div>
+</div>
+<p class="font-label-code-sm text-label-code-sm text-outline leading-tight">
+          Min required for autosave buffer: <span class="text-on-surface font-medium">150 MB</span>. Auto-flush suspended to safeguard current canvas in memory.
+        </p>
+</div>
+<!-- Action Button Rack -->
+<div class="space-y-2">
+<!-- Primary Action: Retry Autosave -->
+<button class="w-full h-12 rounded-lg bg-primary-container text-on-primary-container font-label-lg text-label-lg flex items-center justify-center space-x-2 font-bold shadow-md hover:brightness-105 active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined text-[20px]" data-icon="refresh">refresh</span>
+<span>Retry Auto-save</span>
+</button>
+<div class="grid grid-cols-2 gap-2">
+<!-- Secondary Option 1: Free Up Device Space -->
+<button class="h-11 rounded-lg bg-surface-container-highest border border-outline-variant text-on-surface font-label-code-md text-label-code-md hover:bg-surface-bright active:scale-[0.98] transition-all flex items-center justify-center space-x-1.5 px-2">
+<span class="material-symbols-outlined text-[18px] text-secondary" data-icon="cleaning_services">cleaning_services</span>
+<span class="truncate">Free Device Space</span>
+</button>
+<!-- Secondary Option 2: Export Scene Backup -->
+<button class="h-11 rounded-lg bg-surface-container-highest border border-outline-variant text-on-surface font-label-code-md text-label-code-md hover:bg-surface-bright active:scale-[0.98] transition-all flex items-center justify-center space-x-1.5 px-2">
+<span class="material-symbols-outlined text-[18px] text-tertiary" data-icon="file_download">file_download</span>
+<span class="truncate">Export JSON Backup</span>
+</button>
+</div>
+<!-- Tertiary Dismiss / Safe Bypassing Action -->
+<button class="w-full py-2 text-center text-outline hover:text-on-surface font-body-sm text-body-sm transition-colors active:scale-95">
+          Continue Editing <span class="text-tertiary font-medium">(Unsaved Changes in RAM)</span>
+</button>
+</div>
+</section>
+<!-- Android Gesture Pill Navigation Bar / Safe Area Bottom Inset (32dp height) -->
+<div class="h-7 w-full bg-surface-container-low flex items-center justify-center z-50 shrink-0">
+<div class="w-32 h-1 bg-outline rounded-full opacity-60"></div>
+</div>
+</div>
+<!-- Interactive Mock Logic -->
+<script>
+    // Lightweight micro-interaction to demonstrate retry feedback state
+    document.querySelectorAll('button').forEach(btn => {
+      if (btn.textContent.includes('Retry')) {
+        btn.addEventListener('click', () => {
+          const originalHTML = btn.innerHTML;
+          btn.innerHTML = `<span class="material-symbols-outlined text-[18px] animate-spin">progress_activity</span><span>Retrying Write...</span>`;
+          btn.disabled = true;
+
+          setTimeout(() => {
+            btn.innerHTML = originalHTML;
+            btn.disabled = false;
+          }, 1400);
+        });
+      }
+    });
+  </script>
+</body></html>

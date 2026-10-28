@@ -15,7 +15,8 @@
       "html": {
         "name": "projects/9969649650324268552/files/e515b0868f984bddb167b58cb5bc08e4",
         "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/e515b0868f984bddb167b58cb5bc08e4:download"
-      }
+      },
+      "localExport": "stitch/01-projects-home.html"
     },
     {
       "id": "a1f8a5ce9489444c9e5e4eda443e4ff5",
@@ -43,7 +44,8 @@
       "html": {
         "name": "projects/9969649650324268552/files/0922ea4ead5040529bd78924225a0359",
         "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/0922ea4ead5040529bd78924225a0359:download"
-      }
+      },
+      "localExport": "stitch/03-new-project.html"
     },
     {
       "id": "ea9ae11422a64594a6a49ab0ccfe47ab",
@@ -57,7 +59,8 @@
       "html": {
         "name": "projects/9969649650324268552/files/43178df047da464b8cda3e885021024b",
         "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/43178df047da464b8cda3e885021024b:download"
-      }
+      },
+      "localExport": "stitch/04-project-actions.html"
     },
     {
       "id": "0920bd8ebe334a049bfee5fed813aecc",
@@ -71,7 +74,8 @@
       "html": {
         "name": "projects/9969649650324268552/files/29d5be38825441f890739d7ea3d1b05e",
         "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/29d5be38825441f890739d7ea3d1b05e:download"
-      }
+      },
+      "localExport": "stitch/05-rename-project.html"
     },
     {
       "id": "5522bc32e21841118132dd740e9f6e49",
@@ -85,7 +89,8 @@
       "html": {
         "name": "projects/9969649650324268552/files/5e1a3c7b10e44da98d7e189aaa548a2c",
         "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/5e1a3c7b10e44da98d7e189aaa548a2c:download"
-      }
+      },
+      "localExport": "stitch/06-delete-project.html"
     },
     {
       "id": "2416c0515fe647f6a260e52bc29ff875",
@@ -99,7 +104,8 @@
       "html": {
         "name": "projects/9969649650324268552/files/e15c3606485f437ea53583edf00c4e9b",
         "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/e15c3606485f437ea53583edf00c4e9b:download"
-      }
+      },
+      "localExport": "stitch/07-project-recovery.html"
     },
     {
       "id": "ffe6f1865e364ef885685ce2ac87d854",
@@ -445,7 +451,8 @@
       "html": {
         "name": "projects/9969649650324268552/files/95456e3fa7634dce84cee461b429e680",
         "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/95456e3fa7634dce84cee461b429e680:download"
-      }
+      },
+      "localExport": "stitch/31-save-failure-retry.html"
     },
     {
       "id": "1c98f40079c6409098d2bcb11dcd6c8b",
