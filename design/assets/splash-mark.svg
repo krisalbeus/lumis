@@ -1,0 +1,29 @@
+<svg id="splash-mark.svg" data-asset="splash-mark.svg" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                      <linearGradient id="splashQuadGrad" x1="16" y1="16" x2="80" y2="80" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#38bdf8" />
+                        <stop offset="50%" stop-color="#a78bfa" />
+                        <stop offset="100%" stop-color="#ec4899" />
+                      </linearGradient>
+                      <filter id="splashGlow" x="0" y="0" width="96" height="96" filterUnits="userSpaceOnUse">
+                        <feGaussianBlur stdDeviation="4" result="blur" />
+                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                      </filter>
+                    </defs>
+
+                    <!-- Perspective Quad Polygon (Lumis Brand Core) -->
+                    <polygon points="22,26 78,18 70,76 26,68" stroke="url(#splashQuadGrad)" stroke-width="2.5" fill="#141824" fill-opacity="0.8" />
+
+                    <!-- Optical Diagonal Beams -->
+                    <line x1="22" y1="26" x2="70" y2="76" stroke="#a78bfa" stroke-width="1.2" stroke-dasharray="3 3" opacity="0.6"/>
+                    <line x1="78" y1="18" x2="26" y2="68" stroke="#38bdf8" stroke-width="1.2" stroke-dasharray="3 3" opacity="0.6"/>
+
+                    <!-- Keystoning Corner Pins (Cyan / Violet) -->
+                    <circle cx="22" cy="26" r="3.5" fill="#38bdf8" filter="url(#splashGlow)" />
+                    <circle cx="78" cy="18" r="3.5" fill="#38bdf8" filter="url(#splashGlow)" />
+                    <circle cx="70" cy="76" r="3.5" fill="#a78bfa" filter="url(#splashGlow)" />
+                    <circle cx="26" cy="68" r="3.5" fill="#a78bfa" filter="url(#splashGlow)" />
+
+                    <!-- Center Focal Crosshair -->
+                    <circle cx="49" cy="47" r="2.5" fill="#ffffff" />
+                  </svg>

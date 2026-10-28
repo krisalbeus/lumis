@@ -1,0 +1,10 @@
+<svg id="ic-launcher-monochrome" data-asset="ic-launcher-monochrome.svg" viewBox="0 0 108 108" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Pure Silhouette For Material You Dynamic Theming -->
+              <polygon points="34,34 76,28 68,76 28,70" fill="#E8DEF8" fill-opacity="0.25"/>
+              <polygon points="34,34 76,28 68,76 28,70" stroke="#E8DEF8" stroke-width="3" stroke-linejoin="round"/>
+              <line x1="34" y1="34" x2="68" y2="76" stroke="#E8DEF8" stroke-width="1.5" stroke-dasharray="2 2"/>
+              <circle cx="34" cy="34" r="3.5" fill="#2A233D" stroke="#E8DEF8" stroke-width="2"/>
+              <circle cx="76" cy="28" r="3.5" fill="#2A233D" stroke="#E8DEF8" stroke-width="2"/>
+              <circle cx="68" cy="76" r="3.5" fill="#2A233D" stroke="#E8DEF8" stroke-width="2"/>
+              <circle cx="28" cy="70" r="3.5" fill="#2A233D" stroke="#E8DEF8" stroke-width="2"/>
+            </svg>

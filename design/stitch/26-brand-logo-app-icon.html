@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>26 — Brand / Logo and App Icon</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Space Grotesk', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            lumis: {
+              black: '#090B10',
+              charcoal: '#141821',
+              surface: '#1C2230',
+              purple: '#A78BFA',
+              cyan: '#67E8F9',
+              white: '#F4F5FA',
+              muted: '#9CA8BA'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .grid-bg {
+      background-size: 24px 24px;
+      background-image:
+        linear-gradient(to right, rgba(156, 168, 186, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(156, 168, 186, 0.05) 1px, transparent 1px);
+    }
+    .checkboard-dark {
+      background-size: 16px 16px;
+      background-image:
+        linear-gradient(45deg, #141821 25%, transparent 25%),
+        linear-gradient(-45deg, #141821 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #141821 75%),
+        linear-gradient(-45deg, transparent 75%, #141821 75%);
+      background-color: #0d1017;
+    }
+    .checkboard-light {
+      background-size: 16px 16px;
+      background-image:
+        linear-gradient(45deg, #e2e8f0 25%, transparent 25%),
+        linear-gradient(-45deg, #e2e8f0 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #e2e8f0 75%),
+        linear-gradient(-45deg, transparent 75%, #e2e8f0 75%);
+      background-color: #ffffff;
+    }
+  </style>
+</head>
+<body class="bg-[#090B10] text-[#F4F5FA] font-sans antialiased min-h-screen selection:bg-[#A78BFA] selection:text-[#090B10]">
+
+  <!-- Top Global Header -->
+  <header class="border-b border-[#1C2230] bg-[#090B10]/90 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 rounded-lg bg-[#141821] border border-[#1C2230] flex items-center justify-center">
+          <svg viewBox="0 0 40 40" class="w-5 h-5" fill="none">
+            <polygon points="12,8 32,13 28,33 8,28" stroke="#67E8F9" stroke-width="1.5" stroke-dasharray="2 2" fill="none"/>
+            <polygon points="10,12 30,10 26,30 6,32" stroke="#A78BFA" stroke-width="2" fill="url(#hdr-grad)" fill-opacity="0.3"/>
+            <defs>
+              <linearGradient id="hdr-grad" x1="6" y1="10" x2="30" y2="32" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#67E8F9"/>
+                <stop offset="1" stop-color="#A78BFA"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="text-lg font-bold tracking-tight text-[#F4F5FA]">26 — Brand / Logo &amp; App Icon</h1>
+            <span class="px-2 py-0.5 text-[10px] font-mono tracking-wider font-semibold rounded bg-[#A78BFA]/10 text-[#A78BFA] border border-[#A78BFA]/20">SPEC SHEET</span>
+          </div>
+          <p class="text-xs text-[#9CA8BA]">Lumis Projection Studio — Optical Keystone &amp; Spatial Matrix Identity</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-4 text-xs font-mono text-[#9CA8BA]">
+        <div class="flex items-center space-x-1.5 bg-[#141821] px-3 py-1.5 rounded-lg border border-[#1C2230]">
+          <span class="w-2 h-2 rounded-full bg-[#67E8F9] animate-pulse"></span>
+          <span>SYSTEM: VECTOR-NATIVE SVG</span>
+        </div>
+        <div class="hidden sm:block text-[#9CA8BA]/70">STANDALONE ASSETS: 6 FILES</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-6 py-10 space-y-16">
+
+    <!-- Section 1: Brand Concept & Color Matrix -->
+    <section class="space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between border-b border-[#1C2230] pb-4 gap-4">
+        <div>
+          <span class="text-xs font-mono uppercase tracking-widest text-[#67E8F9]">Foundations</span>
+          <h2 class="text-2xl font-bold text-[#F4F5FA] tracking-tight">01. Optical Anatomy &amp; Color Matrix</h2>
+        </div>
+        <p class="text-sm text-[#9CA8BA] max-w-xl">
+          The Lumis mark expresses spatial projection geometry: an illuminated perspective quadrilateral deformed by real-world surface plane calibration, intersected by laser calibration crosshairs and optic cyan-violet dispersion.
+        </p>
+      </div>
+
+      <!-- Color Swatches Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+        <div class="p-3 bg-[#141821] border border-[#1C2230] rounded-xl flex flex-col space-y-2">
+          <div class="h-14 rounded-lg bg-[#090B10] border border-[#1C2230]"></div>
+          <div>
+            <div class="text-xs font-bold text-[#F4F5FA]">Canvas Black</div>
+            <div class="text-[11px] font-mono text-[#9CA8BA]">#090B10</div>
+            <div class="text-[10px] text-[#9CA8BA]/60 mt-0.5">Base canvas fill</div>
+          </div>
+        </div>
+        <div class="p-3 bg-[#141821] border border-[#1C2230] rounded-xl flex flex-col space-y-2">
+          <div class="h-14 rounded-lg bg-[#141821] border border-[#1C2230]"></div>
+          <div>
+            <div class="text-xs font-bold text-[#F4F5FA]">Charcoal Low</div>
+            <div class="text-[11px] font-mono text-[#9CA8BA]">#141821</div>
+            <div class="text-[10px] text-[#9CA8BA]/60 mt-0.5">Launcher background</div>
+          </div>
+        </div>
+        <div class="p-3 bg-[#141821] border border-[#1C2230] rounded-xl flex flex-col space-y-2">
+          <div class="h-14 rounded-lg bg-[#1C2230] border border-[#1C2230]"></div>
+          <div>
+            <div class="text-xs font-bold text-[#F4F5FA]">Surface Border</div>
+            <div class="text-[11px] font-mono text-[#9CA8BA]">#1C2230</div>
+            <div class="text-[10px] text-[#9CA8BA]/60 mt-0.5">Containers &amp; dividers</div>
+          </div>
+        </div>
+        <div class="p-3 bg-[#141821] border border-[#1C2230] rounded-xl flex flex-col space-y-2">
+          <div class="h-14 rounded-lg bg-[#A78BFA]"></div>
+          <div>
+            <div class="text-xs font-bold text-[#A78BFA]">Studio Violet</div>
+            <div class="text-[11px] font-mono text-[#9CA8BA]">#A78BFA</div>
+            <div class="text-[10px] text-[#9CA8BA]/60 mt-0.5">Primary brand hero</div>
+          </div>
+        </div>
+        <div class="p-3 bg-[#141821] border border-[#1C2230] rounded-xl flex flex-col space-y-2">
+          <div class="h-14 rounded-lg bg-[#67E8F9]"></div>
+          <div>
+            <div class="text-xs font-bold text-[#67E8F9]">Optic Cyan</div>
+            <div class="text-[11px] font-mono text-[#9CA8BA]">#67E8F9</div>
+            <div class="text-[10px] text-[#9CA8BA]/60 mt-0.5">Calibration &amp; laser</div>
+          </div>
+        </div>
+        <div class="p-3 bg-[#141821] border border-[#1C2230] rounded-xl flex flex-col space-y-2">
+          <div class="h-14 rounded-lg bg-[#F4F5FA]"></div>
+          <div>
+            <div class="text-xs font-bold text-[#090B10] bg-[#F4F5FA] rounded px-1 w-fit">Beam White</div>
+            <div class="text-[11px] font-mono text-[#9CA8BA]">#F4F5FA</div>
+            <div class="text-[10px] text-[#9CA8BA]/60 mt-0.5">Wordmark &amp; nodes</div>
+          </div>
+        </div>
+        <div class="p-3 bg-[#141821] border border-[#1C2230] rounded-xl flex flex-col space-y-2">
+          <div class="h-14 rounded-lg bg-[#9CA8BA]"></div>
+          <div>
+            <div class="text-xs font-bold text-[#9CA8BA]">Metadata Muted</div>
+            <div class="text-[11px] font-mono text-[#9CA8BA]">#9CA8BA</div>
+            <div class="text-[10px] text-[#9CA8BA]/60 mt-0.5">Technical HUD copy</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Primary Vector Mark (Standalone & Grid) -->
+    <section class="space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between border-b border-[#1C2230] pb-4 gap-4">
+        <div>
+          <span class="text-xs font-mono uppercase tracking-widest text-[#A78BFA]">Identity Asset 01</span>
+          <h2 class="text-2xl font-bold text-[#F4F5FA] tracking-tight">02. Primary Perspective Keystone Mark</h2>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="text-xs font-mono text-[#67E8F9] bg-[#141821] px-2.5 py-1 rounded border border-[#1C2230]">filename: lumis-mark.svg</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Main Hero Mark Showcase -->
+        <div class="lg:col-span-2 bg-[#141821] border border-[#1C2230] rounded-2xl p-8 relative overflow-hidden flex flex-col justify-between">
+          <div class="flex items-center justify-between text-xs font-mono text-[#9CA8BA] pb-4">
+            <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-[#67E8F9]"></span> OPTICAL PROJECTION QUADRILATERAL</span>
+            <span>VIEWBOX: 0 0 120 120</span>
+          </div>
+
+          <div class="h-80 flex items-center justify-center relative grid-bg border border-[#1C2230]/70 rounded-xl my-4">
+            <!-- Ray emission glow -->
+            <div class="absolute w-44 h-44 bg-[#A78BFA]/10 blur-3xl rounded-full pointer-events-none"></div>
+            <div class="absolute w-32 h-32 bg-[#67E8F9]/10 blur-2xl rounded-full pointer-events-none"></div>
+
+            <!-- STANDALONE INLINE SVG ASSET: lumis-mark.svg -->
+            <svg id="lumis-mark" data-asset="lumis-mark.svg" viewBox="0 0 120 120" class="w-48 h-48 drop-shadow-2xl" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <!-- Beam Gradient Fill -->
+                <linearGradient id="lumisMarkGrad" x1="28" y1="24" x2="98" y2="92" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#67E8F9" stop-opacity="0.95"/>
+                  <stop offset="45%" stop-color="#A78BFA" stop-opacity="0.85"/>
+                  <stop offset="100%" stop-color="#6366F1" stop-opacity="0.4"/>
+                </linearGradient>
+
+                <!-- Optical Surface Texture -->
+                <linearGradient id="lumisReflectGrad" x1="22" y1="36" x2="94" y2="82" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.35"/>
+                  <stop offset="100%" stop-color="#A78BFA" stop-opacity="0"/>
+                </linearGradient>
+
+                <!-- Soft Glow Filter -->
+                <filter id="markGlow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="3" result="blur"/>
+                  <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+                </filter>
+              </defs>
+
+              <!-- Optic Projection Beam Frustum (Faint Projector Rays) -->
+              <polygon points="12,18 108,12 92,106 20,98" stroke="#1C2230" stroke-width="1" stroke-dasharray="3 3"/>
+              <line x1="12" y1="18" x2="32" y2="34" stroke="#67E8F9" stroke-opacity="0.25" stroke-width="1" stroke-dasharray="2 2"/>
+              <line x1="108" y1="12" x2="92" y2="26" stroke="#A78BFA" stroke-opacity="0.25" stroke-width="1" stroke-dasharray="2 2"/>
+              <line x1="92" y1="106" x2="80" y2="90" stroke="#A78BFA" stroke-opacity="0.25" stroke-width="1" stroke-dasharray="2 2"/>
+              <line x1="20" y1="98" x2="26" y2="86" stroke="#67E8F9" stroke-opacity="0.25" stroke-width="1" stroke-dasharray="2 2"/>
+
+              <!-- Central Calibration Crosshairs / Laser Guide -->
+              <line x1="60" y1="20" x2="60" y2="100" stroke="#67E8F9" stroke-opacity="0.2" stroke-width="1"/>
+              <line x1="18" y1="58" x2="102" y2="58" stroke="#67E8F9" stroke-opacity="0.2" stroke-width="1"/>
+
+              <!-- Primary Mapped Perspective Quad (Tilted Spatial Plane) -->
+              <polygon points="32,34 92,26 80,90 26,86" fill="url(#lumisMarkGrad)" fill-opacity="0.25"/>
+              <polygon points="32,34 92,26 80,90 26,86" stroke="url(#lumisMarkGrad)" stroke-width="2.5" stroke-linejoin="round"/>
+
+              <!-- Internal Specular Dispersion Facet -->
+              <polygon points="32,34 68,48 54,88 26,86" fill="url(#lumisReflectGrad)"/>
+
+              <!-- Keystone Tension Vectors / Internal Horizon Line -->
+              <line x1="32" y1="34" x2="80" y2="90" stroke="#67E8F9" stroke-opacity="0.4" stroke-width="1" stroke-dasharray="3 3"/>
+              <line x1="92" y1="26" x2="26" y2="86" stroke="#A78BFA" stroke-opacity="0.4" stroke-width="1" stroke-dasharray="3 3"/>
+
+              <!-- Physical Vertex Pins (A, B, C, D corner calibration handles) -->
+              <!-- V0 - Top Left -->
+              <circle cx="32" cy="34" r="3.5" fill="#090B10" stroke="#67E8F9" stroke-width="2"/>
+              <circle cx="32" cy="34" r="1.5" fill="#67E8F9"/>
+
+              <!-- V1 - Top Right -->
+              <circle cx="92" cy="26" r="3.5" fill="#090B10" stroke="#A78BFA" stroke-width="2"/>
+              <circle cx="92" cy="26" r="1.5" fill="#A78BFA"/>
+
+              <!-- V2 - Bottom Right -->
+              <circle cx="80" cy="90" r="3.5" fill="#090B10" stroke="#A78BFA" stroke-width="2"/>
+              <circle cx="80" cy="90" r="1.5" fill="#A78BFA"/>
+
+              <!-- V3 - Bottom Left -->
+              <circle cx="26" cy="86" r="3.5" fill="#090B10" stroke="#67E8F9" stroke-width="2"/>
+              <circle cx="26" cy="86" r="1.5" fill="#67E8F9"/>
+
+              <!-- Center Homography Focus Reticle -->
+              <circle cx="59" cy="58" r="4" stroke="#F4F5FA" stroke-width="1" stroke-opacity="0.7"/>
+              <circle cx="59" cy="58" r="1" fill="#F4F5FA"/>
+            </svg>
+          </div>
+
+          <div class="flex items-center justify-between text-xs text-[#9CA8BA] pt-2 font-mono">
+            <div>HOMOGRAPHY: 4-POINT WARP MATRIX</div>
+            <div class="text-[#A78BFA]">STATUS: VALID VECTOR ASSET</div>
+          </div>
+        </div>
+
+        <!-- Technical Construction Breakdown -->
+        <div class="bg-[#141821] border border-[#1C2230] rounded-2xl p-6 flex flex-col justify-between space-y-6">
+          <div class="space-y-4">
+            <h3 class="text-base font-bold text-[#F4F5FA] flex items-center justify-between">
+              <span>Geometric Logic</span>
+              <span class="text-xs font-mono text-[#67E8F9]">GLES 3.0 / QUAD</span>
+            </h3>
+
+            <div class="space-y-3 text-xs text-[#9CA8BA]">
+              <div class="p-3 bg-[#090B10] border border-[#1C2230] rounded-lg">
+                <div class="text-[#F4F5FA] font-medium mb-1">1. Frustum Boundary</div>
+                <p>Outer dotted quad creates the projected viewport envelope (1920×1080 virtual canvas).</p>
+              </div>
+              <div class="p-3 bg-[#090B10] border border-[#1C2230] rounded-lg">
+                <div class="text-[#F4F5FA] font-medium mb-1">2. Deformed Keystone Surface</div>
+                <p>Asymmetrical polygon (32,34 &rarr; 92,26 &rarr; 80,90 &rarr; 26,86) represents active 4-corner pinned physical media plane.</p>
+              </div>
+              <div class="p-3 bg-[#090B10] border border-[#1C2230] rounded-lg">
+                <div class="text-[#F4F5FA] font-medium mb-1">3. Vertex Rings &amp; Reticle</div>
+                <p>High-contrast target circles symbolize interactive touch calibration nodes.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="border-t border-[#1C2230] pt-4 font-mono text-[11px] space-y-1 text-[#9CA8BA]">
+            <div class="text-[#F4F5FA] font-semibold font-sans mb-1 text-xs">Path Coordinate Specs</div>
+            <div>V0 (TL): [X: 32, Y: 34] &bull; Cyan #67E8F9</div>
+            <div>V1 (TR): [X: 92, Y: 26] &bull; Violet #A78BFA</div>
+            <div>V2 (BR): [X: 80, Y: 90] &bull; Indigo #6366F1</div>
+            <div>V3 (BL): [X: 26, Y: 86] &bull; Cyan #67E8F9</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Wordmark Lockups & Contrast Tests -->
+    <section class="space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between border-b border-[#1C2230] pb-4 gap-4">
+        <div>
+          <span class="text-xs font-mono uppercase tracking-widest text-[#67E8F9]">Identity Asset 02 &amp; 03</span>
+          <h2 class="text-2xl font-bold text-[#F4F5FA] tracking-tight">03. Full Brand Lockup &amp; Contrast Variations</h2>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="text-xs font-mono text-[#67E8F9] bg-[#141821] px-2.5 py-1 rounded border border-[#1C2230]">filename: lumis-lockup.svg</span>
+          <span class="text-xs font-mono text-[#A78BFA] bg-[#141821] px-2.5 py-1 rounded border border-[#1C2230]">filename: lumis-mark-mono.svg</span>
+        </div>
+      </div>
+
+      <!-- Lockup Presentations -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- Light on Dark Lockup (Primary) -->
+        <div class="bg-[#141821] border border-[#1C2230] rounded-2xl p-6 space-y-4">
+          <div class="flex items-center justify-between text-xs font-mono text-[#9CA8BA]">
+            <span class="text-[#A78BFA]">PRIMARY // LIGHT-ON-DARK</span>
+            <span>BG: #090B10 / #141821</span>
+          </div>
+
+          <div class="h-44 bg-[#090B10] rounded-xl border border-[#1C2230] flex items-center justify-center p-6 checkboard-dark">
+
+            <!-- STANDALONE INLINE SVG ASSET: lumis-lockup.svg (Dark BG) -->
+            <svg id="lumis-lockup" data-asset="lumis-lockup.svg" viewBox="0 0 340 70" class="w-full max-w-sm h-auto" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="lckMarkGrad" x1="16" y1="12" x2="56" y2="52" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#67E8F9"/>
+                  <stop offset="100%" stop-color="#A78BFA"/>
+                </linearGradient>
+              </defs>
+
+              <!-- Mark Emblem -->
+              <g transform="translate(4, 5)">
+                <!-- Ambient Projection Frustum -->
+                <polygon points="6,9 54,6 46,53 10,49" stroke="#262E40" stroke-width="1" stroke-dasharray="2 2" fill="none"/>
+
+                <!-- Main Keystone Quad -->
+                <polygon points="16,17 48,13 42,47 13,44" fill="url(#lckMarkGrad)" fill-opacity="0.25"/>
+                <polygon points="16,17 48,13 42,47 13,44" stroke="url(#lckMarkGrad)" stroke-width="2" stroke-linejoin="round"/>
+
+                <!-- Reflection -->
+                <polygon points="16,17 34,24 27,45 13,44" fill="#FFFFFF" fill-opacity="0.25"/>
+
+                <!-- Center Reticle -->
+                <circle cx="30" cy="30" r="2" stroke="#67E8F9" stroke-width="1"/>
+                <circle cx="30" cy="30" r="0.75" fill="#67E8F9"/>
+
+                <!-- Calibration Corners -->
+                <circle cx="16" cy="17" r="2.5" fill="#090B10" stroke="#67E8F9" stroke-width="1.5"/>
+                <circle cx="48" cy="13" r="2.5" fill="#090B10" stroke="#A78BFA" stroke-width="1.5"/>
+                <circle cx="42" cy="47" r="2.5" fill="#090B10" stroke="#A78BFA" stroke-width="1.5"/>
+                <circle cx="13" cy="44" r="2.5" fill="#090B10" stroke="#67E8F9" stroke-width="1.5"/>
+              </g>
+
+              <!-- Precise Vector Typography: LUMIS -->
+              <!-- Letter L -->
+              <path d="M 82 22 L 82 48 L 96 48" stroke="#F4F5FA" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- Letter U -->
+              <path d="M 106 22 L 106 41 C 106 46 110 49 116 49 C 122 49 126 46 126 41 L 126 22" stroke="#F4F5FA" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- Letter M -->
+              <path d="M 137 48 L 137 22 L 147 38 L 157 22 L 157 48" stroke="#F4F5FA" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- Letter I -->
+              <path d="M 169 22 L 169 48" stroke="#F4F5FA" stroke-width="3.5" stroke-linecap="round"/>
+              <!-- Letter S -->
+              <path d="M 197 26 C 195 23 189 22 185 24 C 180 26 180 30 184 33 L 191 37 C 196 40 197 44 194 47 C 191 50 183 50 179 46" stroke="#F4F5FA" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+              <!-- Category Descriptor: PROJECTION STUDIO -->
+              <text x="83" y="60" fill="#9CA8BA" font-family="'JetBrains Mono', monospace" font-size="7.5" font-weight="600" letter-spacing="2.8">PROJECTION STUDIO</text>
+            </svg>
+          </div>
+
+          <div class="flex items-center justify-between text-xs text-[#9CA8BA]">
+            <span>Format: Inline Standalone SVG</span>
+            <span class="font-mono text-[#67E8F9]">id: lumis-lockup</span>
+          </div>
+        </div>
+
+        <!-- Dark on Light Lockup (Reverse) -->
+        <div class="bg-[#141821] border border-[#1C2230] rounded-2xl p-6 space-y-4">
+          <div class="flex items-center justify-between text-xs font-mono text-[#9CA8BA]">
+            <span class="text-[#090B10] bg-[#F4F5FA] px-1.5 py-0.5 rounded font-bold">REVERSE // DARK-ON-LIGHT</span>
+            <span>BG: #FFFFFF / Print Safe</span>
+          </div>
+
+          <div class="h-44 bg-white rounded-xl border border-slate-200 flex items-center justify-center p-6 checkboard-light">
+            <!-- Reverse SVG Lockup for light media -->
+            <svg id="lumis-lockup-light" data-asset="lumis-lockup-light.svg" viewBox="0 0 340 70" class="w-full max-w-sm h-auto" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="lckLightMarkGrad" x1="16" y1="12" x2="56" y2="52" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#0284C7"/>
+                  <stop offset="100%" stop-color="#7C3AED"/>
+                </linearGradient>
+              </defs>
+
+              <g transform="translate(4, 5)">
+                <polygon points="6,9 54,6 46,53 10,49" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="2 2" fill="none"/>
+                <polygon points="16,17 48,13 42,47 13,44" fill="url(#lckLightMarkGrad)" fill-opacity="0.15"/>
+                <polygon points="16,17 48,13 42,47 13,44" stroke="url(#lckLightMarkGrad)" stroke-width="2" stroke-linejoin="round"/>
+
+                <circle cx="30" cy="30" r="2" stroke="#0284C7" stroke-width="1"/>
+                <circle cx="30" cy="30" r="0.75" fill="#0284C7"/>
+
+                <circle cx="16" cy="17" r="2.5" fill="#FFFFFF" stroke="#0284C7" stroke-width="1.5"/>
+                <circle cx="48" cy="13" r="2.5" fill="#FFFFFF" stroke="#7C3AED" stroke-width="1.5"/>
+                <circle cx="42" cy="47" r="2.5" fill="#FFFFFF" stroke="#7C3AED" stroke-width="1.5"/>
+                <circle cx="13" cy="44" r="2.5" fill="#FFFFFF" stroke="#0284C7" stroke-width="1.5"/>
+              </g>
+
+              <!-- Letters in Charcoal #090B10 -->
+              <path d="M 82 22 L 82 48 L 96 48" stroke="#090B10" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M 106 22 L 106 41 C 106 46 110 49 116 49 C 122 49 126 46 126 41 L 126 22" stroke="#090B10" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M 137 48 L 137 22 L 147 38 L 157 22 L 157 48" stroke="#090B10" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M 169 22 L 169 48" stroke="#090B10" stroke-width="3.5" stroke-linecap="round"/>
+              <path d="M 197 26 C 195 23 189 22 185 24 C 180 26 180 30 184 33 L 191 37 C 196 40 197 44 194 47 C 191 50 183 50 179 46" stroke="#090B10" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+              <text x="83" y="60" fill="#64748B" font-family="'JetBrains Mono', monospace" font-size="7.5" font-weight="600" letter-spacing="2.8">PROJECTION STUDIO</text>
+            </svg>
+          </div>
+
+          <div class="flex items-center justify-between text-xs text-[#9CA8BA]">
+            <span>Contrast Ratio: 17.8:1 (AAA)</span>
+            <span class="font-mono text-[#9CA8BA]">For stationery &amp; paperwork</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Monochrome Silhouette & Micro Scales -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- Standalone Monochrome Asset -->
+        <div class="bg-[#141821] border border-[#1C2230] rounded-2xl p-6 flex flex-col justify-between space-y-4">
+          <div>
+            <div class="flex items-center justify-between text-xs font-mono text-[#9CA8BA] mb-2">
+              <span class="text-[#F4F5FA] font-bold">1-COLOR SILHOUETTE</span>
+              <span class="text-[#A78BFA]">MONO</span>
+            </div>
+            <p class="text-xs text-[#9CA8BA]">Pure 100% white vector stencil for etching, single-color silkscreen, and hardware chassis stamping.</p>
+          </div>
+
+          <div class="h-32 bg-[#090B10] rounded-xl border border-[#1C2230] flex items-center justify-center">
+            <!-- STANDALONE INLINE SVG ASSET: lumis-mark-mono.svg -->
+            <svg id="lumis-mark-mono" data-asset="lumis-mark-mono.svg" viewBox="0 0 100 100" class="w-20 h-20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="26,28 78,21 68,76 21,72" fill="#F4F5FA" fill-opacity="0.2"/>
+              <polygon points="26,28 78,21 68,76 21,72" stroke="#F4F5FA" stroke-width="3" stroke-linejoin="round"/>
+              <line x1="26" y1="28" x2="68" y2="76" stroke="#F4F5FA" stroke-width="1.5" stroke-dasharray="3 3"/>
+              <line x1="78" y1="21" x2="21" y2="72" stroke="#F4F5FA" stroke-width="1.5" stroke-dasharray="3 3"/>
+              <circle cx="26" cy="28" r="3.5" fill="#090B10" stroke="#F4F5FA" stroke-width="2"/>
+              <circle cx="78" cy="21" r="3.5" fill="#090B10" stroke="#F4F5FA" stroke-width="2"/>
+              <circle cx="68" cy="76" r="3.5" fill="#090B10" stroke="#F4F5FA" stroke-width="2"/>
+              <circle cx="21" cy="72" r="3.5" fill="#090B10" stroke="#F4F5FA" stroke-width="2"/>
+            </svg>
+          </div>
+
+          <div class="text-[11px] font-mono text-[#9CA8BA] flex justify-between">
+            <span>filename: lumis-mark-mono.svg</span>
+            <span class="text-[#67E8F9]">SVG STENCIL</span>
+          </div>
+        </div>
+
+        <!-- Micro Size 24px and 48px Renderings -->
+        <div class="bg-[#141821] border border-[#1C2230] rounded-2xl p-6 flex flex-col justify-between space-y-4">
+          <div>
+            <div class="flex items-center justify-between text-xs font-mono text-[#9CA8BA] mb-2">
+              <span class="text-[#F4F5FA] font-bold">OPTICAL MICRO RENDERING</span>
+              <span class="text-[#67E8F9]">24px / 48px</span>
+            </div>
+            <p class="text-xs text-[#9CA8BA]">Simplified optical weights to prevent subpixel antialiasing smearing at low DPI statusbars.</p>
+          </div>
+
+          <div class="h-32 bg-[#090B10] rounded-xl border border-[#1C2230] flex items-center justify-around px-4">
+            <!-- 48px Rendering -->
+            <div class="flex flex-col items-center space-y-2">
+              <div class="w-12 h-12 bg-[#141821] rounded-lg border border-[#1C2230] flex items-center justify-center p-1.5 shadow-inner">
+                <svg viewBox="0 0 48 48" class="w-9 h-9" fill="none">
+                  <polygon points="12,14 38,11 33,38 10,36" fill="#A78BFA" fill-opacity="0.3" stroke="#A78BFA" stroke-width="2" stroke-linejoin="round"/>
+                  <line x1="12" y1="14" x2="33" y2="38" stroke="#67E8F9" stroke-width="1"/>
+                  <circle cx="12" cy="14" r="2" fill="#67E8F9"/>
+                  <circle cx="38" cy="11" r="2" fill="#A78BFA"/>
+                  <circle cx="33" cy="38" r="2" fill="#A78BFA"/>
+                  <circle cx="10" cy="36" r="2" fill="#67E8F9"/>
+                </svg>
+              </div>
+              <span class="text-[10px] font-mono text-[#9CA8BA]">48 × 48 px</span>
+            </div>
+
+            <!-- 24px Rendering -->
+            <div class="flex flex-col items-center space-y-2">
+              <div class="w-8 h-8 bg-[#141821] rounded-md border border-[#1C2230] flex items-center justify-center p-1 shadow-inner">
+                <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none">
+                  <polygon points="6,7 19,5 16,19 5,18" fill="#A78BFA" fill-opacity="0.3" stroke="#A78BFA" stroke-width="1.8" stroke-linejoin="round"/>
+                  <circle cx="6" cy="7" r="1.2" fill="#67E8F9"/>
+                  <circle cx="19" cy="5" r="1.2" fill="#A78BFA"/>
+                  <circle cx="16" cy="19" r="1.2" fill="#A78BFA"/>
+                  <circle cx="5" cy="18" r="1.2" fill="#67E8F9"/>
+                </svg>
+              </div>
+              <span class="text-[10px] font-mono text-[#9CA8BA]">24 × 24 px (Favicon/Bar)</span>
+            </div>
+          </div>
+
+          <div class="text-[11px] font-mono text-[#9CA8BA] flex justify-between">
+            <span>STROKE: 1.8px (Snapped)</span>
+            <span class="text-[#67E8F9]">PIXEL-GRID ALIGNED</span>
+          </div>
+        </div>
+
+        <!-- Clearspace & Minimum Size Guidance -->
+        <div class="bg-[#141821] border border-[#1C2230] rounded-2xl p-6 flex flex-col justify-between space-y-4">
+          <div>
+            <div class="flex items-center justify-between text-xs font-mono text-[#9CA8BA] mb-2">
+              <span class="text-[#F4F5FA] font-bold">CLEARSPACE &amp; MIN SIZE</span>
+              <span class="text-[#A78BFA]">1.5X BUFFER</span>
+            </div>
+            <p class="text-xs text-[#9CA8BA]">Boundary protection calculated using keystone node diameter ‘X’.</p>
+          </div>
+
+          <div class="h-32 bg-[#090B10] rounded-xl border border-dashed border-[#A78BFA]/30 flex items-center justify-center relative p-3">
+            <!-- Clearspace Visualizer Box -->
+            <div class="border border-[#67E8F9]/40 bg-[#67E8F9]/5 rounded px-4 py-2 flex items-center space-x-2">
+              <span class="text-[9px] font-mono text-[#67E8F9]">1X</span>
+              <div class="w-8 h-8 flex items-center justify-center">
+                <svg viewBox="0 0 40 40" class="w-6 h-6" fill="none">
+                  <polygon points="10,12 32,9 28,31 8,29" stroke="#A78BFA" stroke-width="2" fill="#A78BFA" fill-opacity="0.25"/>
+                  <circle cx="10" cy="12" r="1.5" fill="#67E8F9"/>
+                  <circle cx="32" cy="9" r="1.5" fill="#A78BFA"/>
+                  <circle cx="28" cy="31" r="1.5" fill="#A78BFA"/>
+                  <circle cx="8" cy="29" r="1.5" fill="#67E8F9"/>
+                </svg>
+              </div>
+              <span class="text-[9px] font-mono text-[#67E8F9]">1X</span>
+            </div>
+            <span class="absolute top-1 right-2 text-[9px] font-mono text-[#A78BFA]">PROTECTION ZONE</span>
+          </div>
+
+          <div class="text-[11px] font-mono text-[#9CA8BA] space-y-0.5">
+            <div>MIN DIGITAL: 20px height</div>
+            <div>MIN PRINT: 8mm (0.315 in)</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section 4: Android Adaptive Icon Architecture -->
+    <section class="space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between border-b border-[#1C2230] pb-4 gap-4">
+        <div>
+          <span class="text-xs font-mono uppercase tracking-widest text-[#67E8F9]">Android OS Assets</span>
+          <h2 class="text-2xl font-bold text-[#F4F5FA] tracking-tight">04. Android Adaptive Icon Suite (API 26+)</h2>
+        </div>
+        <p class="text-xs font-mono text-[#9CA8BA] max-w-md text-right">
+          Standard 108dp layered canvas structure with central 66dp circular safe zone for dynamic mask paring (Circle, Squircle, Rounded Square).
+        </p>
+      </div>
+
+      <!-- Android Layers Grid: Foreground + Background + Safezone Diagram -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- Layer 1: Foreground (ic-launcher-foreground.svg) -->
+        <div class="bg-[#141821] border border-[#1C2230] rounded-2xl p-6 space-y-4">
+          <div class="flex items-center justify-between text-xs font-mono">
+            <span class="text-[#F4F5FA] font-bold">1. FOREGROUND LAYER</span>
+            <span class="text-[#67E8F9]">108 × 108 dp</span>
+          </div>
+
+          <!-- Foreground on transparent checkerboard -->
+          <div class="h-64 rounded-xl border border-[#1C2230] checkboard-dark flex items-center justify-center relative overflow-hidden">
+            <!-- Central 66dp guideline (61.1% of 108dp) -->
+            <div class="absolute w-40 h-40 rounded-full border border-dashed border-[#67E8F9]/30 pointer-events-none flex items-center justify-center">
+              <span class="absolute -top-3 text-[9px] font-mono text-[#67E8F9]/60">66dp safe perimeter</span>
+            </div>
+
+            <!-- STANDALONE INLINE SVG ASSET: ic-launcher-foreground.svg -->
+            <svg id="ic-launcher-foreground" data-asset="ic-launcher-foreground.svg" viewBox="0 0 108 108" class="w-48 h-48 drop-shadow-xl" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="afgMarkGrad" x1="28" y1="26" x2="84" y2="82" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#67E8F9"/>
+                  <stop offset="100%" stop-color="#A78BFA"/>
+                </linearGradient>
+                <radialGradient id="afgCoreLight" cx="54" cy="54" r="26" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#67E8F9" stop-opacity="0.35"/>
+                  <stop offset="100%" stop-color="#A78BFA" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+
+              <!-- Central Optic Core Glow -->
+              <circle cx="54" cy="54" r="22" fill="url(#afgCoreLight)"/>
+
+              <!-- Outer Beam Geometry (Calibrated to 66dp Safe Area) -->
+              <polygon points="34,34 76,28 68,76 28,70" fill="url(#afgMarkGrad)" fill-opacity="0.28"/>
+              <polygon points="34,34 76,28 68,76 28,70" stroke="url(#afgMarkGrad)" stroke-width="2.5" stroke-linejoin="round"/>
+
+              <!-- Specular Ray Reflection -->
+              <polygon points="34,34 58,44 48,73 28,70" fill="#FFFFFF" fill-opacity="0.22"/>
+
+              <!-- Keystone Grid Lines -->
+              <line x1="34" y1="34" x2="68" y2="76" stroke="#67E8F9" stroke-opacity="0.45" stroke-width="1" stroke-dasharray="2 2"/>
+              <line x1="76" y1="28" x2="28" y2="70" stroke="#A78BFA" stroke-opacity="0.45" stroke-width="1" stroke-dasharray="2 2"/>
+
+              <!-- Active Target Handles -->
+              <circle cx="34" cy="34" r="3.2" fill="#090B10" stroke="#67E8F9" stroke-width="1.8"/>
+              <circle cx="34" cy="34" r="1.2" fill="#67E8F9"/>
+
+              <circle cx="76" cy="28" r="3.2" fill="#090B10" stroke="#A78BFA" stroke-width="1.8"/>
+              <circle cx="76" cy="28" r="1.2" fill="#A78BFA"/>
+
+              <circle cx="68" cy="76" r="3.2" fill="#090B10" stroke="#A78BFA" stroke-width="1.8"/>
+              <circle cx="68" cy="76" r="1.2" fill="#A78BFA"/>
+
+              <circle cx="28" cy="70" r="3.2" fill="#090B10" stroke="#67E8F9" stroke-width="1.8"/>
+              <circle cx="28" cy="70" r="1.2" fill="#67E8F9"/>
+
+              <!-- Reticle Hub -->
+              <circle cx="53" cy="52" r="3" stroke="#F4F5FA" stroke-width="1" stroke-opacity="0.75"/>
+              <circle cx="53" cy="52" r="1" fill="#F4F5FA"/>
+            </svg>
+          </div>
+
+          <div class="space-y-1">
+            <div class="text-xs font-mono text-[#67E8F9]">filename: ic-launcher-foreground.svg</div>
+            <p class="text-[11px] text-[#9CA8BA]">Full-bleed transparent layer. Art contained strictly within 18dp–90dp safe zone.</p>
+          </div>
+        </div>
+
+        <!-- Layer 2: Background (ic-launcher-background.svg) -->
+        <div class="bg-[#141821] border border-[#1C2230] rounded-2xl p-6 space-y-4">
+          <div class="flex items-center justify-between text-xs font-mono">
+            <span class="text-[#F4F5FA] font-bold">2. BACKGROUND LAYER</span>
+            <span class="text-[#A78BFA]">FULL BLEED</span>
+          </div>
+
+          <!-- Charcoal background layer -->
+          <div class="h-64 rounded-xl border border-[#1C2230] flex items-center justify-center relative overflow-hidden bg-[#090B10]">
+            <!-- STANDALONE INLINE SVG ASSET: ic-launcher-background.svg -->
+            <svg id="ic-launcher-background" data-asset="ic-launcher-background.svg" viewBox="0 0 108 108" class="w-48 h-48 shadow-xl" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <!-- Radial Dark Vignette -->
+                <radialGradient id="bgVignette" cx="54" cy="54" r="54" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#1C2230"/>
+                  <stop offset="65%" stop-color="#141821"/>
+                  <stop offset="100%" stop-color="#090B10"/>
+                </radialGradient>
+                <!-- Optical Dot Matrix -->
+                <pattern id="opticDots" x="0" y="0" width="9" height="9" patternUnits="userSpaceOnUse">
+                  <circle cx="4.5" cy="4.5" r="0.65" fill="#9CA8BA" fill-opacity="0.2"/>
+                </pattern>
+              </defs>
+
+              <!-- Base Solid Charcoal #141821 Fill -->
+              <rect width="108" height="108" fill="url(#bgVignette)"/>
+
+              <!-- Subdued Studio Calibrator Matrix Pattern -->
+              <rect width="108" height="108" fill="url(#opticDots)"/>
+
+              <!-- Concentric Subtle Lens Rings -->
+              <circle cx="54" cy="54" r="42" stroke="#1C2230" stroke-width="0.75" stroke-dasharray="2 4"/>
+              <circle cx="54" cy="54" r="28" stroke="#1C2230" stroke-width="0.75"/>
+
+              <!-- Subtle Center Beam Wash -->
+              <circle cx="54" cy="54" r="16" fill="#A78BFA" fill-opacity="0.04"/>
+            </svg>
+          </div>
+
+          <div class="space-y-1">
+            <div class="text-xs font-mono text-[#A78BFA]">filename: ic-launcher-background.svg</div>
+            <p class="text-[11px] text-[#9CA8BA]">Rich dark canvas with radial falloff and projection alignment grid matrix.</p>
+          </div>
+        </div>
+
+        <!-- Safe Zone Architectural Diagram -->
+        <div class="bg-[#141821] border border-[#1C2230] rounded-2xl p-6 space-y-4">
+          <div class="flex items-center justify-between text-xs font-mono">
+            <span class="text-[#F4F5FA] font-bold">3. SAFE ZONE SPECIFICATION</span>
+            <span class="text-[#9CA8BA]">GUIDE</span>
+          </div>
+
+          <div class="h-64 rounded-xl border border-[#1C2230] bg-[#090B10] flex items-center justify-center relative p-2">
+            <!-- 108dp Canvas Representation with Overlays -->
+            <svg viewBox="0 0 108 108" class="w-48 h-48" fill="none">
+              <!-- Canvas Bounds -->
+              <rect x="0" y="0" width="108" height="108" fill="#141821" stroke="#1C2230" stroke-width="1"/>
+
+              <!-- Bleed Margin Zone (Outer 18dp Ring) -->
+              <rect x="0" y="0" width="108" height="108" fill="none" stroke="#F43F5E" stroke-width="0.75" stroke-dasharray="2 2" stroke-opacity="0.5"/>
+              <rect x="18" y="18" width="72" height="72" stroke="#F59E0B" stroke-width="0.75" stroke-dasharray="2 2" stroke-opacity="0.7"/>
+
+              <!-- Central 66dp Diameter Safe Circle (33dp radius centered at 54,54) -->
+              <circle cx="54" cy="54" r="33" fill="#67E8F9" fill-opacity="0.08" stroke="#67E8F9" stroke-width="1.2"/>
+
+              <!-- Crosshair Center Lines -->
+              <line x1="54" y1="0" x2="54" y2="108" stroke="#9CA8BA" stroke-opacity="0.25" stroke-width="0.5"/>
+              <line x1="0" y1="54" x2="108" y2="54" stroke="#9CA8BA" stroke-opacity="0.25" stroke-width="0.5"/>
+
+              <!-- Dimension Annotations -->
+              <text x="54" y="32" text-anchor="middle" fill="#67E8F9" font-family="'JetBrains Mono', monospace" font-size="4.5" font-weight="600">66dp SAFE CIRCLE</text>
+              <text x="54" y="56" text-anchor="middle" fill="#F4F5FA" font-family="'JetBrains Mono', monospace" font-size="4">NO ESSENTIALS OUTSIDE</text>
+              <text x="54" y="98" text-anchor="middle" fill="#F43F5E" font-family="'JetBrains Mono', monospace" font-size="4">108dp BLEED CANVAS</text>
+            </svg>
+          </div>
+
+          <div class="space-y-1 font-mono text-[11px] text-[#9CA8BA]">
+            <div class="flex justify-between"><span>TOTAL CANVAS:</span> <span class="text-[#F4F5FA]">108 × 108 dp</span></div>
+            <div class="flex justify-between"><span>PARALLAX BLEED:</span> <span class="text-[#F43F5E]">18dp outer zone</span></div>
+            <div class="flex justify-between"><span>MASK VISIBILITY:</span> <span class="text-[#67E8F9]">Center &Oslash; 66dp circle</span></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Live Android Mask Previews & Themed Monochrome Icon -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+
+        <!-- Shape 1: Circle Mask -->
+        <div class="p-5 bg-[#141821] border border-[#1C2230] rounded-2xl flex flex-col items-center space-y-3">
+          <span class="text-xs font-mono text-[#9CA8BA]">Pixel / Circle Mask</span>
+          <div class="w-24 h-24 rounded-full overflow-hidden shadow-2xl relative border border-[#1C2230]">
+            <!-- Layer Background -->
+            <div class="absolute inset-0 bg-gradient-to-br from-[#1C2230] via-[#141821] to-[#090B10]"></div>
+            <!-- Layer Foreground Mark Scaled -->
+            <div class="absolute inset-0 flex items-center justify-center p-3">
+              <svg viewBox="0 0 108 108" class="w-full h-full" fill="none">
+                <polygon points="34,34 76,28 68,76 28,70" fill="url(#afgMarkGrad)" fill-opacity="0.3" stroke="url(#afgMarkGrad)" stroke-width="2.8"/>
+                <line x1="34" y1="34" x2="68" y2="76" stroke="#67E8F9" stroke-width="1.2" stroke-dasharray="2 2"/>
+                <circle cx="34" cy="34" r="3.2" fill="#090B10" stroke="#67E8F9" stroke-width="1.8"/>
+                <circle cx="76" cy="28" r="3.2" fill="#090B10" stroke="#A78BFA" stroke-width="1.8"/>
+                <circle cx="68" cy="76" r="3.2" fill="#090B10" stroke="#A78BFA" stroke-width="1.8"/>
+                <circle cx="28" cy="70" r="3.2" fill="#090B10" stroke="#67E8F9" stroke-width="1.8"/>
+                <circle cx="53" cy="52" r="2.5" stroke="#F4F5FA" stroke-width="1.2"/>
+              </svg>
+            </div>
+          </div>
+          <span class="text-[11px] font-mono text-[#67E8F9]">Stock Android / WearOS</span>
+        </div>
+
+        <!-- Shape 2: Squircle Mask -->
+        <div class="p-5 bg-[#141821] border border-[#1C2230] rounded-2xl flex flex-col items-center space-y-3">
+          <span class="text-xs font-mono text-[#9CA8BA]">Samsung / Squircle</span>
+          <div class="w-24 h-24 rounded-[26px] overflow-hidden shadow-2xl relative border border-[#1C2230]">
+            <div class="absolute inset-0 bg-gradient-to-br from-[#1C2230] via-[#141821] to-[#090B10]"></div>
+            <div class="absolute inset-0 flex items-center justify-center p-3">
+              <svg viewBox="0 0 108 108" class="w-full h-full" fill="none">
+                <polygon points="34,34 76,28 68,76 28,70" fill="url(#afgMarkGrad)" fill-opacity="0.3" stroke="url(#afgMarkGrad)" stroke-width="2.8"/>
+                <line x1="34" y1="34" x2="68" y2="76" stroke="#67E8F9" stroke-width="1.2" stroke-dasharray="2 2"/>
+                <circle cx="34" cy="34" r="3.2" fill="#090B10" stroke="#67E8F9" stroke-width="1.8"/>
+                <circle cx="76" cy="28" r="3.2" fill="#A78BFA" stroke-width="1.8"/>
+                <circle cx="68" cy="76" r="3.2" fill="#A78BFA" stroke-width="1.8"/>
+                <circle cx="28" cy="70" r="3.2" fill="#67E8F9" stroke-width="1.8"/>
+                <circle cx="53" cy="52" r="2.5" stroke="#F4F5FA" stroke-width="1.2"/>
+              </svg>
+            </div>
+          </div>
+          <span class="text-[11px] font-mono text-[#A78BFA]">One UI / Continuous Curve</span>
+        </div>
+
+        <!-- Shape 3: Rounded Square Mask -->
+        <div class="p-5 bg-[#141821] border border-[#1C2230] rounded-2xl flex flex-col items-center space-y-3">
+          <span class="text-xs font-mono text-[#9CA8BA]">Xiaomi / Rounded Rect</span>
+          <div class="w-24 h-24 rounded-2xl overflow-hidden shadow-2xl relative border border-[#1C2230]">
+            <div class="absolute inset-0 bg-gradient-to-br from-[#1C2230] via-[#141821] to-[#090B10]"></div>
+            <div class="absolute inset-0 flex items-center justify-center p-3">
+              <svg viewBox="0 0 108 108" class="w-full h-full" fill="none">
+                <polygon points="34,34 76,28 68,76 28,70" fill="url(#afgMarkGrad)" fill-opacity="0.3" stroke="url(#afgMarkGrad)" stroke-width="2.8"/>
+                <line x1="34" y1="34" x2="68" y2="76" stroke="#67E8F9" stroke-width="1.2" stroke-dasharray="2 2"/>
+                <circle cx="34" cy="34" r="3.2" fill="#090B10" stroke="#67E8F9" stroke-width="1.8"/>
+                <circle cx="76" cy="28" r="3.2" fill="#A78BFA" stroke-width="1.8"/>
+                <circle cx="68" cy="76" r="3.2" fill="#A78BFA" stroke-width="1.8"/>
+                <circle cx="28" cy="70" r="3.2" fill="#67E8F9" stroke-width="1.8"/>
+                <circle cx="53" cy="52" r="2.5" stroke="#F4F5FA" stroke-width="1.2"/>
+              </svg>
+            </div>
+          </div>
+          <span class="text-[11px] font-mono text-[#9CA8BA]">MIUI / ColorOS Mask</span>
+        </div>
+
+        <!-- Shape 4: Android 13+ Themed / Monochrome Icon -->
+        <div class="p-5 bg-[#141821] border border-[#1C2230] rounded-2xl flex flex-col items-center space-y-3">
+          <div class="flex items-center space-x-1">
+            <span class="text-xs font-mono text-[#A78BFA] font-bold">Android 13+ Themed</span>
+          </div>
+
+          <div class="w-24 h-24 rounded-full overflow-hidden shadow-2xl relative bg-[#2A233D] border border-[#A78BFA]/30 flex items-center justify-center p-4">
+
+            <!-- STANDALONE INLINE SVG ASSET: ic-launcher-monochrome.svg -->
+            <svg id="ic-launcher-monochrome" data-asset="ic-launcher-monochrome.svg" viewBox="0 0 108 108" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Pure Silhouette For Material You Dynamic Theming -->
+              <polygon points="34,34 76,28 68,76 28,70" fill="#E8DEF8" fill-opacity="0.25"/>
+              <polygon points="34,34 76,28 68,76 28,70" stroke="#E8DEF8" stroke-width="3" stroke-linejoin="round"/>
+              <line x1="34" y1="34" x2="68" y2="76" stroke="#E8DEF8" stroke-width="1.5" stroke-dasharray="2 2"/>
+              <circle cx="34" cy="34" r="3.5" fill="#2A233D" stroke="#E8DEF8" stroke-width="2"/>
+              <circle cx="76" cy="28" r="3.5" fill="#2A233D" stroke="#E8DEF8" stroke-width="2"/>
+              <circle cx="68" cy="76" r="3.5" fill="#2A233D" stroke="#E8DEF8" stroke-width="2"/>
+              <circle cx="28" cy="70" r="3.5" fill="#2A233D" stroke="#E8DEF8" stroke-width="2"/>
+            </svg>
+          </div>
+
+          <span class="text-[11px] font-mono text-[#A78BFA]">filename: ic-launcher-monochrome.svg</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Section 5: Developer Export Index & Vector Guidelines -->
+    <section class="space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between border-b border-[#1C2230] pb-4 gap-4">
+        <div>
+          <span class="text-xs font-mono uppercase tracking-widest text-[#67E8F9]">Deliverable Ledger</span>
+          <h2 class="text-2xl font-bold text-[#F4F5FA] tracking-tight">05. Production Asset Ledger &amp; Android Spec Notice</h2>
+        </div>
+        <div class="text-xs font-mono text-[#9CA8BA]">
+          STATUS: READY FOR SVG EXTRACTION
+        </div>
+      </div>
+
+      <!-- Export Table -->
+      <div class="bg-[#141821] border border-[#1C2230] rounded-2xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs font-mono">
+            <thead class="bg-[#090B10] border-b border-[#1C2230] text-[#9CA8BA] uppercase tracking-wider">
+              <tr>
+                <th class="py-3 px-4">Labeled Filename</th>
+                <th class="py-3 px-4">HTML ID / Selector</th>
+                <th class="py-3 px-4">Target ViewBox</th>
+                <th class="py-3 px-4">Asset Role</th>
+                <th class="py-3 px-4">Target Framework</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[#1C2230] text-[#F4F5FA]">
+              <tr class="hover:bg-[#1C2230]/50 transition">
+                <td class="py-3 px-4 text-[#67E8F9] font-bold">lumis-mark.svg</td>
+                <td class="py-3 px-4 text-[#9CA8BA]">#lumis-mark</td>
+                <td class="py-3 px-4">0 0 120 120</td>
+                <td class="py-3 px-4">Standalone Primary Hero Keystone Mark</td>
+                <td class="py-3 px-4 text-[#A78BFA]">Web / Desktop / App Splash</td>
+              </tr>
+              <tr class="hover:bg-[#1C2230]/50 transition">
+                <td class="py-3 px-4 text-[#67E8F9] font-bold">lumis-lockup.svg</td>
+                <td class="py-3 px-4 text-[#9CA8BA]">#lumis-lockup</td>
+                <td class="py-3 px-4">0 0 340 70</td>
+                <td class="py-3 px-4">Horizontal Mark + Space Grotesk Wordmark</td>
+                <td class="py-3 px-4 text-[#A78BFA]">Navigation Bar / README / Pitch</td>
+              </tr>
+              <tr class="hover:bg-[#1C2230]/50 transition">
+                <td class="py-3 px-4 text-[#67E8F9] font-bold">lumis-mark-mono.svg</td>
+                <td class="py-3 px-4 text-[#9CA8BA]">#lumis-mark-mono</td>
+                <td class="py-3 px-4">0 0 100 100</td>
+                <td class="py-3 px-4">1-Color White / Black Stencil Silhouette</td>
+                <td class="py-3 px-4 text-[#A78BFA]">Print / Laser Etch / Hardware Plate</td>
+              </tr>
+              <tr class="hover:bg-[#1C2230]/50 transition">
+                <td class="py-3 px-4 text-[#67E8F9] font-bold">ic-launcher-foreground.svg</td>
+                <td class="py-3 px-4 text-[#9CA8BA]">#ic-launcher-foreground</td>
+                <td class="py-3 px-4">0 0 108 108</td>
+                <td class="py-3 px-4">Android Adaptive Icon Foreground Layer</td>
+                <td class="py-3 px-4 text-[#A78BFA]">res/drawable/ic_launcher_fg</td>
+              </tr>
+              <tr class="hover:bg-[#1C2230]/50 transition">
+                <td class="py-3 px-4 text-[#67E8F9] font-bold">ic-launcher-background.svg</td>
+                <td class="py-3 px-4 text-[#9CA8BA]">#ic-launcher-background</td>
+                <td class="py-3 px-4">0 0 108 108</td>
+                <td class="py-3 px-4">Android Adaptive Icon Full-Bleed Charcoal BG</td>
+                <td class="py-3 px-4 text-[#A78BFA]">res/drawable/ic_launcher_bg</td>
+              </tr>
+              <tr class="hover:bg-[#1C2230]/50 transition">
+                <td class="py-3 px-4 text-[#67E8F9] font-bold">ic-launcher-monochrome.svg</td>
+                <td class="py-3 px-4 text-[#9CA8BA]">#ic-launcher-monochrome</td>
+                <td class="py-3 px-4">0 0 108 108</td>
+                <td class="py-3 px-4">Material You Android 13 Dynamic Theme Layer</td>
+                <td class="py-3 px-4 text-[#A78BFA]">res/drawable/ic_launcher_mono</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Android VectorDrawable Conversion Notice (Compliant with constraints) -->
+      <div class="bg-[#141821] border border-[#1C2230] rounded-xl p-5 flex flex-col sm:flex-row items-start space-y-3 sm:space-y-0 sm:space-x-4">
+        <div class="p-2.5 bg-[#A78BFA]/10 border border-[#A78BFA]/20 rounded-lg text-[#A78BFA] shrink-0">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <div class="text-xs space-y-1">
+          <div class="font-bold text-[#F4F5FA] font-mono">SPECIFICATION NOTE: SVG vs Android VectorDrawable (VD)</div>
+          <p class="text-[#9CA8BA] leading-relaxed">
+            The standalone vector assets above are delivered in standard, web-compliant <code class="text-[#67E8F9] bg-[#090B10] px-1 py-0.5 rounded">&lt;svg&gt;</code> format. In Android Studio, import each SVG using <span class="text-[#F4F5FA] font-semibold">Vector Asset Studio (Asset Studio &rarr; Vector Asset)</span> to compile them into native Android <code class="text-[#A78BFA] bg-[#090B10] px-1 py-0.5 rounded">&lt;vector&gt;</code> XML drawables for the <code class="text-[#9CA8BA]">res/drawable/</code> pipeline.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="border-t border-[#1C2230] bg-[#090B10] py-6 text-center text-xs font-mono text-[#9CA8BA]">
+    Lumis Projection Studio &bull; Master Brand Vector Asset Sheet &bull; Version 1.0
+  </footer>
+
+</body>
+</html>

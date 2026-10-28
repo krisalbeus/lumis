@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>25 — Output / Clean Fullscreen</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    html, body {
+      width: 1920px;
+      height: 1080px;
+      max-width: 1920px;
+      max-height: 1080px;
+      min-width: 1920px;
+      min-height: 1080px;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #000000;
+      box-sizing: border-box;
+      aspect-ratio: 16/9;
+      cursor: none;
+    }
+
+    @keyframes waveShift {
+      0% {
+        transform: translate3d(0, 0, 0) scale(1);
+      }
+      50% {
+        transform: translate3d(-2%, -1.5%, 0) scale(1.04);
+      }
+      100% {
+        transform: translate3d(0, 0, 0) scale(1);
+      }
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% {
+        opacity: 0.9;
+        filter: drop-shadow(0 0 50px rgba(168, 85, 247, 0.45)) drop-shadow(0 0 30px rgba(6, 182, 212, 0.35));
+      }
+      50% {
+        opacity: 1;
+        filter: drop-shadow(0 0 75px rgba(168, 85, 247, 0.65)) drop-shadow(0 0 45px rgba(6, 182, 212, 0.55));
+      }
+    }
+
+    .animated-stream {
+      animation: waveShift 16s ease-in-out infinite alternate;
+    }
+
+    .surface-glow {
+      animation: pulseGlow 7s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="bg-black text-transparent select-none overflow-hidden relative">
+<!-- Edge-to-Edge Pure 16:9 Spatial Projection Canvas (1920x1080) -->
+<div class="relative w-[1920px] h-[1080px] bg-black overflow-hidden pointer-events-none">
+<!-- Surface 1: Left Wall Architectural Facet (Perspective Mapped Polygonal Quad) -->
+<div class="absolute inset-0 pointer-events-none" style="filter: drop-shadow(0 0 40px rgba(6, 182, 212, 0.3));">
+<div class="absolute w-full h-full overflow-hidden" style="clip-path: polygon(7.8% 21.0%, 38.0% 14.5%, 34.8% 89.2%, 4.6% 78.2%);">
+<div class="w-full h-full relative" style="transform: perspective(1400px) rotateY(18deg) rotateX(4deg) scale(1.08); transform-origin: 20% 50%;">
+<svg class="w-full h-full object-cover animated-stream" fill="none" preserveaspectratio="none" viewbox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<lineargradient id="bgGradLeft" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#050814"></stop>
+<stop offset="50%" stop-color="#0a102b"></stop>
+<stop offset="100%" stop-color="#020308"></stop>
+</lineargradient>
+<lineargradient id="neonCyanBlue" x1="0%" x2="100%" y1="50%" y2="50%">
+<stop offset="0%" stop-color="#06b6d4" stop-opacity="0.95"></stop>
+<stop offset="45%" stop-color="#3b82f6" stop-opacity="0.85"></stop>
+<stop offset="85%" stop-color="#8b5cf6" stop-opacity="0.95"></stop>
+<stop offset="100%" stop-color="#c084fc" stop-opacity="1"></stop>
+</lineargradient>
+<filter height="140%" id="glowLeft" width="140%" x="-20%" y="-20%">
+<fegaussianblur result="blur" stddeviation="8"></fegaussianblur>
+<femerge>
+<femergenode in="blur"></femergenode>
+<femergenode in="SourceGraphic"></femergenode>
+</femerge>
+</filter>
+</defs>
+<rect fill="url(#bgGradLeft)" height="1080" width="1920"></rect>
+<!-- Wireframe perspective grid lines -->
+<g fill="none" stroke="#06b6d4" stroke-opacity="0.18" stroke-width="0.75">
+<path d="M0,200 L1920,320 M0,360 L1920,440 M0,520 L1920,560 M0,680 L1920,680 M0,840 L1920,800 M0,1000 L1920,920"></path>
+<path d="M200,0 L100,1080 M450,0 L380,1080 M700,0 L660,1080 M950,0 L940,1080 M1200,0 L1220,1080 M1450,0 L1500,1080 M1700,0 L1780,1080"></path>
+</g>
+<!-- Flowing kinetic neon waves -->
+<g filter="url(#glowLeft)" opacity="0.92">
+<path d="M-100,500 C300,280 600,750 1100,420 C1500,150 1750,680 2100,380" fill="none" stroke="url(#neonCyanBlue)" stroke-width="3.5"></path>
+<path d="M-100,520 C320,310 620,770 1120,440 C1520,180 1770,700 2100,410" fill="none" stroke="url(#neonCyanBlue)" stroke-opacity="0.85" stroke-width="2.5"></path>
+<path d="M-100,540 C340,340 640,790 1140,460 C1540,210 1790,720 2100,440" fill="none" stroke="url(#neonCyanBlue)" stroke-opacity="0.7" stroke-width="2.0"></path>
+<path d="M-100,560 C360,370 660,810 1160,480 C1560,240 1810,740 2100,470" fill="none" stroke="url(#neonCyanBlue)" stroke-opacity="0.5" stroke-width="1.5"></path>
+<path d="M-100,580 C380,400 680,830 1180,500 C1580,270 1830,760 2100,500" fill="none" stroke="url(#neonCyanBlue)" stroke-opacity="0.35" stroke-width="1.2"></path>
+</g>
+<!-- Secondary cross-mesh waves & optical nodes -->
+<g fill="none" stroke="#22d3ee" stroke-opacity="0.4" stroke-width="1">
+<path d="M0,300 Q450,650 900,350 T1800,450"></path>
+<path d="M0,380 Q470,710 920,410 T1820,510"></path>
+<path d="M0,460 Q490,770 940,470 T1840,570"></path>
+</g>
+<!-- Optical nodes -->
+<g fill="#22d3ee" opacity="0.75">
+<circle cx="450" cy="650" filter="url(#glowLeft)" r="2.5"></circle>
+<circle cx="900" cy="350" filter="url(#glowLeft)" r="2"></circle>
+<circle cx="1350" cy="550" filter="url(#glowLeft)" r="2"></circle>
+<circle cx="320" cy="310" fill="#c084fc" r="2"></circle>
+<circle cx="620" cy="770" fill="#38bdf8" r="2.5"></circle>
+</g>
+</svg>
+</div>
+</div>
+</div>
+<!-- Surface 2: Central Architectural Stage Surface (Dominant Front Facet) -->
+<div class="absolute inset-0 pointer-events-none surface-glow">
+<div class="absolute w-full h-full overflow-hidden" style="clip-path: polygon(32.8% 9.2%, 77.5% 12.4%, 80.6% 86.5%, 30.1% 91.1%);">
+<div class="w-full h-full relative" style="transform: perspective(1600px) rotateX(-2deg) scale(1.04); transform-origin: 55% 50%;">
+<svg class="w-full h-full object-cover" fill="none" preserveaspectratio="none" viewbox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<lineargradient id="centerBgGrad" x1="50%" x2="50%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#0a051a"></stop>
+<stop offset="50%" stop-color="#100e2b"></stop>
+<stop offset="100%" stop-color="#03020a"></stop>
+</lineargradient>
+<lineargradient id="neonHarmonicGrad" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#38bdf8"></stop>
+<stop offset="25%" stop-color="#818cf8"></stop>
+<stop offset="60%" stop-color="#c084fc"></stop>
+<stop offset="85%" stop-color="#e879f9"></stop>
+<stop offset="100%" stop-color="#38bdf8"></stop>
+</lineargradient>
+<lineargradient id="electricCyanViolet" x1="0%" x2="100%" y1="100%" y2="0%">
+<stop offset="0%" stop-color="#06b6d4" stop-opacity="0.95"></stop>
+<stop offset="55%" stop-color="#6366f1" stop-opacity="0.85"></stop>
+<stop offset="100%" stop-color="#a855f7" stop-opacity="0.95"></stop>
+</lineargradient>
+<filter height="160%" id="centerCoreGlow" width="160%" x="-30%" y="-30%">
+<fegaussianblur in="SourceGraphic" result="blur2" stddeviation="12"></fegaussianblur>
+<fegaussianblur in="SourceGraphic" result="blur1" stddeviation="4"></fegaussianblur>
+<femerge>
+<femergenode in="blur2"></femergenode>
+<femergenode in="blur1"></femergenode>
+<femergenode in="SourceGraphic"></femergenode>
+</femerge>
+</filter>
+</defs>
+<rect fill="url(#centerBgGrad)" height="1080" width="1920"></rect>
+<!-- Delicate wireframe matrix grid -->
+<g fill="none" stroke="#818cf8" stroke-opacity="0.14" stroke-width="0.8">
+<path d="M0,150 L1920,150 M0,270 L1920,270 M0,390 L1920,390 M0,510 L1920,510 M0,630 L1920,630 M0,750 L1920,750 M0,870 L1920,870 M0,990 L1920,990"></path>
+<path d="M240,0 L240,1080 M480,0 L480,1080 M720,0 L720,1080 M960,0 L960,1080 M1200,0 L1200,1080 M1440,0 L1440,1080 M1680,0 L1680,1080"></path>
+</g>
+<!-- Luminous flowing kinetic neon ribbon matrices -->
+<g filter="url(#centerCoreGlow)">
+<path d="M-80,620 C280,310 520,890 980,510 C1380,180 1620,780 2050,420" fill="none" stroke="url(#neonHarmonicGrad)" stroke-width="4.5"></path>
+<path d="M-80,600 C290,290 535,870 995,490 C1395,160 1635,760 2050,400" fill="none" stroke="url(#neonHarmonicGrad)" stroke-opacity="0.85" stroke-width="3.5"></path>
+<path d="M-80,580 C300,270 550,850 1010,470 C1410,140 1650,740 2050,380" fill="none" stroke="url(#neonHarmonicGrad)" stroke-opacity="0.75" stroke-width="2.8"></path>
+<path d="M-80,560 C310,250 565,830 1025,450 C1425,120 1665,720 2050,360" fill="none" stroke="url(#neonHarmonicGrad)" stroke-opacity="0.65" stroke-width="2.2"></path>
+<path d="M-80,540 C320,230 580,810 1040,430 C1440,100 1680,700 2050,340" fill="none" stroke="url(#neonHarmonicGrad)" stroke-opacity="0.55" stroke-width="1.8"></path>
+<path d="M-80,520 C330,210 595,790 1055,410 C1455,80 1695,680 2050,320" fill="none" stroke="url(#neonHarmonicGrad)" stroke-opacity="0.45" stroke-width="1.5"></path>
+<path d="M-80,500 C340,190 610,770 1070,390 C1470,60 1710,660 2050,300" fill="none" stroke="url(#neonHarmonicGrad)" stroke-opacity="0.35" stroke-width="1.2"></path>
+<path d="M-80,480 C350,170 625,750 1085,370 C1485,40 1725,640 2050,280" fill="none" stroke="url(#neonHarmonicGrad)" stroke-opacity="0.25" stroke-width="1.0"></path>
+<!-- Transverse counter-wave -->
+<path d="M-50,360 C380,720 740,240 1180,660 C1540,920 1780,360 2000,580" fill="none" stroke="url(#electricCyanViolet)" stroke-width="3.5"></path>
+<path d="M-50,380 C390,740 755,260 1195,680 C1555,940 1795,380 2000,600" fill="none" stroke="url(#electricCyanViolet)" stroke-opacity="0.8" stroke-width="2.5"></path>
+<path d="M-50,400 C400,760 770,280 1210,700 C1570,960 1810,400 2000,620" fill="none" stroke="url(#electricCyanViolet)" stroke-opacity="0.6" stroke-width="1.8"></path>
+<path d="M-50,420 C410,780 785,300 1225,720 C1585,980 1825,420 2000,640" fill="none" stroke="url(#electricCyanViolet)" stroke-opacity="0.4" stroke-width="1.2"></path>
+</g>
+<!-- Optical nodes & parametric anchor points -->
+<g filter="url(#centerCoreGlow)">
+<circle cx="580" cy="420" fill="#38bdf8" r="2.5"></circle>
+<circle cx="720" cy="380" fill="#c084fc" r="3"></circle>
+<circle cx="890" cy="510" fill="#e879f9" r="2"></circle>
+<circle cx="1140" cy="430" fill="#38bdf8" r="3"></circle>
+<circle cx="1320" cy="360" fill="#818cf8" r="2.5"></circle>
+<circle cx="1460" cy="490" fill="#c084fc" r="3"></circle>
+<circle cx="1610" cy="410" fill="#38bdf8" r="2"></circle>
+<circle cx="980" cy="510" fill="#ffffff" opacity="0.9" r="3.5"></circle>
+<circle cx="1180" cy="660" fill="#ffffff" opacity="0.85" r="3"></circle>
+</g>
+</svg>
+</div>
+</div>
+</div>
+<!-- Surface 3: Right Wall Architectural Facet (Oblique Spatial Quad) -->
+<div class="absolute inset-0 pointer-events-none" style="filter: drop-shadow(0 0 40px rgba(168, 85, 247, 0.3));">
+<div class="absolute w-full h-full overflow-hidden" style="clip-path: polygon(72.7% 15.2%, 96.8% 22.5%, 94.7% 81.8%, 70.1% 87.3%);">
+<div class="w-full h-full relative" style="transform: perspective(1400px) rotateY(-22deg) rotateX(6deg) scale(1.12); transform-origin: 85% 50%;">
+<svg class="w-full h-full object-cover animated-stream" fill="none" preserveaspectratio="none" viewbox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<lineargradient id="bgGradRight" x1="100%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#0b061a"></stop>
+<stop offset="60%" stop-color="#130d2d"></stop>
+<stop offset="100%" stop-color="#020308"></stop>
+</lineargradient>
+<lineargradient id="violetCyanRight" x1="100%" x2="0%" y1="30%" y2="70%">
+<stop offset="0%" stop-color="#c084fc"></stop>
+<stop offset="40%" stop-color="#818cf8"></stop>
+<stop offset="85%" stop-color="#06b6d4"></stop>
+<stop offset="100%" stop-color="#3b82f6"></stop>
+</lineargradient>
+<filter height="140%" id="glowRight" width="140%" x="-20%" y="-20%">
+<fegaussianblur result="blur" stddeviation="9"></fegaussianblur>
+<femerge>
+<femergenode in="blur"></femergenode>
+<femergenode in="SourceGraphic"></femergenode>
+</femerge>
+</filter>
+</defs>
+<rect fill="url(#bgGradRight)" height="1080" width="1920"></rect>
+<!-- Perspective wireframe grid lattice -->
+<g fill="none" stroke="#c084fc" stroke-opacity="0.16" stroke-width="0.75">
+<path d="M0,180 L1920,290 M0,330 L1920,410 M0,480 L1920,530 M0,630 L1920,650 M0,780 L1920,770 M0,930 L1920,890"></path>
+<path d="M220,0 L140,1080 M480,0 L420,1080 M740,0 L700,1080 M1000,0 L980,1080 M1260,0 L1260,1080 M1520,0 L1540,1080 M1780,0 L1820,1080"></path>
+</g>
+<!-- Flowing kinetic contour waves -->
+<g filter="url(#glowRight)" opacity="0.94">
+<path d="M-100,450 C400,200 800,800 1300,380 C1650,120 1850,600 2100,420" fill="none" stroke="url(#violetCyanRight)" stroke-width="4.0"></path>
+<path d="M-100,475 C415,225 815,815 1315,405 C1665,145 1865,620 2100,445" fill="none" stroke="url(#violetCyanRight)" stroke-opacity="0.85" stroke-width="3.0"></path>
+<path d="M-100,500 C430,250 830,830 1330,430 C1680,170 1880,640 2100,470" fill="none" stroke="url(#violetCyanRight)" stroke-opacity="0.65" stroke-width="2.2"></path>
+<path d="M-100,525 C445,275 845,845 1345,455 C1695,195 1895,660 2100,495" fill="none" stroke="url(#violetCyanRight)" stroke-opacity="0.45" stroke-width="1.6"></path>
+<path d="M-100,550 C460,300 860,860 1360,480 C1710,220 1910,680 2100,520" fill="none" stroke="url(#violetCyanRight)" stroke-opacity="0.3" stroke-width="1.2"></path>
+</g>
+<!-- Transverse wave harmonics -->
+<g fill="none" stroke="#a855f7" stroke-opacity="0.35" stroke-width="1">
+<path d="M200,150 C650,550 1100,250 1600,650"></path>
+<path d="M200,230 C650,630 1100,330 1600,730"></path>
+<path d="M200,310 C650,710 1100,410 1600,810"></path>
+</g>
+<!-- Optical nodes -->
+<g fill="#c084fc" opacity="0.8">
+<circle cx="400" cy="200" filter="url(#glowRight)" r="2.5"></circle>
+<circle cx="800" cy="800" fill="#38bdf8" filter="url(#glowRight)" r="3"></circle>
+<circle cx="1300" cy="380" fill="#ffffff" filter="url(#glowRight)" r="3.5"></circle>
+<circle cx="1650" cy="120" fill="#a855f7" r="2.5"></circle>
+<circle cx="1850" cy="600" fill="#38bdf8" r="2"></circle>
+</g>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</body></html>

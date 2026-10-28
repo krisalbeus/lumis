@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>27 — Brand / Splash and Empty-State Assets</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Space Grotesk"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            surface: {
+              DEFAULT: '#111318',
+              dim: '#0c0e13',
+              low: '#161920',
+              card: '#1a1d26',
+              high: '#232733',
+              border: '#2a3040'
+            },
+            lumis: {
+              violet: '#a78bfa',
+              cyan: '#38bdf8',
+              accent: '#818cf8',
+              emerald: '#34d399',
+              amber: '#fbbf24',
+              rose: '#f87171'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #0c0e13;
+      color: #e2e8f0;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .grid-bg {
+      background-size: 24px 24px;
+      background-image:
+        radial-gradient(circle, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+    }
+    .hud-border {
+      border: 1px solid rgba(56, 189, 248, 0.2);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-[#0c0e13] text-slate-200 p-6 md:p-10 font-sans selection:bg-lumis-violet selection:text-black">
+
+  <!-- Header / Metadata HUD -->
+  <header class="max-w-7xl mx-auto mb-10 pb-6 border-b border-surface-border flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div>
+      <div class="flex items-center gap-3 mb-2">
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-xs font-mono font-medium bg-lumis-violet/10 text-lumis-violet border border-lumis-violet/30">
+          <span class="w-1.5 h-1.5 rounded-full bg-lumis-violet animate-pulse"></span>
+          ASSET SPECIFICATION BOARD
+        </span>
+        <span class="text-xs font-mono text-slate-500 uppercase tracking-widest">DS-REV: 1.4 // LUMIS-STUDIO</span>
+      </div>
+      <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-white flex items-center gap-3">
+        27 — Brand / Splash & Empty-State Assets
+      </h1>
+      <p class="text-slate-400 mt-1 text-sm max-w-2xl">
+        System design token & vector asset sheet. Centralized vector manifests, Android 12+ WindowSplashScreen preview, and projection test card artwork mocks.
+      </p>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-2 font-mono text-xs text-slate-400">
+      <div class="bg-surface-card px-3 py-1.5 rounded border border-surface-border flex items-center gap-2">
+        <span class="text-lumis-cyan">SPLASH_BG:</span>
+        <span class="text-white font-semibold">#090B10</span>
+      </div>
+      <div class="bg-surface-card px-3 py-1.5 rounded border border-surface-border flex items-center gap-2">
+        <span class="text-lumis-violet">SAFE_ZONE:</span>
+        <span class="text-white font-semibold">160dp Ø / 240dp □</span>
+      </div>
+      <div class="bg-surface-card px-3 py-1.5 rounded border border-surface-border flex items-center gap-2">
+        <span class="text-emerald-400">VECTOR:</span>
+        <span class="text-white font-semibold">INLINE_SVG (6)</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto space-y-12">
+
+    <!-- SECTION 1: ANDROID 12+ SYSTEM SPLASH SPECIFICATION -->
+    <section class="bg-surface-card rounded-2xl border border-surface-border overflow-hidden">
+      <div class="p-6 border-b border-surface-border flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-mono text-lumis-cyan font-bold tracking-wider">MODULE 01</span>
+            <span class="text-slate-500">•</span>
+            <span class="text-xs font-mono text-slate-400">SYSTEM LAUNCH PROTOCOL</span>
+          </div>
+          <h2 class="text-xl font-bold text-white mt-0.5">Android 12+ System Splash Screen (WindowSplashScreen)</h2>
+        </div>
+        <div class="flex items-center gap-2 font-mono text-xs">
+          <span class="px-2.5 py-1 rounded bg-[#090b10] border border-cyan-500/30 text-cyan-400">windowSplashScreenAnimatedIcon</span>
+          <span class="px-2.5 py-1 rounded bg-[#090b10] border border-purple-500/30 text-purple-400">windowSplashScreenBackground: #090B10</span>
+        </div>
+      </div>
+
+      <div class="p-6 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <!-- Mock Device Canvas -->
+        <div class="lg:col-span-7 flex justify-center items-center py-4">
+          <div class="w-full max-w-[340px] aspect-[9/19.5] bg-[#090B10] rounded-[44px] p-4 relative border-4 border-slate-800 shadow-2xl flex flex-col justify-between items-center overflow-hidden">
+
+            <!-- Phone Speaker & Camera Notch Hole -->
+            <div class="absolute top-3 w-28 h-4 bg-black rounded-full flex items-center justify-end px-3">
+              <div class="w-2.5 h-2.5 rounded-full bg-slate-900 border border-slate-800"></div>
+            </div>
+
+            <!-- Top Android Status Indicators (Subtle Ghost) -->
+            <div class="w-full pt-4 flex justify-between text-[11px] font-mono text-slate-700 px-3 select-none">
+              <span>09:41</span>
+              <div class="flex items-center gap-1.5">
+                <span>5G</span>
+                <span>100%</span>
+              </div>
+            </div>
+
+            <!-- Android 12+ Exact Spec Overlay Container -->
+            <div class="relative flex flex-col items-center justify-center my-auto w-full">
+              <!-- 240dp Outer Canvas Guide (Square) -->
+              <div class="relative w-56 h-56 border border-dashed border-cyan-500/30 rounded-xl flex items-center justify-center bg-cyan-950/5">
+
+                <!-- 160dp Masked Circle Safe Area Guide -->
+                <div class="w-40 h-40 rounded-full border border-dashed border-lumis-violet/60 flex items-center justify-center bg-lumis-violet/5 relative">
+
+                  <!-- Safe Area Inner Label -->
+                  <div class="absolute top-1 text-[9px] font-mono text-lumis-violet/70 tracking-tight">Ø 160dp SAFE CIRCLE</div>
+
+                  <!-- Central Lumis Quad Logo (Icon payload) -->
+                  <svg id="splash-mark.svg" data-asset="splash-mark.svg" class="w-24 h-24" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                      <linearGradient id="splashQuadGrad" x1="16" y1="16" x2="80" y2="80" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#38bdf8" />
+                        <stop offset="50%" stop-color="#a78bfa" />
+                        <stop offset="100%" stop-color="#ec4899" />
+                      </linearGradient>
+                      <filter id="splashGlow" x="0" y="0" width="96" height="96" filterUnits="userSpaceOnUse">
+                        <feGaussianBlur stdDeviation="4" result="blur" />
+                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                      </filter>
+                    </defs>
+
+                    <!-- Perspective Quad Polygon (Lumis Brand Core) -->
+                    <polygon points="22,26 78,18 70,76 26,68" stroke="url(#splashQuadGrad)" stroke-width="2.5" fill="#141824" fill-opacity="0.8" />
+
+                    <!-- Optical Diagonal Beams -->
+                    <line x1="22" y1="26" x2="70" y2="76" stroke="#a78bfa" stroke-width="1.2" stroke-dasharray="3 3" opacity="0.6"/>
+                    <line x1="78" y1="18" x2="26" y2="68" stroke="#38bdf8" stroke-width="1.2" stroke-dasharray="3 3" opacity="0.6"/>
+
+                    <!-- Keystoning Corner Pins (Cyan / Violet) -->
+                    <circle cx="22" cy="26" r="3.5" fill="#38bdf8" filter="url(#splashGlow)" />
+                    <circle cx="78" cy="18" r="3.5" fill="#38bdf8" filter="url(#splashGlow)" />
+                    <circle cx="70" cy="76" r="3.5" fill="#a78bfa" filter="url(#splashGlow)" />
+                    <circle cx="26" cy="68" r="3.5" fill="#a78bfa" filter="url(#splashGlow)" />
+
+                    <!-- Center Focal Crosshair -->
+                    <circle cx="49" cy="47" r="2.5" fill="#ffffff" />
+                  </svg>
+
+                </div>
+
+                <!-- 240dp Dim Corner Labels -->
+                <span class="absolute top-1 left-2 text-[8px] font-mono text-cyan-400/60">240dp BOUNDS</span>
+              </div>
+            </div>
+
+            <!-- Optional Android 12 Branding Footer (Annotated in layout) -->
+            <div class="w-full pb-4 flex flex-col items-center">
+              <div class="text-[10px] font-mono text-slate-600 uppercase tracking-widest flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-slate-700"></span>
+                <span>LUMIS PROJECTION ENGINE</span>
+              </div>
+              <span class="text-[8px] font-mono text-slate-700 mt-0.5">(Optional Branding Anchor • windowSplashScreenBrandingImage)</span>
+            </div>
+
+            <!-- Bottom Gestural Home Indicator Bar -->
+            <div class="w-32 h-1 bg-slate-800 rounded-full mb-1"></div>
+          </div>
+        </div>
+
+        <!-- Technical Annotation Column -->
+        <div class="lg:col-span-5 space-y-4">
+          <div class="bg-surface-dim p-4 rounded-xl border border-surface-border">
+            <h3 class="text-xs font-mono font-bold text-lumis-violet uppercase tracking-wider mb-2 flex items-center gap-2">
+              <span class="material-icons-outlined text-sm">verified</span>
+              Android 12+ CDD & API 31 Compliance
+            </h3>
+            <ul class="text-xs text-slate-300 space-y-2.5 font-sans leading-relaxed">
+              <li class="flex items-start gap-2">
+                <span class="text-lumis-cyan font-mono text-sm leading-none">01</span>
+                <span><strong>No Full-Screen Bitmap Art:</strong> Android 12+ strictly masks splash screens. Background is solid programmatic <code class="text-white bg-slate-900 px-1 py-0.5 rounded font-mono">#090B10</code> to prevent letterboxing.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-lumis-cyan font-mono text-sm leading-none">02</span>
+                <span><strong>Mask Safe Region:</strong> Icon assets are constrained to a <strong class="text-lumis-violet">160dp inner circle</strong> inside a 240dp canvas. Any graphics outside 160dp are dynamically clipped by the system window manager.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-lumis-cyan font-mono text-sm leading-none">03</span>
+                <span><strong>Zero Artificial Latency:</strong> No artificial delays or blocking splash animations. Resolves instantly into the project index once the native OpenGL context warm-up completes.</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="bg-surface-low p-4 rounded-xl border border-surface-border font-mono text-xs">
+            <div class="text-slate-400 mb-2 flex items-center justify-between">
+              <span class="text-slate-300 font-semibold">res/values/styles.xml</span>
+              <span class="text-[10px] text-emerald-400">Theme.SplashScreen</span>
+            </div>
+            <pre class="text-[11px] text-slate-400 leading-snug overflow-x-auto p-2 bg-[#090b10] rounded border border-surface-border"><code>&lt;style name="Theme.App.Starting"
+  parent="Theme.SplashScreen"&gt;
+  &lt;item name="windowSplashScreenBackground"&gt;#090B10&lt;/item&gt;
+  &lt;item name="windowSplashScreenAnimatedIcon"&gt;@drawable/splash_mark&lt;/item&gt;
+  &lt;item name="postSplashScreenTheme"&gt;@style/Theme.Lumis&lt;/item&gt;
+&lt;/style&gt;</code></pre>
+          </div>
+
+          <div class="flex items-center justify-between p-3 rounded-lg bg-surface-dim border border-surface-border text-xs">
+            <span class="font-mono text-slate-400">Export Artifact:</span>
+            <code class="text-lumis-cyan font-mono font-semibold">splash-mark.svg</code>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: VECTOR EMPTY-STATE & DIAGNOSTIC ASSET REPOSITORY -->
+    <section>
+      <div class="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-2">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-mono text-lumis-cyan font-bold tracking-wider">MODULE 02</span>
+            <span class="text-slate-500">•</span>
+            <span class="text-xs font-mono text-slate-400">VECTOR ASSET INVENTORY</span>
+          </div>
+          <h2 class="text-2xl font-bold text-white">Clean Inline SVG Vector Artworks (Zero Raster Dependency)</h2>
+        </div>
+        <p class="text-xs font-mono text-slate-400">All assets calibrated for dark studio UI theme (#111318 / #1A1D26)</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- ASSET 1: empty-projects.svg -->
+        <div class="bg-surface-card rounded-xl border border-surface-border p-6 flex flex-col justify-between group hover:border-lumis-violet/40 transition-colors">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs font-mono text-lumis-violet font-semibold bg-lumis-violet/10 px-2 py-0.5 rounded border border-lumis-violet/20">
+                empty-projects.svg
+              </span>
+              <span class="text-[10px] font-mono text-slate-500">140 × 140 DP</span>
+            </div>
+
+            <!-- Graphic Canvas -->
+            <div class="h-44 w-full bg-[#090b10] rounded-lg border border-surface-border grid-bg flex items-center justify-center p-4 relative overflow-hidden">
+              <div class="absolute inset-0 bg-gradient-to-t from-lumis-violet/5 to-transparent pointer-events-none"></div>
+
+              <!-- SVG 1: empty-projects.svg -->
+              <svg id="empty-projects.svg" data-asset="empty-projects.svg" class="w-32 h-32" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <radialGradient id="epLight" cx="64" cy="64" r="50" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.35"/>
+                    <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+                  </radialGradient>
+                </defs>
+                <!-- Light Bloom Beam -->
+                <circle cx="64" cy="64" r="44" fill="url(#epLight)" />
+
+                <!-- Keystone Projection Quad with Corner Focus -->
+                <polygon points="30,36 98,28 88,96 36,90" stroke="#38bdf8" stroke-width="1.8" stroke-dasharray="4 3" opacity="0.8" />
+                <polygon points="38,42 90,36 82,88 42,84" fill="#1e2230" fill-opacity="0.5" />
+
+                <!-- Outer Calibration Marks -->
+                <path d="M22,30 L22,22 L30,22" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" />
+                <path d="M106,22 L106,14 L98,14" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" />
+                <path d="M96,104 L96,112 L88,112" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" />
+                <path d="M28,98 L28,106 L36,106" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" />
+
+                <!-- Corner Lighting Nodes -->
+                <circle cx="30" cy="36" r="3.5" fill="#38bdf8" />
+                <circle cx="98" cy="28" r="3.5" fill="#38bdf8" />
+                <circle cx="88" cy="96" r="3.5" fill="#a78bfa" />
+                <circle cx="36" cy="90" r="3.5" fill="#a78bfa" />
+
+                <!-- Central Projection Center Target -->
+                <circle cx="64" cy="62" r="5" stroke="#ffffff" stroke-width="1.5" />
+                <circle cx="64" cy="62" r="1.5" fill="#ffffff" />
+              </svg>
+            </div>
+
+            <div class="mt-4">
+              <h4 class="text-sm font-semibold text-white">Empty Projects Illustration</h4>
+              <p class="text-xs text-slate-400 mt-1">Spatial quad corner nodes with focal projection illumination. Employed in Screen 02 (Projects / Empty).</p>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-surface-border/60 flex items-center justify-between text-[11px] font-mono text-slate-500">
+            <span>Primary Focus: Spatial Origin</span>
+            <span class="text-lumis-cyan">READY</span>
+          </div>
+        </div>
+
+        <!-- ASSET 2: empty-canvas.svg -->
+        <div class="bg-surface-card rounded-xl border border-surface-border p-6 flex flex-col justify-between group hover:border-lumis-cyan/40 transition-colors">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs font-mono text-lumis-cyan font-semibold bg-lumis-cyan/10 px-2 py-0.5 rounded border border-lumis-cyan/20">
+                empty-canvas.svg
+              </span>
+              <span class="text-[10px] font-mono text-slate-500">140 × 140 DP</span>
+            </div>
+
+            <!-- Graphic Canvas -->
+            <div class="h-44 w-full bg-[#090b10] rounded-lg border border-surface-border grid-bg flex items-center justify-center p-4 relative overflow-hidden">
+
+              <!-- SVG 2: empty-canvas.svg -->
+              <svg id="empty-canvas.svg" data-asset="empty-canvas.svg" class="w-32 h-32" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Outer 16:9 Viewport Guide -->
+                <rect x="18" y="32" width="92" height="64" rx="4" stroke="#2a3040" stroke-width="1.5" stroke-dasharray="3 3"/>
+
+                <!-- Singly Outlined Perspective Quad -->
+                <polygon points="32,46 96,38 90,86 36,80" stroke="#38bdf8" stroke-width="2" fill="#161b26" fill-opacity="0.6"/>
+
+                <!-- Perspective Diagonal Axis Grid -->
+                <line x1="32" y1="46" x2="90" y2="86" stroke="#38bdf8" stroke-width="1" stroke-dasharray="2 2" opacity="0.4"/>
+                <line x1="96" y1="38" x2="36" y2="80" stroke="#38bdf8" stroke-width="1" stroke-dasharray="2 2" opacity="0.4"/>
+
+                <!-- Unmapped Null Indicator in Center -->
+                <circle cx="64" cy="62" r="12" fill="#090b10" stroke="#a78bfa" stroke-width="1.5"/>
+                <path d="M60,62 L68,62" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M64,58 L64,66" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round"/>
+
+                <!-- 4 Corner Pins -->
+                <rect x="30" y="44" width="4" height="4" fill="#38bdf8" rx="1"/>
+                <rect x="94" y="36" width="4" height="4" fill="#38bdf8" rx="1"/>
+                <rect x="88" y="84" width="4" height="4" fill="#38bdf8" rx="1"/>
+                <rect x="34" y="78" width="4" height="4" fill="#38bdf8" rx="1"/>
+              </svg>
+            </div>
+
+            <div class="mt-4">
+              <h4 class="text-sm font-semibold text-white">Empty Canvas Illustration</h4>
+              <p class="text-xs text-slate-400 mt-1">Single outlined perspective quad with null axis point. Employed in Screen 08 (Editor / Empty Canvas).</p>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-surface-border/60 flex items-center justify-between text-[11px] font-mono text-slate-500">
+            <span>Primary Focus: Unmapped Surface</span>
+            <span class="text-lumis-cyan">READY</span>
+          </div>
+        </div>
+
+        <!-- ASSET 3: missing-media.svg -->
+        <div class="bg-surface-card rounded-xl border border-surface-border p-6 flex flex-col justify-between group hover:border-amber-400/40 transition-colors">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs font-mono text-amber-400 font-semibold bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20">
+                missing-media.svg
+              </span>
+              <span class="text-[10px] font-mono text-slate-500">140 × 140 DP</span>
+            </div>
+
+            <!-- Graphic Canvas -->
+            <div class="h-44 w-full bg-[#090b10] rounded-lg border border-surface-border grid-bg flex items-center justify-center p-4 relative overflow-hidden">
+
+              <!-- SVG 3: missing-media.svg -->
+              <svg id="missing-media.svg" data-asset="missing-media.svg" class="w-32 h-32" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Preserve Geometry Mesh Ghosting -->
+                <polygon points="26,38 98,30 92,92 32,86" stroke="#fbbf24" stroke-width="1.8" stroke-dasharray="4 4" fill="#241e12" fill-opacity="0.4"/>
+
+                <!-- Danger / Warning Central Hexagon/Shield -->
+                <rect x="46" y="44" width="36" height="36" rx="8" fill="#141824" stroke="#fbbf24" stroke-width="1.8"/>
+
+                <!-- Broken Film Reel / File Disconnect glyph -->
+                <path d="M54,58 L60,54 L68,64 L74,58" stroke="#fbbf24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="52" y1="72" x2="76" y2="72" stroke="#f87171" stroke-width="1.8" stroke-dasharray="2 2"/>
+                <circle cx="64" cy="51" r="2" fill="#fbbf24"/>
+
+                <!-- Disconnected Unlinked Cord -->
+                <path d="M22,76 C28,76 30,84 36,84" stroke="#f87171" stroke-width="1.5" stroke-linecap="round"/>
+                <circle cx="20" cy="76" r="2" fill="#f87171"/>
+              </svg>
+            </div>
+
+            <div class="mt-4">
+              <h4 class="text-sm font-semibold text-white">Missing Media Source</h4>
+              <p class="text-xs text-slate-400 mt-1">Preserved geometry mesh perimeter with broken media payload symbol. Screen 18 (Missing Media / Replace Source).</p>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-surface-border/60 flex items-center justify-between text-[11px] font-mono text-slate-500">
+            <span>Mesh Geometry Intact: 100%</span>
+            <span class="text-amber-400">WARNING</span>
+          </div>
+        </div>
+
+        <!-- ASSET 4: unsupported-media.svg -->
+        <div class="bg-surface-card rounded-xl border border-surface-border p-6 flex flex-col justify-between group hover:border-rose-400/40 transition-colors">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs font-mono text-rose-400 font-semibold bg-rose-400/10 px-2 py-0.5 rounded border border-rose-400/20">
+                unsupported-media.svg
+              </span>
+              <span class="text-[10px] font-mono text-slate-500">140 × 140 DP</span>
+            </div>
+
+            <!-- Graphic Canvas -->
+            <div class="h-44 w-full bg-[#090b10] rounded-lg border border-surface-border grid-bg flex items-center justify-center p-4 relative overflow-hidden">
+
+              <!-- SVG 4: unsupported-media.svg -->
+              <svg id="unsupported-media.svg" data-asset="unsupported-media.svg" class="w-32 h-32" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Video Container Rect with Slashed Hardware Decoder -->
+                <rect x="24" y="32" width="80" height="64" rx="8" fill="#1c1418" stroke="#f87171" stroke-width="1.8"/>
+
+                <!-- Film Perforations -->
+                <rect x="30" y="36" width="6" height="6" rx="1.5" fill="#f87171" fill-opacity="0.4"/>
+                <rect x="42" y="36" width="6" height="6" rx="1.5" fill="#f87171" fill-opacity="0.4"/>
+                <rect x="80" y="36" width="6" height="6" rx="1.5" fill="#f87171" fill-opacity="0.4"/>
+                <rect x="92" y="36" width="6" height="6" rx="1.5" fill="#f87171" fill-opacity="0.4"/>
+
+                <!-- Codec Microchip Block in Center -->
+                <rect x="48" y="48" width="32" height="32" rx="4" fill="#090b10" stroke="#f87171" stroke-width="1.5"/>
+                <path d="M44,56 L48,56 M44,64 L48,64 M44,72 L48,72" stroke="#f87171" stroke-width="1.5"/>
+                <path d="M80,56 L84,56 M80,64 L84,64 M80,72 L84,72" stroke="#f87171" stroke-width="1.5"/>
+
+                <!-- Incompatible Strike-through Slash -->
+                <line x1="38" y1="84" x2="90" y2="44" stroke="#f87171" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+
+            <div class="mt-4">
+              <h4 class="text-sm font-semibold text-white">Unsupported Media / Codec</h4>
+              <p class="text-xs text-slate-400 mt-1">Strikethrough hardware decoder microchip & container. Screen 17 (Import / Unsupported Media).</p>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-surface-border/60 flex items-center justify-between text-[11px] font-mono text-slate-500">
+            <span>Decoder: Incompatible (OMX/ProRes)</span>
+            <span class="text-rose-400">REJECTED</span>
+          </div>
+        </div>
+
+        <!-- ASSET 5: recovery.svg -->
+        <div class="bg-surface-card rounded-xl border border-surface-border p-6 flex flex-col justify-between group hover:border-emerald-400/40 transition-colors">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs font-mono text-emerald-400 font-semibold bg-emerald-400/10 px-2 py-0.5 rounded border border-emerald-400/20">
+                recovery.svg
+              </span>
+              <span class="text-[10px] font-mono text-slate-500">140 × 140 DP</span>
+            </div>
+
+            <!-- Graphic Canvas -->
+            <div class="h-44 w-full bg-[#090b10] rounded-lg border border-surface-border grid-bg flex items-center justify-center p-4 relative overflow-hidden">
+
+              <!-- SVG 5: recovery.svg -->
+              <svg id="recovery.svg" data-asset="recovery.svg" class="w-32 h-32" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Circular Time Rewind Arc -->
+                <path d="M64,28 A36,36 0 1,1 34,44" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-dasharray="140 20"/>
+                <polyline points="28,34 34,44 44,40" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+                <!-- Restored Safe Project Document / Mesh Box -->
+                <polygon points="46,50 82,44 78,80 48,76" stroke="#38bdf8" stroke-width="1.8" fill="#10241e" fill-opacity="0.6"/>
+
+                <!-- Internal Integrity Checkmark -->
+                <path d="M56,63 L62,69 L72,57" stroke="#34d399" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+
+                <!-- Little Snapshot Nodes -->
+                <circle cx="46" cy="50" r="2.5" fill="#38bdf8"/>
+                <circle cx="82" cy="44" r="2.5" fill="#38bdf8"/>
+                <circle cx="78" cy="80" r="2.5" fill="#34d399"/>
+                <circle cx="48" cy="76" r="2.5" fill="#34d399"/>
+              </svg>
+            </div>
+
+            <div class="mt-4">
+              <h4 class="text-sm font-semibold text-white">Project Autosave Recovery</h4>
+              <p class="text-xs text-slate-400 mt-1">Time rewind loop restoring verified quad calibration matrix. Screen 07 (Project Recovery).</p>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-surface-border/60 flex items-center justify-between text-[11px] font-mono text-slate-500">
+            <span>Snapshot State: Verified Valid</span>
+            <span class="text-emerald-400">INTEACT</span>
+          </div>
+        </div>
+
+        <!-- ASSET 6: unavailable-source.svg -->
+        <div class="bg-surface-card rounded-xl border border-surface-border p-6 flex flex-col justify-between group hover:border-lumis-violet/40 transition-colors">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs font-mono text-lumis-violet font-semibold bg-lumis-violet/10 px-2 py-0.5 rounded border border-lumis-violet/20">
+                unavailable-source.svg
+              </span>
+              <span class="text-[10px] font-mono text-slate-500">140 × 140 DP</span>
+            </div>
+
+            <!-- Graphic Canvas -->
+            <div class="h-44 w-full bg-[#090b10] rounded-lg border border-surface-border grid-bg flex items-center justify-center p-4 relative overflow-hidden">
+
+              <!-- SVG 6: unavailable-source.svg -->
+              <svg id="unavailable-source.svg" data-asset="unavailable-source.svg" class="w-32 h-32" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Optical Projector Beam Lens -->
+                <circle cx="64" cy="64" r="32" stroke="#2a3040" stroke-width="1.5" />
+                <circle cx="64" cy="64" r="24" stroke="#a78bfa" stroke-width="1.8" stroke-dasharray="6 4" fill="#141824" fill-opacity="0.6"/>
+
+                <!-- Shuttered / Locked Lens Blades -->
+                <path d="M48,52 L80,76" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M80,52 L48,76" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round"/>
+                <circle cx="64" cy="64" r="6" fill="#090b10" stroke="#f87171" stroke-width="1.5"/>
+
+                <!-- Beam Off Warning Ray Vectors -->
+                <line x1="64" y1="20" x2="64" y2="28" stroke="#f87171" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="64" y1="100" x2="64" y2="108" stroke="#f87171" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="20" y1="64" x2="28" y2="64" stroke="#f87171" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="100" y1="64" x2="108" y2="64" stroke="#f87171" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+
+            <div class="mt-4">
+              <h4 class="text-sm font-semibold text-white">Unavailable Source / Offline Beam</h4>
+              <p class="text-xs text-slate-400 mt-1">Shuttered projection lens optic with beam lockout flags. Used for clean feed isolation & surface offline status.</p>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-surface-border/60 flex items-center justify-between text-[11px] font-mono text-slate-500">
+            <span>Projection Optic: Shuttered</span>
+            <span class="text-slate-400">STANDBY</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 3: ABSTRACT PROJECTION THUMBNAIL SAMPLES (MOCKUP ART) -->
+    <section class="bg-surface-card rounded-2xl border border-surface-border p-6 md:p-8">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 pb-4 border-b border-surface-border">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-mono text-lumis-violet font-bold tracking-wider">MODULE 03</span>
+            <span class="text-slate-500">•</span>
+            <span class="text-xs font-mono text-slate-400">PREVIEW MOCKUP GALLERY</span>
+          </div>
+          <h2 class="text-xl font-bold text-white mt-0.5">Abstract Projection Sample Artwork Cards</h2>
+        </div>
+
+        <!-- Mandatory Disclaimer Notice -->
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-mono">
+          <span class="material-icons-outlined text-sm">info</span>
+          <span>PREVIEW IMAGERY ONLY — NOT BUNDLED VIDEO ASSETS</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- THUMBNAIL 1: sample-thumb-living-room -->
+        <div class="space-y-3">
+          <div class="relative aspect-video rounded-xl overflow-hidden border border-cyan-500/30 bg-[#090B10] group shadow-lg">
+            <!-- Synthetic SVG Art: Living Room Mapping (Architectural Plane Lines) -->
+            <svg class="w-full h-full object-cover" viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="thumbBg1" x1="0" y1="0" x2="320" y2="180" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#0a0e1a"/>
+                  <stop offset="100%" stop-color="#12182b"/>
+                </linearGradient>
+                <linearGradient id="neonGlow1" x1="40" y1="30" x2="280" y2="150" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#38bdf8"/>
+                  <stop offset="50%" stop-color="#a78bfa"/>
+                  <stop offset="100%" stop-color="#ec4899"/>
+                </linearGradient>
+              </defs>
+              <rect width="320" height="180" fill="url(#thumbBg1)"/>
+
+              <!-- Subtle Perspective Room Wall Grid -->
+              <line x1="0" y1="180" x2="90" y2="100" stroke="#1f293d" stroke-width="1.5"/>
+              <line x1="320" y1="180" x2="230" y2="100" stroke="#1f293d" stroke-width="1.5"/>
+              <line x1="90" y1="0" x2="90" y2="100" stroke="#1f293d" stroke-width="1.5"/>
+              <line x1="230" y1="0" x2="230" y2="100" stroke="#1f293d" stroke-width="1.5"/>
+              <line x1="90" y1="100" x2="230" y2="100" stroke="#1f293d" stroke-width="1.5"/>
+
+              <!-- Projected Keystoned Quad on Main Wall -->
+              <polygon points="105,40 215,35 210,95 110,98" fill="#171e36" stroke="url(#neonGlow1)" stroke-width="2"/>
+
+              <!-- Generative Sine Waves Inside Mapped Surface -->
+              <path d="M107,68 Q130,48 160,70 T212,65" stroke="#38bdf8" stroke-width="2.5" fill="none"/>
+              <path d="M108,74 Q135,54 162,76 T211,70" stroke="#a78bfa" stroke-width="2" fill="none"/>
+              <path d="M109,80 Q138,60 165,82 T210,75" stroke="#ec4899" stroke-width="1.5" fill="none"/>
+
+              <!-- Calibration HUD Corner Points -->
+              <circle cx="105" cy="40" r="3" fill="#38bdf8"/>
+              <circle cx="215" cy="35" r="3" fill="#38bdf8"/>
+              <circle cx="210" cy="95" r="3" fill="#a78bfa"/>
+              <circle cx="110" cy="98" r="3" fill="#a78bfa"/>
+
+              <!-- Atmospheric ambient cast glow on floor -->
+              <ellipse cx="160" cy="140" rx="90" ry="25" fill="#38bdf8" fill-opacity="0.08"/>
+            </svg>
+
+            <!-- Overlay Badges -->
+            <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5 px-2 py-0.5 rounded bg-black/70 backdrop-blur-sm border border-white/10 font-mono text-[10px] text-cyan-300">
+              <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+              3 SURFACES • 60 FPS
+            </div>
+            <div class="absolute bottom-2.5 right-2.5 px-1.5 py-0.5 rounded bg-black/60 font-mono text-[9px] text-slate-400">
+              1920×1080 (16:9)
+            </div>
+          </div>
+          <div>
+            <div class="flex items-center justify-between">
+              <h4 class="text-sm font-semibold text-white">Living room test</h4>
+              <span class="text-xs font-mono text-lumis-cyan">sample-thumb-living-room</span>
+            </div>
+            <p class="text-xs text-slate-400 mt-1">Multi-plane architectural keystone mock on interior corner walls with ambient falloff lighting.</p>
+          </div>
+        </div>
+
+        <!-- THUMBNAIL 2: sample-thumb-boxes -->
+        <div class="space-y-3">
+          <div class="relative aspect-video rounded-xl overflow-hidden border border-lumis-violet/30 bg-[#090B10] group shadow-lg">
+            <!-- Synthetic SVG Art: Boxes Demo (3D Projection Mapping on Isometric Cubes) -->
+            <svg class="w-full h-full object-cover" viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="thumbBg2" x1="0" y1="0" x2="320" y2="180" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#0b0a14"/>
+                  <stop offset="100%" stop-color="#19152b"/>
+                </linearGradient>
+              </defs>
+              <rect width="320" height="180" fill="url(#thumbBg2)"/>
+
+              <!-- Studio Stage Floor Grid -->
+              <g opacity="0.3" stroke="#332c52" stroke-width="1">
+                <line x1="60" y1="180" x2="160" y2="100"/>
+                <line x1="120" y1="180" x2="160" y2="100"/>
+                <line x1="200" y1="180" x2="160" y2="100"/>
+                <line x1="260" y1="180" x2="160" y2="100"/>
+                <line x1="100" y1="130" x2="220" y2="130"/>
+                <line x1="80" y1="150" x2="240" y2="150"/>
+              </g>
+
+              <!-- Stacked Box 1 (Base Cube) -->
+              <!-- Top Face -->
+              <polygon points="160,85 195,102 160,119 125,102" fill="#2d224d" stroke="#a78bfa" stroke-width="1.5"/>
+              <!-- Left Face -->
+              <polygon points="125,102 160,119 160,150 125,133" fill="#1b1530" stroke="#a78bfa" stroke-width="1.5"/>
+              <!-- Right Face -->
+              <polygon points="160,119 195,102 195,133 160,150" fill="#241b40" stroke="#a78bfa" stroke-width="1.5"/>
+
+              <!-- Stacked Box 2 (Upper Cube) -->
+              <!-- Top Face with Glowing Pattern -->
+              <polygon points="160,42 188,56 160,70 132,56" fill="#4c2889" stroke="#38bdf8" stroke-width="1.5"/>
+              <!-- Left Face -->
+              <polygon points="132,56 160,70 160,94 132,80" fill="#281a4a" stroke="#38bdf8" stroke-width="1.5"/>
+              <!-- Right Face with Cyan Grid -->
+              <polygon points="160,70 188,56 188,80 160,94" fill="#321e5e" stroke="#38bdf8" stroke-width="1.5"/>
+
+              <!-- Mapping Points and Wireframes -->
+              <circle cx="160" cy="42" r="3" fill="#38bdf8"/>
+              <circle cx="188" cy="56" r="3" fill="#38bdf8"/>
+              <circle cx="160" cy="70" r="3" fill="#a78bfa"/>
+              <circle cx="132" cy="56" r="3" fill="#38bdf8"/>
+            </svg>
+
+            <!-- Overlay Badges -->
+            <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5 px-2 py-0.5 rounded bg-black/70 backdrop-blur-sm border border-white/10 font-mono text-[10px] text-purple-300">
+              <span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+              4 SURFACES • 60 FPS
+            </div>
+            <div class="absolute bottom-2.5 right-2.5 px-1.5 py-0.5 rounded bg-black/60 font-mono text-[9px] text-slate-400">
+              1920×1080 (16:9)
+            </div>
+          </div>
+          <div>
+            <div class="flex items-center justify-between">
+              <h4 class="text-sm font-semibold text-white">Boxes demo</h4>
+              <span class="text-xs font-mono text-lumis-violet">sample-thumb-boxes</span>
+            </div>
+            <p class="text-xs text-slate-400 mt-1">Sculptural physical object mapping across interlocking cubic facet planes.</p>
+          </div>
+        </div>
+
+        <!-- THUMBNAIL 3: sample-thumb-night-waves -->
+        <div class="space-y-3">
+          <div class="relative aspect-video rounded-xl overflow-hidden border border-emerald-500/30 bg-[#090B10] group shadow-lg">
+            <!-- Synthetic SVG Art: Night Waves / Facade Ribbons -->
+            <svg class="w-full h-full object-cover" viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="thumbBg3" x1="0" y1="0" x2="320" y2="180" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#081418"/>
+                  <stop offset="100%" stop-color="#10252b"/>
+                </linearGradient>
+              </defs>
+              <rect width="320" height="180" fill="url(#thumbBg3)"/>
+
+              <!-- Architectural Brick Wall Texture Line Hints -->
+              <g stroke="#16383e" stroke-width="0.75" opacity="0.4">
+                <line x1="0" y1="30" x2="320" y2="30"/>
+                <line x1="0" y1="60" x2="320" y2="60"/>
+                <line x1="0" y1="90" x2="320" y2="90"/>
+                <line x1="0" y1="120" x2="320" y2="120"/>
+                <line x1="0" y1="150" x2="320" y2="150"/>
+              </g>
+
+              <!-- Dynamic Projected Curved Wave Strands -->
+              <path d="M-10,120 C80,40 140,160 220,70 C270,10 300,50 330,80" stroke="#34d399" stroke-width="3" fill="none" opacity="0.8"/>
+              <path d="M-10,110 C80,30 140,150 220,60 C270,0 300,40 330,70" stroke="#38bdf8" stroke-width="2.5" fill="none" opacity="0.9"/>
+              <path d="M-10,130 C80,50 140,170 220,80 C270,20 300,60 330,90" stroke="#a78bfa" stroke-width="2" fill="none" opacity="0.8"/>
+
+              <!-- Projection Frame Boundary with Corner Registration -->
+              <rect x="25" y="25" width="270" height="130" rx="4" stroke="#34d399" stroke-width="1.2" stroke-dasharray="8 6" fill="none"/>
+              <circle cx="25" cy="25" r="3.5" fill="#34d399"/>
+              <circle cx="295" cy="25" r="3.5" fill="#34d399"/>
+              <circle cx="295" cy="155" r="3.5" fill="#38bdf8"/>
+              <circle cx="25" cy="155" r="3.5" fill="#38bdf8"/>
+            </svg>
+
+            <!-- Overlay Badges -->
+            <div class="absolute top-2.5 left-2.5 flex items-center gap-1.5 px-2 py-0.5 rounded bg-black/70 backdrop-blur-sm border border-white/10 font-mono text-[10px] text-emerald-300">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              2 SURFACES • 30 FPS
+            </div>
+            <div class="absolute bottom-2.5 right-2.5 px-1.5 py-0.5 rounded bg-black/60 font-mono text-[9px] text-slate-400">
+              1920×1080 (16:9)
+            </div>
+          </div>
+          <div>
+            <div class="flex items-center justify-between">
+              <h4 class="text-sm font-semibold text-white">Night waves facade</h4>
+              <span class="text-xs font-mono text-emerald-400">sample-thumb-night-waves</span>
+            </div>
+            <p class="text-xs text-slate-400 mt-1">Horizontal architectural curtain mapping featuring sine curve illumination ribbing.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 4: DESIGN TOKENS & SYSTEM MANIFEST EXPORT -->
+    <footer class="bg-surface-card rounded-2xl border border-surface-border p-6 font-mono text-xs text-slate-400">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-surface-border">
+        <div class="flex items-center gap-3">
+          <span class="text-white font-bold">ASSET MANIFEST SUMMARY</span>
+          <span class="text-slate-600">|</span>
+          <span class="text-lumis-violet">6 VECTORS</span>
+          <span class="text-slate-600">|</span>
+          <span class="text-lumis-cyan">3 MOCKUP ARTWORKS</span>
+          <span class="text-slate-600">|</span>
+          <span class="text-emerald-400">1 WINDOW SPEC</span>
+        </div>
+        <div class="text-[11px] text-slate-500">
+          DESIGN SYSTEM: Lumis Projection Studio (Space Grotesk + Dark Charcoal #111318)
+        </div>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 pt-4 text-center">
+        <div class="bg-surface-dim p-2.5 rounded border border-surface-border">
+          <span class="text-white font-semibold block text-[11px]">splash-mark.svg</span>
+          <span class="text-[9px] text-slate-500">Launch icon (160dp)</span>
+        </div>
+        <div class="bg-surface-dim p-2.5 rounded border border-surface-border">
+          <span class="text-white font-semibold block text-[11px]">empty-projects.svg</span>
+          <span class="text-[9px] text-slate-500">Origin quad + light</span>
+        </div>
+        <div class="bg-surface-dim p-2.5 rounded border border-surface-border">
+          <span class="text-white font-semibold block text-[11px]">empty-canvas.svg</span>
+          <span class="text-[9px] text-slate-500">Outlined perspective</span>
+        </div>
+        <div class="bg-surface-dim p-2.5 rounded border border-surface-border">
+          <span class="text-white font-semibold block text-[11px]">missing-media.svg</span>
+          <span class="text-[9px] text-slate-500">Mesh preserved warning</span>
+        </div>
+        <div class="bg-surface-dim p-2.5 rounded border border-surface-border">
+          <span class="text-white font-semibold block text-[11px]">unsupported-media.svg</span>
+          <span class="text-[9px] text-slate-500">Codec strike-through</span>
+        </div>
+        <div class="bg-surface-dim p-2.5 rounded border border-surface-border">
+          <span class="text-white font-semibold block text-[11px]">recovery.svg</span>
+          <span class="text-[9px] text-slate-500">Snapshot rewind clock</span>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+</body>
+</html>

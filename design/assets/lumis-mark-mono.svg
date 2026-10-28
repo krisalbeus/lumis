@@ -1,0 +1,10 @@
+<svg id="lumis-mark-mono" data-asset="lumis-mark-mono.svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="26,28 78,21 68,76 21,72" fill="#F4F5FA" fill-opacity="0.2"/>
+              <polygon points="26,28 78,21 68,76 21,72" stroke="#F4F5FA" stroke-width="3" stroke-linejoin="round"/>
+              <line x1="26" y1="28" x2="68" y2="76" stroke="#F4F5FA" stroke-width="1.5" stroke-dasharray="3 3"/>
+              <line x1="78" y1="21" x2="21" y2="72" stroke="#F4F5FA" stroke-width="1.5" stroke-dasharray="3 3"/>
+              <circle cx="26" cy="28" r="3.5" fill="#090B10" stroke="#F4F5FA" stroke-width="2"/>
+              <circle cx="78" cy="21" r="3.5" fill="#090B10" stroke="#F4F5FA" stroke-width="2"/>
+              <circle cx="68" cy="76" r="3.5" fill="#090B10" stroke="#F4F5FA" stroke-width="2"/>
+              <circle cx="21" cy="72" r="3.5" fill="#090B10" stroke="#F4F5FA" stroke-width="2"/>
+            </svg>

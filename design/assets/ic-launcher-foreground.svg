@@ -1,0 +1,43 @@
+<svg id="ic-launcher-foreground" data-asset="ic-launcher-foreground.svg" viewBox="0 0 108 108" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="afgMarkGrad" x1="28" y1="26" x2="84" y2="82" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#67E8F9"/>
+                  <stop offset="100%" stop-color="#A78BFA"/>
+                </linearGradient>
+                <radialGradient id="afgCoreLight" cx="54" cy="54" r="26" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#67E8F9" stop-opacity="0.35"/>
+                  <stop offset="100%" stop-color="#A78BFA" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+
+              <!-- Central Optic Core Glow -->
+              <circle cx="54" cy="54" r="22" fill="url(#afgCoreLight)"/>
+
+              <!-- Outer Beam Geometry (Calibrated to 66dp Safe Area) -->
+              <polygon points="34,34 76,28 68,76 28,70" fill="url(#afgMarkGrad)" fill-opacity="0.28"/>
+              <polygon points="34,34 76,28 68,76 28,70" stroke="url(#afgMarkGrad)" stroke-width="2.5" stroke-linejoin="round"/>
+
+              <!-- Specular Ray Reflection -->
+              <polygon points="34,34 58,44 48,73 28,70" fill="#FFFFFF" fill-opacity="0.22"/>
+
+              <!-- Keystone Grid Lines -->
+              <line x1="34" y1="34" x2="68" y2="76" stroke="#67E8F9" stroke-opacity="0.45" stroke-width="1" stroke-dasharray="2 2"/>
+              <line x1="76" y1="28" x2="28" y2="70" stroke="#A78BFA" stroke-opacity="0.45" stroke-width="1" stroke-dasharray="2 2"/>
+
+              <!-- Active Target Handles -->
+              <circle cx="34" cy="34" r="3.2" fill="#090B10" stroke="#67E8F9" stroke-width="1.8"/>
+              <circle cx="34" cy="34" r="1.2" fill="#67E8F9"/>
+
+              <circle cx="76" cy="28" r="3.2" fill="#090B10" stroke="#A78BFA" stroke-width="1.8"/>
+              <circle cx="76" cy="28" r="1.2" fill="#A78BFA"/>
+
+              <circle cx="68" cy="76" r="3.2" fill="#090B10" stroke="#A78BFA" stroke-width="1.8"/>
+              <circle cx="68" cy="76" r="1.2" fill="#A78BFA"/>
+
+              <circle cx="28" cy="70" r="3.2" fill="#090B10" stroke="#67E8F9" stroke-width="1.8"/>
+              <circle cx="28" cy="70" r="1.2" fill="#67E8F9"/>
+
+              <!-- Reticle Hub -->
+              <circle cx="53" cy="52" r="3" stroke="#F4F5FA" stroke-width="1" stroke-opacity="0.75"/>
+              <circle cx="53" cy="52" r="1" fill="#F4F5FA"/>
+            </svg>

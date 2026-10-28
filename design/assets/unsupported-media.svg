@@ -1,0 +1,18 @@
+<svg id="unsupported-media.svg" data-asset="unsupported-media.svg" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Video Container Rect with Slashed Hardware Decoder -->
+                <rect x="24" y="32" width="80" height="64" rx="8" fill="#1c1418" stroke="#f87171" stroke-width="1.8"/>
+
+                <!-- Film Perforations -->
+                <rect x="30" y="36" width="6" height="6" rx="1.5" fill="#f87171" fill-opacity="0.4"/>
+                <rect x="42" y="36" width="6" height="6" rx="1.5" fill="#f87171" fill-opacity="0.4"/>
+                <rect x="80" y="36" width="6" height="6" rx="1.5" fill="#f87171" fill-opacity="0.4"/>
+                <rect x="92" y="36" width="6" height="6" rx="1.5" fill="#f87171" fill-opacity="0.4"/>
+
+                <!-- Codec Microchip Block in Center -->
+                <rect x="48" y="48" width="32" height="32" rx="4" fill="#090b10" stroke="#f87171" stroke-width="1.5"/>
+                <path d="M44,56 L48,56 M44,64 L48,64 M44,72 L48,72" stroke="#f87171" stroke-width="1.5"/>
+                <path d="M80,56 L84,56 M80,64 L84,64 M80,72 L84,72" stroke="#f87171" stroke-width="1.5"/>
+
+                <!-- Incompatible Strike-through Slash -->
+                <line x1="38" y1="84" x2="90" y2="44" stroke="#f87171" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>

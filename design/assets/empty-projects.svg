@@ -1,0 +1,30 @@
+<svg id="empty-projects.svg" data-asset="empty-projects.svg" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <radialGradient id="epLight" cx="64" cy="64" r="50" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.35"/>
+                    <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+                  </radialGradient>
+                </defs>
+                <!-- Light Bloom Beam -->
+                <circle cx="64" cy="64" r="44" fill="url(#epLight)" />
+
+                <!-- Keystone Projection Quad with Corner Focus -->
+                <polygon points="30,36 98,28 88,96 36,90" stroke="#38bdf8" stroke-width="1.8" stroke-dasharray="4 3" opacity="0.8" />
+                <polygon points="38,42 90,36 82,88 42,84" fill="#1e2230" fill-opacity="0.5" />
+
+                <!-- Outer Calibration Marks -->
+                <path d="M22,30 L22,22 L30,22" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" />
+                <path d="M106,22 L106,14 L98,14" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" />
+                <path d="M96,104 L96,112 L88,112" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" />
+                <path d="M28,98 L28,106 L36,106" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" />
+
+                <!-- Corner Lighting Nodes -->
+                <circle cx="30" cy="36" r="3.5" fill="#38bdf8" />
+                <circle cx="98" cy="28" r="3.5" fill="#38bdf8" />
+                <circle cx="88" cy="96" r="3.5" fill="#a78bfa" />
+                <circle cx="36" cy="90" r="3.5" fill="#a78bfa" />
+
+                <!-- Central Projection Center Target -->
+                <circle cx="64" cy="62" r="5" stroke="#ffffff" stroke-width="1.5" />
+                <circle cx="64" cy="62" r="1.5" fill="#ffffff" />
+              </svg>

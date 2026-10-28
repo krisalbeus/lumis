@@ -1,0 +1,27 @@
+<svg id="ic-launcher-background" data-asset="ic-launcher-background.svg" viewBox="0 0 108 108" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <!-- Radial Dark Vignette -->
+                <radialGradient id="bgVignette" cx="54" cy="54" r="54" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#1C2230"/>
+                  <stop offset="65%" stop-color="#141821"/>
+                  <stop offset="100%" stop-color="#090B10"/>
+                </radialGradient>
+                <!-- Optical Dot Matrix -->
+                <pattern id="opticDots" x="0" y="0" width="9" height="9" patternUnits="userSpaceOnUse">
+                  <circle cx="4.5" cy="4.5" r="0.65" fill="#9CA8BA" fill-opacity="0.2"/>
+                </pattern>
+              </defs>
+
+              <!-- Base Solid Charcoal #141821 Fill -->
+              <rect width="108" height="108" fill="url(#bgVignette)"/>
+
+              <!-- Subdued Studio Calibrator Matrix Pattern -->
+              <rect width="108" height="108" fill="url(#opticDots)"/>
+
+              <!-- Concentric Subtle Lens Rings -->
+              <circle cx="54" cy="54" r="42" stroke="#1C2230" stroke-width="0.75" stroke-dasharray="2 4"/>
+              <circle cx="54" cy="54" r="28" stroke="#1C2230" stroke-width="0.75"/>
+
+              <!-- Subtle Center Beam Wash -->
+              <circle cx="54" cy="54" r="16" fill="#A78BFA" fill-opacity="0.04"/>
+            </svg>

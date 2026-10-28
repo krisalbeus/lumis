@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>09 — Editor / Selected Video</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Fonts: Space Grotesk, Plus Jakarta Sans, JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "primary-fixed": "#e8ddff",
+            "on-surface": "#e2e2e9",
+            "on-background": "#e2e2e9",
+            "inverse-primary": "#674bb5",
+            "on-primary-fixed-variant": "#4f319c",
+            "error": "#ffb4ab",
+            "surface-container": "#1e1f25",
+            "tertiary-fixed-dim": "#45dfa4",
+            "on-tertiary-fixed": "#002114",
+            "error-container": "#93000a",
+            "surface-container-lowest": "#0c0e13",
+            "tertiary": "#45dfa4",
+            "surface-dim": "#111318",
+            "secondary-container": "#02aebe",
+            "inverse-on-surface": "#2e3036",
+            "tertiary-container": "#00b37e",
+            "on-surface-variant": "#cac4d4",
+            "secondary-fixed": "#91f1ff",
+            "surface-variant": "#33353a",
+            "primary-container": "#a78bfa",
+            "primary": "#cebdff",
+            "on-error-container": "#ffdad6",
+            "on-secondary": "#00363c",
+            "on-error": "#690005",
+            "inverse-surface": "#e2e2e9",
+            "on-tertiary-container": "#003d28",
+            "surface-container-highest": "#33353a",
+            "on-primary-fixed": "#21005e",
+            "on-tertiary-fixed-variant": "#005137",
+            "on-secondary-fixed-variant": "#004f57",
+            "on-secondary-container": "#003b42",
+            "on-secondary-fixed": "#001f23",
+            "surface": "#111318",
+            "on-tertiary": "#003825",
+            "primary-fixed-dim": "#cebdff",
+            "outline": "#948e9d",
+            "surface-container-low": "#1a1b21",
+            "tertiary-fixed": "#68fcbf",
+            "outline-variant": "#494552",
+            "on-primary-container": "#3c1989",
+            "background": "#111318",
+            "secondary": "#54d8e8",
+            "surface-bright": "#37393f",
+            "on-primary": "#381385",
+            "surface-tint": "#cebdff",
+            "surface-container-high": "#282a2f",
+            "secondary-fixed-dim": "#54d8e8"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "gutter": "0.75rem",
+            "space-xl": "2rem",
+            "margin": "1rem"
+          },
+          "fontFamily": {
+            "label-lg": ["Plus Jakarta Sans"],
+            "label-code-sm": ["JetBrains Mono"],
+            "headline-xl": ["Space Grotesk"],
+            "headline-md": ["Space Grotesk"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "label-code-md": ["JetBrains Mono"],
+            "headline-lg": ["Space Grotesk"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "title-sm": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "label-lg": ["13px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "label-code-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+            "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "label-code-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "title-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    /* Custom optic aura and hardware keystone styling */
+    .vertex-glow {
+      box-shadow: 0 0 14px #67e8f9, 0 0 24px rgba(103, 232, 249, 0.4);
+    }
+    .beam-vector-grid {
+      background-image:
+        linear-gradient(to right, rgba(73, 69, 82, 0.25) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(73, 69, 82, 0.25) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+    .scanline-overlay {
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.15),
+        rgba(0, 0, 0, 0.15) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface-container-lowest text-on-surface antialiased select-none overflow-hidden h-screen w-screen flex justify-center items-center font-body-md">
+<!-- Mobile Device Shell: Google Pixel 9 Pro (412px x 924px bounds) -->
+<div class="relative w-full max-w-[412px] h-[924px] max-h-screen bg-surface flex flex-col overflow-hidden shadow-2xl border border-outline-variant">
+<!-- ANDROID SYSTEM BAR / CAMERA HOLE SAFE INSET (Top: 48dp) -->
+<div class="h-12 w-full flex items-center justify-between px-space-md pt-2 shrink-0 z-50 bg-surface"><span class="font-label-code-sm text-[13px] text-on-surface font-semibold tracking-tight">09:41</span><div class="w-3.5 h-3.5 rounded-full bg-surface-container-lowest border border-outline-variant/60"></div><div class="flex items-center space-x-1.5 text-on-surface-variant"><span class="material-symbols-outlined text-[15px]">signal_cellular_alt</span><span class="material-symbols-outlined text-[15px]">wifi</span><span class="material-symbols-outlined text-[17px]">battery_full</span></div></div>
+<!-- LUMIS TOP APP BAR (Shared Components JSON Anchor translated) -->
+<!-- Structure: Back '< Projects', Title 'Living room test', autosave 'Saving...', Undo/Redo, Mode Pill, Settings -->
+<header class="bg-surface text-primary border-b border-outline-variant flex flex-col w-full px-space-md pt-space-xs pb-space-sm shrink-0 z-40"><div class="flex items-center justify-between w-full h-11"><button aria-label="Back to projects" class="flex items-center space-x-1 text-outline hover:text-on-surface active:scale-95 transition-all -ml-1 py-1 px-1.5 rounded-lg hover:bg-surface-container-high"><span class="material-symbols-outlined text-[20px] text-secondary">arrow_back</span><span class="font-label-lg text-label-lg font-medium text-on-surface">Projects</span></button><div class="flex flex-col items-center"><span class="font-headline-md text-[15px] font-bold tracking-tight text-on-surface">Living room test</span><div class="flex items-center space-x-1"><span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span><span class="font-label-code-sm text-[11px] text-outline">Saved</span></div></div><button aria-label="Settings" class="w-10 h-10 flex items-center justify-center rounded-lg text-outline hover:text-on-surface hover:bg-surface-container-high active:scale-95 transition-colors"><span class="material-symbols-outlined text-[22px]">settings</span></button></div><div class="flex items-center justify-between w-full mt-1 pt-1.5 border-t border-outline-variant/40"><div class="flex items-center space-x-1.5"><button class="w-8 h-8 flex items-center justify-center rounded bg-surface-container-low text-on-surface-variant hover:text-on-surface active:scale-95 transition-colors border border-outline-variant" title="Undo"><span class="material-symbols-outlined text-[18px]">undo</span></button><button class="w-8 h-8 flex items-center justify-center rounded bg-surface-container-low text-outline/50 cursor-not-allowed border border-outline-variant/50" disabled="" title="Redo"><span class="material-symbols-outlined text-[18px]">redo</span></button></div><div class="flex items-center bg-surface-container-lowest p-0.5 rounded-full border border-outline-variant"><button class="px-3 py-1 rounded-full bg-surface-container-high text-secondary font-label-lg text-label-lg font-semibold flex items-center space-x-1 shadow-sm"><span class="material-symbols-outlined text-[14px]">edit</span><span>Edit</span></button><button class="px-3 py-1 rounded-full text-outline hover:text-on-surface font-label-lg text-label-lg transition-colors flex items-center space-x-1"><span class="material-symbols-outlined text-[14px]">visibility</span><span>Output</span></button></div></div></header>
+<!-- CENTER VIEWPORT: LETTERBOXED BLACK 16:9 LOGICAL CANVAS -->
+<main class="relative flex-1 bg-surface-container-lowest flex items-center justify-center overflow-hidden p-space-xs"><div class="relative w-full aspect-[16/9] bg-[#000000] border border-outline-variant/50 rounded-lg shadow-2xl flex items-center justify-center overflow-visible"><svg class="absolute inset-0 w-full h-full overflow-visible" viewbox="0 0 400 225"><defs><lineargradient id="vibrantWave" x1="0%" x2="100%" y1="0%" y2="100%"><stop offset="0%" stop-color="#54d8e8" stop-opacity="0.95"></stop><stop offset="50%" stop-color="#a78bfa" stop-opacity="0.9"></stop><stop offset="100%" stop-color="#381385" stop-opacity="0.95"></stop></lineargradient><pattern height="24" id="smoothWavePattern" patternunits="userSpaceOnUse" width="24"><path d="M 0 12 Q 6 6 12 12 T 24 12" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1"></path></pattern></defs><g><polygon fill="url(#vibrantWave)" points="68,36 344,22 320,198 48,178"></polygon><polygon fill="url(#smoothWavePattern)" points="68,36 344,22 320,198 48,178"></polygon><path d="M 68,36 Q 200,110 320,198" fill="none" opacity="0.7" stroke="#54d8e8" stroke-width="2"></path><path d="M 48,178 Q 190,90 344,22" fill="none" opacity="0.5" stroke="#e8ddff" stroke-dasharray="4 3" stroke-width="1.5"></path><polygon class="filter drop-shadow-[0_0_4px_rgba(255,255,255,0.8)]" fill="none" points="68,36 344,22 320,198 48,178" stroke="#54d8e8" stroke-dasharray="6 4" stroke-width="2"></polygon></g></svg><div class="absolute top-[16%] left-[17%] -translate-x-1/2 -translate-y-1/2 group cursor-pointer flex items-center space-x-1"><div class="w-5 h-5 rounded-full bg-white border-2 border-secondary vertex-glow flex items-center justify-center"><span class="w-2 h-2 rounded-full bg-secondary-container"></span></div><span class="bg-surface-container-high px-1.5 py-0.5 rounded text-[11px] font-bold text-secondary border border-secondary shadow-md">A</span></div><div class="absolute top-[10%] left-[86%] -translate-x-1/2 -translate-y-1/2 group cursor-pointer flex items-center space-x-1"><div class="w-5 h-5 rounded-full bg-white border-2 border-secondary vertex-glow flex items-center justify-center"><span class="w-2 h-2 rounded-full bg-secondary-container"></span></div><span class="bg-surface-container-high px-1.5 py-0.5 rounded text-[11px] font-bold text-secondary border border-outline-variant shadow-md">B</span></div><div class="absolute top-[88%] left-[80%] -translate-x-1/2 -translate-y-1/2 group cursor-pointer flex items-center space-x-1"><div class="w-5 h-5 rounded-full bg-white border-2 border-secondary vertex-glow flex items-center justify-center"><span class="w-2 h-2 rounded-full bg-secondary-container"></span></div><span class="bg-surface-container-high px-1.5 py-0.5 rounded text-[11px] font-bold text-secondary border border-outline-variant shadow-md">C</span></div><div class="absolute top-[79%] left-[12%] -translate-x-1/2 -translate-y-1/2 group cursor-pointer flex items-center space-x-1"><div class="w-5 h-5 rounded-full bg-white border-2 border-secondary vertex-glow flex items-center justify-center"><span class="w-2 h-2 rounded-full bg-secondary-container"></span></div><span class="bg-surface-container-high px-1.5 py-0.5 rounded text-[11px] font-bold text-secondary border border-outline-variant shadow-md">D</span></div></div></main>
+<!-- BOTTOM FLOATING DOCKED TOOL RACK & PARAMETER DRAWER -->
+<!-- Priority layout engineered for Pixel 9 Pro 48dp ergonomics -->
+<footer class="bg-surface-container-low border-t border-outline-variant flex flex-col shrink-0 z-40 pb-6"><div class="flex items-center justify-between px-space-md py-2.5 bg-surface-container border-b border-outline-variant"><div class="flex items-center space-x-2"><div class="w-2 h-2 rounded-full bg-secondary animate-pulse"></div><span class="font-title-sm text-title-sm text-on-surface font-semibold tracking-tight">Surface 1 · Video</span><span class="font-label-code-sm text-[10px] bg-surface-container-high text-primary px-1.5 py-0.5 rounded border border-outline-variant">MP4 · 1080p</span></div><div class="flex items-center space-x-1 text-secondary font-label-code-sm text-[11px]"><span class="material-symbols-outlined text-[15px]">play_circle</span><span>Playing</span></div></div><div class="grid grid-cols-4 gap-2 px-space-md py-3 border-b border-outline-variant/60"><button aria-label="Reset corners" class="h-12 rounded-lg bg-surface-container-high hover:bg-surface-bright border border-outline-variant flex flex-col items-center justify-center space-y-0.5 text-on-surface active:scale-95 transition-all"><span class="material-symbols-outlined text-[18px] text-outline">crop_free</span><span class="font-label-code-sm text-[10px] tracking-tight">Reset corners</span></button><button aria-label="Replace" class="h-12 rounded-lg bg-surface-container-high hover:bg-surface-bright border border-outline-variant flex flex-col items-center justify-center space-y-0.5 text-on-surface active:scale-95 transition-all"><span class="material-symbols-outlined text-[18px] text-secondary">perm_media</span><span class="font-label-code-sm text-[10px] tracking-tight">Replace</span></button><button aria-label="Duplicate" class="h-12 rounded-lg bg-surface-container-high hover:bg-surface-bright border border-outline-variant flex flex-col items-center justify-center space-y-0.5 text-on-surface active:scale-95 transition-all"><span class="material-symbols-outlined text-[18px] text-outline">content_copy</span><span class="font-label-code-sm text-[10px] tracking-tight">Duplicate</span></button><button aria-label="Delete" class="h-12 rounded-lg bg-surface-container-high hover:bg-error-container/30 border border-outline-variant hover:border-error flex flex-col items-center justify-center space-y-0.5 text-error active:scale-95 transition-all"><span class="material-symbols-outlined text-[18px] text-error">delete</span><span class="font-label-code-sm text-[10px] tracking-tight">Delete</span></button></div><div class="px-space-md py-3 flex items-center justify-between"><button class="w-12 h-12 rounded-lg bg-surface-container-high border border-outline-variant flex items-center justify-center text-on-surface active:scale-95 transition-colors" title="Restart"><span class="material-symbols-outlined text-[22px]">replay</span></button><button class="h-12 flex-1 mx-3 rounded-lg bg-primary-container text-on-primary-container flex items-center justify-center space-x-2 font-label-lg font-bold shadow-md active:scale-95 transition-transform" title="Pause"><span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">pause</span><span>Pause</span></button><button class="w-12 h-12 rounded-lg bg-surface-container-high border border-secondary text-secondary flex items-center justify-center relative active:scale-95 transition-colors mr-2" title="Loop"><span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">repeat</span><span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-secondary"></span></button><button class="w-12 h-12 rounded-lg bg-surface-container-high border border-outline-variant flex items-center justify-center text-outline hover:text-on-surface active:scale-95 transition-colors" title="Mute"><span class="material-symbols-outlined text-[20px]">volume_off</span></button></div><div class="w-full flex justify-center pt-2 pb-1"><div class="w-32 h-1 bg-outline-variant rounded-full opacity-60"></div></div></footer>
+</div>
+</body></html>

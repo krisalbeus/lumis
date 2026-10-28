@@ -1,0 +1,16 @@
+<svg id="unavailable-source.svg" data-asset="unavailable-source.svg" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Optical Projector Beam Lens -->
+                <circle cx="64" cy="64" r="32" stroke="#2a3040" stroke-width="1.5" />
+                <circle cx="64" cy="64" r="24" stroke="#a78bfa" stroke-width="1.8" stroke-dasharray="6 4" fill="#141824" fill-opacity="0.6"/>
+
+                <!-- Shuttered / Locked Lens Blades -->
+                <path d="M48,52 L80,76" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M80,52 L48,76" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round"/>
+                <circle cx="64" cy="64" r="6" fill="#090b10" stroke="#f87171" stroke-width="1.5"/>
+
+                <!-- Beam Off Warning Ray Vectors -->
+                <line x1="64" y1="20" x2="64" y2="28" stroke="#f87171" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="64" y1="100" x2="64" y2="108" stroke="#f87171" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="20" y1="64" x2="28" y2="64" stroke="#f87171" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="100" y1="64" x2="108" y2="64" stroke="#f87171" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>

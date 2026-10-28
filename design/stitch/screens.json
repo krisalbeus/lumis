@@ -1,0 +1,583 @@
+{
+  "projectId": "9969649650324268552",
+  "designSystem": "assets/e7e76232818f47c9be8016bebcc921aa",
+  "projectUrl": "https://stitch.withgoogle.com/projects/9969649650324268552",
+  "screens": [
+    {
+      "id": "c905b25987c14139b9ffea6220d17860",
+      "title": "01 \u2014 Projects / Home",
+      "width": 780,
+      "height": 1830,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/ea9a4763a0184b51bfed59033c697cca",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/ea9a4763a0184b51bfed59033c697cca:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/e515b0868f984bddb167b58cb5bc08e4",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/e515b0868f984bddb167b58cb5bc08e4:download"
+      }
+    },
+    {
+      "id": "a1f8a5ce9489444c9e5e4eda443e4ff5",
+      "title": "02 \u2014 Projects / Empty",
+      "width": 780,
+      "height": 1830,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/e58355549f7b49e0a0cc9cb42f6e1b93",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/e58355549f7b49e0a0cc9cb42f6e1b93:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/0c9e44cde67f45ecb72018031810fe72",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/0c9e44cde67f45ecb72018031810fe72:download"
+      }
+    },
+    {
+      "id": "33083b96f79742b0ba8a262ad76e1b2a",
+      "title": "03 \u2014 New Project",
+      "width": 780,
+      "height": 1768,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/2cab04726b1c4f3f86661995a07054a0",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/2cab04726b1c4f3f86661995a07054a0:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/0922ea4ead5040529bd78924225a0359",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/0922ea4ead5040529bd78924225a0359:download"
+      }
+    },
+    {
+      "id": "ea9ae11422a64594a6a49ab0ccfe47ab",
+      "title": "04 \u2014 Project Actions",
+      "width": 780,
+      "height": 1848,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/edae03d892b5446ba3193604f047d009",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/edae03d892b5446ba3193604f047d009:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/43178df047da464b8cda3e885021024b",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/43178df047da464b8cda3e885021024b:download"
+      }
+    },
+    {
+      "id": "0920bd8ebe334a049bfee5fed813aecc",
+      "title": "05 \u2014 Rename Project",
+      "width": 780,
+      "height": 1768,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/3f228974b8a14780ad35e15a324198d5",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/3f228974b8a14780ad35e15a324198d5:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/29d5be38825441f890739d7ea3d1b05e",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/29d5be38825441f890739d7ea3d1b05e:download"
+      }
+    },
+    {
+      "id": "5522bc32e21841118132dd740e9f6e49",
+      "title": "06 \u2014 Delete Project Confirmation",
+      "width": 780,
+      "height": 1768,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/106b5402043e4296aab6c7054a918494",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/106b5402043e4296aab6c7054a918494:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/5e1a3c7b10e44da98d7e189aaa548a2c",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/5e1a3c7b10e44da98d7e189aaa548a2c:download"
+      }
+    },
+    {
+      "id": "2416c0515fe647f6a260e52bc29ff875",
+      "title": "07 \u2014 Project Recovery",
+      "width": 780,
+      "height": 1768,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/32f15bc1353b4573bae28f933e29f3e6",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/32f15bc1353b4573bae28f933e29f3e6:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/e15c3606485f437ea53583edf00c4e9b",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/e15c3606485f437ea53583edf00c4e9b:download"
+      }
+    },
+    {
+      "id": "ffe6f1865e364ef885685ce2ac87d854",
+      "title": "08 \u2014 Editor / Empty Canvas",
+      "width": 780,
+      "height": 1768,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/967ec1b6e7b845dd865c7a8d66371c62",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/967ec1b6e7b845dd865c7a8d66371c62:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/6d5a4a2c07274047ab9a0187332eff28",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/6d5a4a2c07274047ab9a0187332eff28:download"
+      }
+    },
+    {
+      "id": "ed5a2998fabe459994a3e694edc335aa",
+      "title": "09 \u2014 Editor / Selected Video",
+      "width": "780",
+      "height": "1768",
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/f9ffe6f673164d028c0725a778a46ee5",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/f9ffe6f673164d028c0725a778a46ee5:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/989c99a1d2e84d949fc58635bbd17250",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/989c99a1d2e84d949fc58635bbd17250:download"
+      },
+      "localExport": "stitch/09-editor-selected-video.html",
+      "localScreenshot": "stitch/09-editor-selected-video.png"
+    },
+    {
+      "id": "1d9db263d8cd406bbaeef81fe1cff6cc",
+      "title": "10 \u2014 Editor / Surface Layers",
+      "width": 780,
+      "height": 1848,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/9797a80c9f844cecab3dc282e8614999",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/9797a80c9f844cecab3dc282e8614999:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/5f076fb52c444dba841fbbe2c646125b",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/5f076fb52c444dba841fbbe2c646125b:download"
+      }
+    },
+    {
+      "id": "955136ebbac948318132cbe2f9abedb9",
+      "title": "11 \u2014 Editor / Surface Properties",
+      "width": 780,
+      "height": 2294,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/7b88f957834a47c8a9e0166ffb8801b0",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/7b88f957834a47c8a9e0166ffb8801b0:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/6eebaf08849947109fff9954313cf05b",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/6eebaf08849947109fff9954313cf05b:download"
+      }
+    },
+    {
+      "id": "86b6663875ba4cba84c455fe12c9d80d",
+      "title": "12 \u2014 Editor / Viewport Navigation",
+      "width": 780,
+      "height": 1768,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/ca447116bfa047e0877622d5d97a4b93",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/ca447116bfa047e0877622d5d97a4b93:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/1b8bb33a83024adaa67b68fa90eb96b1",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/1b8bb33a83024adaa67b68fa90eb96b1:download"
+      }
+    },
+    {
+      "id": "221af87384804c11bfc6d30e953f45a1",
+      "title": "13 \u2014 Rendering Proof / Milestone 0",
+      "width": 780,
+      "height": 1768,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/bf6dcf90e1b145d7b28b441659c8ab45",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/bf6dcf90e1b145d7b28b441659c8ab45:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/a9c3bce6b7274e1d818131a0947fcf18",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/a9c3bce6b7274e1d818131a0947fcf18:download"
+      }
+    },
+    {
+      "id": "32b4fd24f5ab475d9fd9644d8a273703",
+      "title": "14 \u2014 Add Surface / Source Choice",
+      "width": 780,
+      "height": 1768,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/1961390500f14925a4ccbcb80ab750f8",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/1961390500f14925a4ccbcb80ab750f8:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/1138b76f58164d03b932dd1bdaa80c37",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/1138b76f58164d03b932dd1bdaa80c37:download"
+      }
+    },
+    {
+      "id": "95d2a6c61fb9463680a6ea25376b29b8",
+      "title": "15 \u2014 Import / Android Photo Picker",
+      "width": 780,
+      "height": 1768,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/c794d155126f4a04801c68b17c0e1194",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/c794d155126f4a04801c68b17c0e1194:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/5ad9fdd744d441418533d6f72c760d0f",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/5ad9fdd744d441418533d6f72c760d0f:download"
+      }
+    },
+    {
+      "id": "beadd0d244ba49089b30d926f393fefd",
+      "title": "16 \u2014 Import / Loading and Validation",
+      "width": 780,
+      "height": 1848,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/03a20e4ae0f1476fa54df8bf29450062",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/03a20e4ae0f1476fa54df8bf29450062:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/c26d7979fac44138bcd1934069100760",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/c26d7979fac44138bcd1934069100760:download"
+      }
+    },
+    {
+      "id": "095a317768884c5195fa8c628d3c1782",
+      "title": "17 \u2014 Import / Unsupported Media",
+      "width": 780,
+      "height": 1768,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/7c27375b211b4c17b2f54ce1ea8dc2b1",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/7c27375b211b4c17b2f54ce1ea8dc2b1:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/2772e7a4e1dd43b284e279c53f766e5f",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/2772e7a4e1dd43b284e279c53f766e5f:download"
+      }
+    },
+    {
+      "id": "956da5a2e97346d0b5b7eae74b0d02fc",
+      "title": "18 \u2014 Missing Media / Replace Source",
+      "width": 780,
+      "height": 1768,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/5ae6781dbf4c4d31b923426f6295b2b2",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/5ae6781dbf4c4d31b923426f6295b2b2:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/3d17acbaac224998b21095f1f61a02e4",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/3d17acbaac224998b21095f1f61a02e4:download"
+      }
+    },
+    {
+      "id": "ddf1b11f70e6418c9130263d48713208",
+      "title": "19 \u2014 Media Access / Permission Denied",
+      "width": 780,
+      "height": 1768,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/4a36050c50804ffd90975b45dcf22fc1",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/4a36050c50804ffd90975b45dcf22fc1:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/2e6006105d394f538d92a65bd9cabe77",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/2e6006105d394f538d92a65bd9cabe77:download"
+      }
+    },
+    {
+      "id": "fe81858d42c14957afa865e61195433d",
+      "title": "20 \u2014 Project Settings",
+      "width": 780,
+      "height": 2304,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/44b7130c9f534de99b61c14524ec040b",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/44b7130c9f534de99b61c14524ec040b:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/8fc7aea500c349daab28c5b14e21976e",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/8fc7aea500c349daab28c5b14e21976e:download"
+      }
+    },
+    {
+      "id": "d1e8199d3bba4241a0c7de74183910c0",
+      "title": "21 \u2014 Debug Settings",
+      "width": 780,
+      "height": 3452,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/7c3a3c792af74ee79fe62745c4412db9",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/7c3a3c792af74ee79fe62745c4412db9:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/b34878775a63437099e2134aaddf2e87",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/b34878775a63437099e2134aaddf2e87:download"
+      }
+    },
+    {
+      "id": "a9367c060a75439f9a096a5240cd6491",
+      "title": "22 \u2014 Editor / Diagnostics",
+      "width": 780,
+      "height": 1768,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/5d9ac4280ecf4be684c8c0913e551833",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/5d9ac4280ecf4be684c8c0913e551833:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/035a14a3b42449e4be124589dbce77b6",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/035a14a3b42449e4be124589dbce77b6:download"
+      }
+    },
+    {
+      "id": "98fdf64a684e4b74b3380c7bbae1da05",
+      "title": "23 \u2014 Project Load Error",
+      "width": 780,
+      "height": 2384,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/5cd6c9cb495a4d54adf15fd912852e6f",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/5cd6c9cb495a4d54adf15fd912852e6f:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/12af48a3b26144ef9acfdacb805b89bd",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/12af48a3b26144ef9acfdacb805b89bd:download"
+      }
+    },
+    {
+      "id": "411b867f70b64e2c8f9af3bcc381d33d",
+      "title": "24 \u2014 Renderer or Decoder Failure",
+      "width": 780,
+      "height": 1768,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/5c3d8aa3fa6e4b85aa4162066c4d5c16",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/5c3d8aa3fa6e4b85aa4162066c4d5c16:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/d244c5b995a649088254de76637efb6b",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/d244c5b995a649088254de76637efb6b:download"
+      }
+    },
+    {
+      "id": "c82375ce7c9d42ea819ef3dd117610ea",
+      "title": "25 \u2014 Output / Clean Fullscreen",
+      "width": 3840,
+      "height": 2160,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/3006a487af0a44a8b8077821474fb223",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/3006a487af0a44a8b8077821474fb223:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/abd7b844131248f7aa63f6c2cb763f0f",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/abd7b844131248f7aa63f6c2cb763f0f:download"
+      },
+      "localExport": "stitch/25-output-clean-fullscreen.html"
+    },
+    {
+      "id": "d29ac96851234bfbafc5af201ecc99f9",
+      "title": "26 \u2014 Brand / Logo and App Icon",
+      "width": 2560,
+      "height": 6576,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/2f78418f585845e6b9a249bfef051e96",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/2f78418f585845e6b9a249bfef051e96:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/127c3c37f8f44685ad037290b9fdab70",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/127c3c37f8f44685ad037290b9fdab70:download"
+      },
+      "localExport": "stitch/26-brand-logo-app-icon.html"
+    },
+    {
+      "id": "6ebee74500634707b94561a7eb164437",
+      "title": "27 \u2014 Brand / Splash and Empty-State Assets",
+      "width": 2560,
+      "height": 5700,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/6bc98703a68c4492b78a0dc25666bba0",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/6bc98703a68c4492b78a0dc25666bba0:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/27f8fcc036ef487ab90ffda519a020f3",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/27f8fcc036ef487ab90ffda519a020f3:download"
+      },
+      "localExport": "stitch/27-splash-empty-state-assets.html"
+    },
+    {
+      "id": "f10d8656dba14785ac2223f04d5ca779",
+      "title": "28 \u2014 Design System / Components and Interaction States",
+      "width": 2560,
+      "height": 7998,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/7ed1de56428e44f4ba244091a306a282",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/7ed1de56428e44f4ba244091a306a282:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/c624ec86071243e7b4588b330c42dce7",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/c624ec86071243e7b4588b330c42dce7:download"
+      },
+      "localExport": "stitch/28-components-interaction-states.html"
+    },
+    {
+      "id": "2670bc3905bf4ff79c4a73a22ee89b5a",
+      "title": "29 \u2014 Editor / Selected Image",
+      "width": 780,
+      "height": 1768,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/c2200dd88d2e4f0096fc42a785c671b5",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/c2200dd88d2e4f0096fc42a785c671b5:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/87b4adabfbf94e868729fbb6de4e0ece",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/87b4adabfbf94e868729fbb6de4e0ece:download"
+      }
+    },
+    {
+      "id": "1bee20e9f86c44b2ab30e9aba74198c8",
+      "title": "30 \u2014 Delete Surface Confirmation",
+      "width": 780,
+      "height": 1768,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/f7e3d0ecd25743fca3a692ad652e4c98",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/f7e3d0ecd25743fca3a692ad652e4c98:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/c44ec986525d41528966c81ddeec141e",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/c44ec986525d41528966c81ddeec141e:download"
+      }
+    },
+    {
+      "id": "abdd8f7240174407be8ec7043140f2a9",
+      "title": "31 \u2014 Save Failure / Retry",
+      "width": 780,
+      "height": 1848,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/30e06db1498141aba6666c2a4fd26037",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/30e06db1498141aba6666c2a4fd26037:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/95456e3fa7634dce84cee461b429e680",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/95456e3fa7634dce84cee461b429e680:download"
+      }
+    },
+    {
+      "id": "1c98f40079c6409098d2bcb11dcd6c8b",
+      "title": "32 \u2014 About Lumis",
+      "width": 780,
+      "height": 2624,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/84c7c161de924bc3a30178590d82bf05",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/84c7c161de924bc3a30178590d82bf05:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/ff72ccebdf3c4b7a9f25366940ab6311",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/ff72ccebdf3c4b7a9f25366940ab6311:download"
+      }
+    }
+  ],
+  "supersededScreens": [
+    {
+      "id": "258c2b0ba25f4464a166618ce9157e10",
+      "title": "25 \u2014 Output / Clean Fullscreen",
+      "width": 2560,
+      "height": 2048,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/8d4f9ea180f2437497bc8519b0d55ea5",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/8d4f9ea180f2437497bc8519b0d55ea5:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/55c87446bdc642f88b6aa9ce0cb0e63d",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/55c87446bdc642f88b6aa9ce0cb0e63d:download"
+      },
+      "supersededReason": "incorrect aspect ratio"
+    },
+    {
+      "id": "deedd18aaef24b9099d078e743312824",
+      "title": "09 \u2014 Editor / Selected Video",
+      "width": 780,
+      "height": 1768,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/a71f8bbcc96549fba8296dc56b6031bc",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/a71f8bbcc96549fba8296dc56b6031bc:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/25c6ce4e652d4dffb25bb9eff643391b",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/25c6ce4e652d4dffb25bb9eff643391b:download"
+      },
+      "reason": "replaced by approachable editor without default diagnostics or engineering jargon"
+    }
+  ],
+  "assets": [
+    {
+      "path": "assets/lumis-mark.svg",
+      "originScreen": 26,
+      "fontDependencies": [],
+      "textFontDependent": false
+    },
+    {
+      "path": "assets/lumis-lockup.svg",
+      "originScreen": 26,
+      "fontDependencies": [
+        "JetBrains Mono"
+      ],
+      "textFontDependent": true
+    },
+    {
+      "path": "assets/lumis-lockup-light.svg",
+      "originScreen": 26,
+      "fontDependencies": [
+        "JetBrains Mono"
+      ],
+      "textFontDependent": true
+    },
+    {
+      "path": "assets/lumis-mark-mono.svg",
+      "originScreen": 26,
+      "fontDependencies": [],
+      "textFontDependent": false
+    },
+    {
+      "path": "assets/ic-launcher-foreground.svg",
+      "originScreen": 26,
+      "fontDependencies": [],
+      "textFontDependent": false
+    },
+    {
+      "path": "assets/ic-launcher-background.svg",
+      "originScreen": 26,
+      "fontDependencies": [],
+      "textFontDependent": false
+    },
+    {
+      "path": "assets/ic-launcher-monochrome.svg",
+      "originScreen": 26,
+      "fontDependencies": [],
+      "textFontDependent": false
+    },
+    {
+      "path": "assets/splash-mark.svg",
+      "originScreen": 27,
+      "fontDependencies": [],
+      "textFontDependent": false
+    },
+    {
+      "path": "assets/empty-projects.svg",
+      "originScreen": 27,
+      "fontDependencies": [],
+      "textFontDependent": false
+    },
+    {
+      "path": "assets/empty-canvas.svg",
+      "originScreen": 27,
+      "fontDependencies": [],
+      "textFontDependent": false
+    },
+    {
+      "path": "assets/missing-media.svg",
+      "originScreen": 27,
+      "fontDependencies": [],
+      "textFontDependent": false
+    },
+    {
+      "path": "assets/unsupported-media.svg",
+      "originScreen": 27,
+      "fontDependencies": [],
+      "textFontDependent": false
+    },
+    {
+      "path": "assets/recovery.svg",
+      "originScreen": 27,
+      "fontDependencies": [],
+      "textFontDependent": false
+    },
+    {
+      "path": "assets/unavailable-source.svg",
+      "originScreen": 27,
+      "fontDependencies": [],
+      "textFontDependent": false
+    }
+  ]
+}
