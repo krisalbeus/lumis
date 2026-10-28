@@ -4,6 +4,21 @@
   "projectUrl": "https://stitch.withgoogle.com/projects/9969649650324268552",
   "screens": [
     {
+      "id": "850c3d5879f44f9c974054368d37f64a",
+      "title": "34 \u2014 External display output",
+      "width": 2560,
+      "height": 4066,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/b67e405032014ad6a2a4bfbc4adb5c1f",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/b67e405032014ad6a2a4bfbc4adb5c1f:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/b273ea890f9e4c3bb9421a6316010364",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/b273ea890f9e4c3bb9421a6316010364:download"
+      },
+      "localExport": "stitch/34-external-display-output.html"
+    },
+    {
       "id": "c905b25987c14139b9ffea6220d17860",
       "title": "01 \u2014 Projects / Home",
       "width": 780,

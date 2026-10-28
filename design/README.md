@@ -40,7 +40,7 @@ Treat generated brand work as a design candidate, not trademark clearance.
 
 ## Current screen inventory
 
-There are **33 current design references**: 30 application screens/states and
+There are **34 current design references**: 31 application screens/states and
 three asset/component boards. Some references are sheets or dialogs, not separate
 navigation destinations. Their exact resource IDs and export references are in
 [the manifest](stitch/screens.json).
@@ -80,6 +80,7 @@ navigation destinations. Their exact resource IDs and export references are in
 | 31 | Save Failure / Retry |
 | 32 | About Lumis |
 | 33 | Rendering Proof / Landscape |
+| 34 | External display output |
 
 Screen 09 was refined to remove technical jargon and unsolicited debug tools.
 Screen 25 was revised because its initial screenshot was not 16:9. Use the
@@ -105,6 +106,7 @@ metadata is 3840x2160, the same aspect ratio at twice the resolution.
 - [Surface layers](stitch/10-editor-surface-layers.html)
 - [Surface properties](stitch/11-editor-surface-properties.html)
 - [Viewport navigation](stitch/12-editor-viewport-navigation.html)
+- [External display output](stitch/34-external-display-output.html)
 - [Delete surface confirmation](stitch/30-delete-surface-confirmation.html)
 - [Rendering-proof mobile layout, Milestone 1](stitch/13-rendering-proof-mobile.html)
 - [Rendering-proof landscape layout, Milestone 1](stitch/33-rendering-proof-landscape.html)
@@ -158,6 +160,24 @@ Undo/redo is session-only and groups each drag/opacity swipe as one edit.
 Preview framing and history never enter clean Output. Screen 12's grid snap,
 mesh/pattern tools, projector status, and decorative telemetry are not implemented.
 The new local HTML export is the existing approved screen, not a Stitch revision.
+
+Milestone 6 was explicitly approved on 2026-10-29: independent external-display
+output, testable with a USB-C/HDMI monitor before a projector is available.
+Screen 34 was created in the existing Stitch project using screen 09 and the
+existing design-system tokens. It defines a phone-side display status, opt-in
+Send clean output switch, display selection, disconnected guidance, and Retry.
+The phone's Edit/Output switch remains independent. The external Presentation
+contains only a fullscreen media SurfaceView over black; paused/error states
+cover the media with black rather than displaying phone recovery UI.
+
+The generated reference is a large specification board, not literal phone
+geometry. Decorative mesh tools, EDID details, invented latency/frame-drop
+statistics, projector model names, and a second broadcast/commit button are
+not implemented. Its absolute no-notifications claim is not an OS guarantee:
+Android/Samsung still controls desktop chrome, notifications, and mirroring
+outside an active Presentation. Native controls use the existing scrollable
+panel and 48dp targets. No casting, MediaProjection permission, effects,
+physical calibration, or display-wall support was added.
 
 All current screen references remain in Stitch. Only the references above are
 exported locally; the manifest is not a full offline archive of every mockup.

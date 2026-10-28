@@ -3,8 +3,9 @@
 An Android-first, offline projection-mapping app. Currently implemented:
 **Milestone 0, the rendering proof**, **Milestone 1, the virtual projector
 canvas**, **Milestone 2, media import**, **Milestone 3, scene composition**,
-**Milestone 4, local project persistence**, and **Milestone 5, editing polish
-(emulator-verified; physical-device acceptance pending)**. This is intentionally not the
+**Milestone 4, local project persistence**, **Milestone 5, editing polish**,
+and **Milestone 6, independent external-display output**
+(emulator-verified; physical HDMI acceptance pending). This is intentionally not the
 complete MVP.
 
 Play a bundled video, independently drag its four corners, and watch the GPU
@@ -158,6 +159,49 @@ geometry intact and shows an explicit Retry action.
 - Projects are local only: no cloud sync/export, cross-device backup, or recovery
   after uninstall/clearing app data. Android backup remains disabled.
 
+## USB-C / HDMI monitor or projector
+
+The 0.2.0 debug APK can update the earlier build without uninstalling (same
+application ID/signing key); uninstalling clears local projects.
+
+1. Connect a monitor/projector using a USB-C video-capable adapter and HDMI cable.
+   The phone must support wired display output; a charging-only cable is not enough.
+2. Keep Lumis running on the **phone**. On Samsung, extended/DeX mode may be
+   needed for Android to expose a separate display; do not move Lumis to the
+   monitor's desktop. Availability depends on the phone/OS/adapter.
+3. Scroll to **External display** in the editor. When a display is listed,
+   enable **Send clean output**. If multiple displays are available, use
+   **Choose display** first. Selection alone never starts output.
+4. Leave the phone in **Edit** and move corners, change media/properties, or
+   undo/redo. The external display shows only the same mapped composition over
+   black, with 16:9 letterboxing as needed. Preview zoom/pan stays on the phone.
+   Phone **Output** is still a separate local fullscreen preview.
+
+Output is off by default for each newly opened project. The display is shown as
+active only after its first successful GPU presentation. Unplugging stops output;
+reconnecting (or selecting another monitor) requires enabling it again, rather
+than silently sending content somewhere else. Rotation preserves the chosen
+route within the same process. Backgrounding or opening Android's media picker
+blacks the retained Presentation and releases media resources; resuming restores
+output. External rendering errors stay on the phone with Retry, while the
+external window stays black.
+
+This uses one scene, one GL context/compositor, and one decoder/texture per
+surface. Each decoded frame is sampled once, then drawn into the phone and
+external EGL windows. It does not duplicate decoders, mirror editor pixels,
+read back video through the CPU, or request screen-recording permission.
+One external target is supported at a time; there is no display-wall routing.
+Audio routing is unchanged and remains controlled by Android.
+
+**Important:** if Android exposes only a mirrored display, Lumis cannot isolate
+the editor; the card explains that no independent display is available. Turning
+output off, leaving the editor, activity replacement during rotation, process
+death, or OS/DeX behavior may restore mirroring or a desktop. The app cannot
+guarantee that system notifications/overlays never appear. Use Do Not Disturb
+and check the monitor before presenting sensitive content. No physical
+Samsung/HDMI/projector validation is claimed yet; a monitor is sufficient for
+testing routing and visual isolation, but not projection onto objects.
+
 ## Rendering architecture
 
 ```text
@@ -205,7 +249,8 @@ the same `GLSurfaceView`, compositor, media surfaces, and scene with no inset,
 letterboxed or pillarboxed in black at 16:9. Switching modes only changes view
 visibility, system bars, and the viewport; it never recreates the video pipeline.
 On a 2400x1080 landscape phone, Output is exactly 1920x1080 pixels. External
-HDMI/Presentation display routing is not implemented yet.
+HDMI/Presentation output uses a second EGL window on that same GL context and
+the same textures/shaders, with its own clean fitted viewport.
 
 Key source:
 
@@ -218,6 +263,8 @@ Key source:
 - [Corner editing and accessibility](app/src/main/java/com/lumis/editor/CornerOverlay.kt)
 - [Editor preview transform](app/src/main/java/com/lumis/editor/PreviewTransform.kt)
 - [Scene edit history](app/src/main/java/com/lumis/editor/EditHistory.kt)
+- [External display lifecycle](app/src/main/java/com/lumis/output/ExternalOutput.kt)
+- [Shared-context external EGL window](app/src/main/java/com/lumis/renderer/ExternalEglOutput.kt)
 - [Native screen](app/src/main/java/com/lumis/MainActivity.kt)
 
 The UI follows the Milestone 1 Stitch revisions of references 13 and 33, plus
@@ -233,6 +280,8 @@ scrollable dialogs and accessible move buttons adapt the references without
 introducing roadmap controls.
 Editing polish reuses screens 09/12 for Undo/Redo and two-finger navigation,
 with native zoom/Fit and accessible pan controls. These remain editor-only.
+External display controls follow approved screen 34; no status/error UI enters
+the external compositor.
 
 ## Tests
 
@@ -296,6 +345,13 @@ Android's system input pipeline.
   Each runs five edit/undo/redo/Output/background cycles, verifies every surface's
   actual GPU pixels, and checks each video decoder advances independently.
   Timing/process-memory logs are emulator observations, not device benchmarks.
+- [External-display tests](app/src/androidTest/java/com/lumis/ExternalOutputTest.kt)
+  create actual Android virtual Presentation displays backed by ImageReader.
+  Full-display GPU pixels verify clean video/image output while the phone stays
+  in Edit, blend/visibility/undo, the exact same paused decoded frame, mixed
+  four-video/image resources, hotplug/reconnect consent, multiple targets,
+  display resize, black paused/error output and Retry, recreation/resume, and
+  readable accessible controls. No test-only routing exists in production code.
 - GPU tests use `PixelCopy` on the actual GL surface, not a UI screenshot proxy.
   They compare 20 source points after a strong trapezoid warp, requiring average
   per-channel error under 5/255 and at least 18/20 samples under 12/255.
@@ -319,7 +375,7 @@ sh tools/generate-sample.sh
 
 ## Not implemented yet
 
-External Output displays, effects, masks, and cameras are not part of this
+Effects, masks, and cameras are not part of this
 build. Physical Pixel 9 Pro performance, thermal behavior,
 hardware-specific decoding, and projector output still need device testing.
 Follow the [milestone checklist](IMPLEMENTATION.md) rather than expanding everything

@@ -34,6 +34,7 @@ import com.lumis.editor.CornerOverlay
 import com.lumis.editor.EditHistory
 import com.lumis.editor.PreviewTransform
 import com.lumis.editor.PreviewGestures
+import com.lumis.output.ExternalOutput
 import com.lumis.geometry.OutputCanvas
 import com.lumis.geometry.Point
 import com.lumis.geometry.Quad
@@ -117,6 +118,7 @@ class MainActivity : Activity() {
     val currentProjectName: String? get() = project?.name
     private class EditSession(val history: EditHistory<ProjectState> = EditHistory())
     private var editSession = EditSession()
+    private var retainedSession = false
     private var editDepth = 0
     private var editBefore: ProjectState? = null
     var previewTransform = PreviewTransform()
@@ -128,10 +130,17 @@ class MainActivity : Activity() {
     private lateinit var zoomInButton: Button
     val canUndo: Boolean get() = editSession.history.canUndo
     val canRedo: Boolean get() = editSession.history.canRedo
+    lateinit var externalOutput: ExternalOutput
+        private set
+    private lateinit var externalStatus: TextView
+    private lateinit var externalToggle: Switch
+    private lateinit var externalChoose: Button
+    private lateinit var externalRetry: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         editSession = lastNonConfigurationInstance as? EditSession ?: EditSession()
+        retainedSession = lastNonConfigurationInstance != null
         savedInstanceState?.getDoubleArray("preview")?.let { previewTransform = PreviewTransform(it[0], it[1], it[2]) }
         projectStore = ProjectStore(File(filesDir, "projects"))
         setContentView(text(getString(R.string.loading), 18, Color.WHITE).apply {
@@ -187,6 +196,16 @@ class MainActivity : Activity() {
         pickerAddsSurface = savedInstanceState?.getBoolean("picker_add") ?: false
         pickerTargetId = savedInstanceState?.getLong("picker_target")?.takeIf { it > 0 }
         buildUi()
+        externalOutput = ExternalOutput(this, renderer::setExternalTarget, ::refreshExternalOutput)
+        if (!paused) externalOutput.resume()
+        if (savedInstanceState != null && retainedSession) {
+            val id = savedInstanceState.getInt("external_display", -1)
+            if (externalOutput.displays.any { it.displayId == id }) {
+                externalOutput.select(id)
+                externalOutput.enable(savedInstanceState.getBoolean("external_enabled"))
+            }
+        }
+        refreshExternalOutput()
         setOutputMode(savedInstanceState?.getBoolean("output") ?: false)
         refreshEditor()
         loading = false
@@ -435,6 +454,9 @@ class MainActivity : Activity() {
                     )
                 }
             },
+            { target, detail -> runOnUiThread {
+                if (editorReady && ::externalOutput.isInitialized) externalOutput.rendererState(target, detail)
+            } },
         )
         glView.setRenderer(renderer)
         glView.renderMode = GLSurfaceView.RENDERMODE_WHEN_DIRTY
@@ -614,6 +636,45 @@ class MainActivity : Activity() {
         }, if (landscape) LinearLayout.LayoutParams(-1, -2) else LinearLayout.LayoutParams(0, -2, 1f))
         panel.addView(controls)
         panel.addView(navigationPanel, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(12) })
+        val externalPanel = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            background = rounded(surface)
+            setPadding(dp(16), dp(12), dp(16), dp(12))
+        }
+        externalPanel.addView(text(getString(R.string.external_title), 16, Color.WHITE, true))
+        externalStatus = text("", 14, cyan).apply {
+            id = R.id.external_status
+            accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_POLITE
+        }
+        externalPanel.addView(externalStatus)
+        @Suppress("UseSwitchCompatOrMaterialCode")
+        externalToggle = Switch(this).apply {
+            id = R.id.external_toggle
+            text = getString(R.string.external_send)
+            setTextColor(Color.WHITE)
+            minHeight = dp(48)
+            setOnCheckedChangeListener { _, checked ->
+                if (::externalOutput.isInitialized && externalOutput.enabled != checked) externalOutput.enable(checked)
+            }
+        }
+        externalPanel.addView(externalToggle)
+        externalPanel.addView(text(getString(R.string.external_explanation), 12, secondary))
+        externalChoose = button(R.string.external_choose, false).apply {
+            id = R.id.external_choose
+            setOnClickListener {
+                val displays = externalOutput.displays
+                AlertDialog.Builder(this@MainActivity).setTitle(R.string.external_choose)
+                    .setItems(displays.map { it.name }.toTypedArray()) { _, index -> externalOutput.select(displays[index].displayId) }
+                    .setNegativeButton(R.string.cancel, null).show()
+            }
+        }
+        externalPanel.addView(externalChoose)
+        externalRetry = button(R.string.retry, false).apply {
+            id = R.id.external_retry
+            setOnClickListener { externalOutput.enable(true) }
+        }
+        externalPanel.addView(externalRetry)
+        panel.addView(externalPanel, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(12) })
 
         val diagnosticRow = LinearLayout(this).apply {
             gravity = Gravity.CENTER_VERTICAL
@@ -655,9 +716,26 @@ class MainActivity : Activity() {
                     val base = Viewport.fit(glView.width, glView.height, CornerOverlay.INSET_DP * resources.displayMetrics.density)
                     navigatePreview(1.0, Point(0.0, 0.0), Point(delta.x * base.width, delta.y * base.height))
                 }
+
             }, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(8) })
         }
         showPanel(R.string.pan_canvas, panel)
+    }
+
+    private fun refreshExternalOutput() {
+        if (!::externalOutput.isInitialized) return
+        val output = externalOutput
+        externalStatus.text = when {
+            output.error != null -> getString(R.string.external_failed, output.error)
+            output.selected == null -> getString(R.string.external_none)
+            output.active -> getString(R.string.external_active, output.selected?.name)
+            output.enabled -> getString(R.string.external_starting, output.selected?.name)
+            else -> getString(R.string.external_connected, output.selected?.name)
+        }
+        externalToggle.isEnabled = output.selected != null
+        externalToggle.isChecked = output.enabled
+        externalChoose.visibility = if (output.displays.size > 1) View.VISIBLE else View.GONE
+        externalRetry.visibility = if (output.error != null && output.selected != null) View.VISIBLE else View.GONE
     }
 
     private fun modeSwitch() = LinearLayout(this).apply {
@@ -1311,6 +1389,7 @@ class MainActivity : Activity() {
         resumed = true
         if (editorReady) {
             glView.onResume()
+            externalOutput.resume()
             if (saveFailed) showSaveFailure()
         }
     }
@@ -1323,6 +1402,7 @@ class MainActivity : Activity() {
             return
         }
         while (editDepth > 0) endEdit()
+        externalOutput.pause()
         if (!leaving && !saveFailed) saveProject()
         sessions.values.forEach { it.player.release(); it.ready = false }
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -1334,6 +1414,7 @@ class MainActivity : Activity() {
     override fun onDestroy() {
         saveHandler.removeCallbacks(autosave)
         compositionDialog?.dismiss()
+        if (::externalOutput.isInitialized) externalOutput.destroy()
         super.onDestroy()
     }
 
@@ -1365,6 +1446,10 @@ class MainActivity : Activity() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
+        if (::externalOutput.isInitialized) {
+            outState.putInt("external_display", externalOutput.selectedId ?: -1)
+            outState.putBoolean("external_enabled", externalOutput.enabled)
+        }
         outState.putString("project_id", project?.id ?: intent.getStringExtra("project_id"))
         outState.putBoolean("save_failed", saveFailed)
         outState.putDoubleArray("preview", doubleArrayOf(previewTransform.zoom, previewTransform.panX, previewTransform.panY))

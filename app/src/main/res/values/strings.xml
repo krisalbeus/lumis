@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="external_title">External display</string>
+    <string name="external_send">Send clean output</string>
+    <string name="external_choose">Choose display</string>
+    <string name="external_none">No external display. Connect a USB-C display that supports extended output.</string>
+    <string name="external_explanation">Your phone stays in Edit. The connected display shows only mapped media. Phone Output is a separate fullscreen preview. Turning this off may restore Android screen mirroring.</string>
+    <string name="external_connected">%1$s connected. Output is off.</string>
+    <string name="external_starting">Starting output on %1$s…</string>
+    <string name="external_active">Clean output active on %1$s</string>
+    <string name="external_failed">External output failed: %1$s</string>
+    <string name="external_disconnected">Display disconnected. Reconnect and enable output again.</string>
     <string name="undo">Undo</string>
     <string name="redo">Redo</string>
     <string name="zoom_in">Zoom in</string>

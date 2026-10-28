@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>34 — External display output // Spec & Reference</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..900&family=Plus+Jakarta+Sans:wght@100..900&family=Space+Grotesk:wght@100..900&display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-secondary-fixed": "#001f23",
+            "surface-dim": "#111318",
+            "on-error": "#690005",
+            "on-background": "#e2e2e9",
+            "error-container": "#93000a",
+            "tertiary-fixed": "#68fcbf",
+            "surface-container-highest": "#33353a",
+            "on-secondary": "#00363c",
+            "on-surface-variant": "#cac4d4",
+            "primary-fixed": "#e8ddff",
+            "on-surface": "#e2e2e9",
+            "primary": "#cebdff",
+            "secondary-fixed-dim": "#54d8e8",
+            "outline": "#948e9d",
+            "surface-container-high": "#282a2f",
+            "inverse-primary": "#674bb5",
+            "surface-container": "#1e1f25",
+            "inverse-surface": "#e2e2e9",
+            "surface-bright": "#37393f",
+            "tertiary": "#45dfa4",
+            "on-tertiary-fixed-variant": "#005137",
+            "tertiary-container": "#00b37e",
+            "secondary": "#54d8e8",
+            "outline-variant": "#494552",
+            "background": "#111318",
+            "on-primary-container": "#3c1989",
+            "inverse-on-surface": "#2e3036",
+            "on-primary-fixed": "#21005e",
+            "surface-container-lowest": "#0c0e13",
+            "secondary-fixed": "#91f1ff",
+            "surface-variant": "#33353a",
+            "surface": "#111318",
+            "on-secondary-fixed-variant": "#004f57",
+            "secondary-container": "#02aebe",
+            "on-tertiary-fixed": "#002114",
+            "on-secondary-container": "#003b42",
+            "surface-tint": "#cebdff",
+            "error": "#ffb4ab",
+            "tertiary-fixed-dim": "#45dfa4",
+            "on-primary": "#381385",
+            "primary-container": "#a78bfa",
+            "primary-fixed-dim": "#cebdff",
+            "on-tertiary-container": "#003d28",
+            "on-tertiary": "#003825",
+            "on-primary-fixed-variant": "#4f319c",
+            "on-error-container": "#ffdad6",
+            "surface-container-low": "#1a1b21"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-lg": "1.5rem",
+            "gutter": "0.75rem",
+            "space-xs": "0.25rem",
+            "space-xl": "2rem",
+            "space-md": "1rem",
+            "space-sm": "0.5rem",
+            "margin": "1rem"
+          },
+          "fontFamily": {
+            "headline-md": ["Space Grotesk"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "headline-lg": ["Space Grotesk"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "label-code-sm": ["JetBrains Mono"],
+            "title-sm": ["Plus Jakarta Sans"],
+            "label-code-md": ["JetBrains Mono"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "headline-xl": ["Space Grotesk"]
+          },
+          "fontSize": {
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "label-lg": ["13px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "label-code-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+            "title-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "label-code-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    /* Touch target guarantee utility */
+    .touch-target {
+      min-width: 48px;
+      min-height: 48px;
+    }
+    /* Hardware keystone mesh grid representation */
+    .mesh-pattern {
+      background-size: 24px 24px;
+      background-image: 
+        linear-gradient(to right, rgba(73, 69, 82, 0.25) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(73, 69, 82, 0.25) 1px, transparent 1px);
+    }
+    .mesh-pattern-fine {
+      background-size: 12px 12px;
+      background-image: 
+        linear-gradient(to right, rgba(84, 216, 232, 0.12) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(84, 216, 232, 0.12) 1px, transparent 1px);
+    }
+  </style>
+</head>
+<body class="bg-[#090B10] text-on-surface font-body-md antialiased min-h-screen selection:bg-primary selection:text-on-primary">
+<!-- ============================================================== -->
+<!-- SPECIFICATION HEADER & ARCHITECTURAL METADATA                   -->
+<!-- ============================================================== -->
+<header class="w-full border-b border-outline-variant/40 bg-surface-container-low/95 backdrop-blur-md sticky top-0 z-50 px-space-lg py-4">
+<div class="max-w-[1720px] mx-auto flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+<div>
+<div class="flex items-center gap-3">
+<span class="px-2 py-0.5 rounded bg-primary-container/20 border border-primary/30 text-primary font-label-code-sm text-label-code-sm uppercase tracking-wider">
+            Spec ID #34
+          </span>
+<span class="px-2 py-0.5 rounded bg-secondary/10 border border-secondary/30 text-secondary font-label-code-sm text-label-code-sm">
+            Android DisplayManager API · Presentation API
+          </span>
+<span class="px-2 py-0.5 rounded bg-tertiary/10 border border-tertiary/30 text-tertiary font-label-code-sm text-label-code-sm flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-pulse"></span>
+            DP-Alt / HDMI 2.0 Direct Bus
+          </span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface mt-1 tracking-tight flex items-center gap-2">
+          34 — External display output <span class="text-outline font-headline-md font-normal">// Spec & Reference</span>
+</h1>
+<p class="font-body-md text-on-surface-variant text-body-md mt-0.5">
+          Independent HDMI / USB-C Display Presentation & Hardware Keystone Output Architecture
+        </p>
+</div>
+<!-- Live Pipeline Rules Callout Badge -->
+<div class="bg-surface-container-lowest/80 border border-outline-variant/60 rounded-xl p-3 max-w-xl flex items-start gap-3 shadow-lg">
+<span class="material-symbols-outlined text-secondary text-2xl mt-0.5 select-none" data-icon="tv_gen">tv_gen</span>
+<div class="space-y-1">
+<div class="flex items-center justify-between gap-2">
+<span class="font-label-code-md text-label-code-md text-secondary font-semibold uppercase tracking-wide">
+              Clean External Output Isolation Rule
+            </span>
+<span class="text-[10px] font-label-code-sm text-outline px-1.5 py-0.2 rounded bg-surface-container">CRITICAL REQ</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            The connected HDMI/DisplayPort output renders strictly <strong class="text-on-surface">pure black (#000000) + keystone-mapped video surface</strong> (zero chrome, no handles, no touch bounds, no notifications, no toasts). The handset stays responsive in <strong class="text-primary">Edit mode</strong>.
+          </p>
+</div>
+</div>
+</div>
+</header>
+<!-- ============================================================== -->
+<!-- MAIN WORKSPACE & INTERACTIVE REFERENCE CANVAS                  -->
+<!-- ============================================================== -->
+<main class="max-w-[1720px] mx-auto p-4 lg:p-space-lg space-y-8">
+<!-- ARCHITECTURE SCHEMATIC COMPARISON: Handset vs External Screen -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
+<!-- ============================================================ -->
+<!-- SECTION A: MOBILE HANDSET SCREEN VIEW (Interactive View)     -->
+<!-- ============================================================ -->
+<section class="xl:col-span-5 flex flex-col items-center">
+<div class="w-full flex items-center justify-between mb-3 px-1">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+<span class="font-headline-md text-headline-md text-on-surface">Main Section A: Interactive Mobile Handset</span>
+</div>
+<span class="font-label-code-sm text-label-code-sm text-outline">Pixel 9 Pro · 412 × 924 dp</span>
+</div>
+<!-- Android Hardware Chassis (Mock Frame 396px wide) -->
+<div class="w-full max-w-[400px] bg-[#0c0e13] rounded-[44px] p-3 shadow-2xl border-[2px] border-[#2B3346] relative overflow-hidden">
+<!-- Glass inner bezel -->
+<div class="w-full bg-[#111318] rounded-[34px] overflow-hidden flex flex-col h-[830px] border border-outline-variant/30 relative select-none">
+<!-- Android System Status Bar + Punch-hole camera -->
+<div class="h-10 w-full flex items-center justify-between px-6 z-30 pt-1 text-on-surface font-label-code-sm text-[11px] bg-transparent">
+<span>09:41</span>
+<!-- Punch-hole -->
+<div class="w-4 h-4 rounded-full bg-black border border-surface-container-highest"></div>
+<div class="flex items-center gap-1.5 text-outline">
+<span class="material-symbols-outlined text-[14px]" data-icon="cable">cable</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="wifi">wifi</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="battery_full">battery_full</span>
+</div>
+</div>
+<!-- TopAppBar Component (from Shared JSON) -->
+<div class="w-full z-20 flex items-center justify-between px-space-md h-12 bg-surface-container-low/95 backdrop-blur-md border-b border-outline-variant">
+<div class="flex items-center gap-1">
+<button class="touch-target flex items-center justify-center text-outline hover:text-on-surface transition-colors" title="Projects">
+<span class="material-symbols-outlined text-xl" data-icon="arrow_back">arrow_back</span>
+</button>
+<div class="flex flex-col">
+<span class="text-title-sm font-title-sm font-semibold text-on-surface tracking-wide flex items-center gap-1.5">
+                    Living room test
+                  </span>
+<span class="font-label-code-sm text-[10px] text-tertiary flex items-center gap-1">
+<span class="w-1 h-1 rounded-full bg-tertiary"></span> Saved
+                  </span>
+</div>
+</div>
+<!-- Center pill: Edit | Output Switcher -->
+<div class="flex items-center bg-surface-container-lowest p-0.5 rounded-lg border border-outline-variant/60">
+<button class="px-2.5 py-1 text-label-code-sm font-label-code-sm rounded bg-surface-container text-secondary font-medium">Edit</button>
+<button class="px-2.5 py-1 text-label-code-sm font-label-code-sm rounded text-outline hover:text-on-surface transition-colors">Output</button>
+</div>
+<button class="touch-target flex items-center justify-center text-outline hover:text-on-surface transition-colors" title="Settings">
+<span class="material-symbols-outlined text-xl" data-icon="settings">settings</span>
+</button>
+</div>
+<!-- Handset Interactive Canvas Viewport (16:9 projection frame preview) -->
+<div class="relative w-full h-[250px] bg-black overflow-hidden flex items-center justify-center mesh-pattern">
+<!-- Coordinate grid watermark -->
+<div class="absolute top-2 left-3 font-label-code-sm text-[10px] text-outline/60 flex items-center gap-2">
+<span>VIEWPORT: MESH_EDIT</span>
+<span class="text-secondary">KEYSTONE 4-PT</span>
+</div>
+<div class="absolute top-2 right-3 font-label-code-sm text-[10px] text-primary bg-primary/10 px-1.5 py-0.5 rounded border border-primary/20">
+                LOCAL PREVIEW
+              </div>
+<!-- Warped Neon Video Canvas Content representation -->
+<div class="relative w-[300px] h-[190px] flex items-center justify-center">
+<!-- SVG Quadrilateral Keystoned polygon with neon optic shader simulation -->
+<svg class="w-full h-full overflow-visible" viewbox="0 0 300 190">
+<defs>
+<lineargradient id="neonGradientMobile" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#cebdff" stop-opacity="0.9"></stop>
+<stop offset="50%" stop-color="#54d8e8" stop-opacity="0.8"></stop>
+<stop offset="100%" stop-color="#a78bfa" stop-opacity="0.95"></stop>
+</lineargradient>
+<pattern height="16" id="quadGrid" patternunits="userSpaceOnUse" width="16">
+<path d="M 16 0 L 0 0 0 16" fill="none" stroke="rgba(84, 216, 232, 0.25)" stroke-width="0.8"></path>
+</pattern>
+</defs>
+<!-- Warped quadrilateral fill -->
+<polygon fill="url(#neonGradientMobile)" opacity="0.85" points="32,28 274,18 252,168 48,154"></polygon>
+<polygon fill="url(#quadGrid)" points="32,28 274,18 252,168 48,154"></polygon>
+<!-- Perimeter border with optic cyan glow -->
+<polygon fill="none" points="32,28 274,18 252,168 48,154" stroke="#54d8e8" stroke-width="1.8"></polygon>
+<!-- Perspective lines -->
+<line stroke="rgba(255,255,255,0.2)" stroke-dasharray="3,3" x1="32" x2="252" y1="28" y2="168"></line>
+<line stroke="rgba(255,255,255,0.2)" stroke-dasharray="3,3" x1="274" x2="48" y1="18" y2="154"></line>
+</svg>
+<!-- Vertex Handles A, B, C, D with 48dp touch targets -->
+<!-- Vertex A -->
+<div class="absolute -top-[2px] left-[18px] touch-target flex items-center justify-center cursor-pointer group" title="Vertex A (Keystone TL)">
+<div class="w-4 h-4 rounded-full border-2 border-secondary bg-white shadow-[0_0_12px_#67E8F9] flex items-center justify-center group-hover:scale-125 transition-transform">
+<span class="sr-only">A</span>
+</div>
+<span class="absolute -top-3 -left-3 font-label-code-sm text-[10px] text-secondary font-bold">A</span>
+</div>
+<!-- Vertex B -->
+<div class="absolute -top-[12px] right-[14px] touch-target flex items-center justify-center cursor-pointer group" title="Vertex B (Keystone TR)">
+<div class="w-4 h-4 rounded-full border-2 border-secondary bg-white shadow-[0_0_12px_#67E8F9] flex items-center justify-center group-hover:scale-125 transition-transform">
+<span class="sr-only">B</span>
+</div>
+<span class="absolute -top-3 -right-3 font-label-code-sm text-[10px] text-secondary font-bold">B</span>
+</div>
+<!-- Vertex C -->
+<div class="absolute bottom-[8px] right-[36px] touch-target flex items-center justify-center cursor-pointer group" title="Vertex C (Keystone BR)">
+<div class="w-4 h-4 rounded-full border-2 border-secondary bg-white shadow-[0_0_12px_#67E8F9] flex items-center justify-center group-hover:scale-125 transition-transform">
+<span class="sr-only">C</span>
+</div>
+<span class="absolute -bottom-3 -right-3 font-label-code-sm text-[10px] text-secondary font-bold">C</span>
+</div>
+<!-- Vertex D -->
+<div class="absolute bottom-[20px] left-[34px] touch-target flex items-center justify-center cursor-pointer group" title="Vertex D (Keystone BL)">
+<div class="w-4 h-4 rounded-full border-2 border-secondary bg-white shadow-[0_0_12px_#67E8F9] flex items-center justify-center group-hover:scale-125 transition-transform">
+<span class="sr-only">D</span>
+</div>
+<span class="absolute -bottom-3 -left-3 font-label-code-sm text-[10px] text-secondary font-bold">D</span>
+</div>
+</div>
+<!-- HUD Scrub Coordinates Bar -->
+<div class="absolute bottom-2 left-3 right-3 bg-surface-container-lowest/80 backdrop-blur-sm rounded px-2.5 py-1 flex items-center justify-between border border-outline-variant/40">
+<span class="font-label-code-sm text-[11px] text-outline">X: 1920 Y: 1080</span>
+<span class="font-label-code-sm text-[11px] text-tertiary">Δ 0.04° ROLL</span>
+<span class="font-label-code-sm text-[11px] text-secondary">ACTIVE: NODE_A</span>
+</div>
+</div>
+<!-- Handset Controls & Dedicated External Display Card (Scrollable Body) -->
+<div class="flex-1 overflow-y-auto p-3 space-y-3 bg-surface pb-6">
+<!-- Tool Quick Bar (Vertices, Geometry, Media) -->
+<div class="flex items-center justify-between gap-1.5 bg-surface-container-low p-1.5 rounded-xl border border-outline-variant">
+<button class="flex-1 py-1.5 px-2 rounded bg-surface-container text-secondary flex items-center justify-center gap-1 font-label-code-sm text-xs">
+<span class="material-symbols-outlined text-base" data-icon="gesture">gesture</span> Keystone
+                </button>
+<button class="flex-1 py-1.5 px-2 rounded hover:bg-surface-container text-outline flex items-center justify-center gap-1 font-label-code-sm text-xs">
+<span class="material-symbols-outlined text-base" data-icon="grid_4x4">grid_4x4</span> Mesh 3x3
+                </button>
+<button class="flex-1 py-1.5 px-2 rounded hover:bg-surface-container text-outline flex items-center justify-center gap-1 font-label-code-sm text-xs">
+<span class="material-symbols-outlined text-base" data-icon="movie">movie</span> Media
+                </button>
+</div>
+<!-- DEDICATED CARD: External Display (HDMI / USB-C) -->
+<div class="bg-surface-container-low rounded-2xl p-3.5 border border-outline-variant/80 shadow-md space-y-3.5 relative overflow-hidden">
+<!-- Subtle status illumination indicator -->
+<div class="absolute top-0 right-0 w-24 h-24 bg-secondary/5 rounded-full blur-xl pointer-events-none"></div>
+<!-- Card Header with status badge -->
+<div class="flex items-start justify-between">
+<div class="space-y-0.5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-lg" data-icon="connected_tv">connected_tv</span>
+<h2 class="font-headline-md text-[15px] font-semibold text-on-surface">External Display (HDMI / USB-C)</h2>
+</div>
+<p class="font-body-sm text-[11px] text-outline">Hardware Presentation pipeline via DisplayManager</p>
+</div>
+<!-- Status Pill -->
+<div class="px-2 py-0.5 rounded-full bg-tertiary/10 border border-tertiary/30 text-tertiary font-label-code-sm text-[10px] flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-ping"></span>
+<span>HDMI monitor connected</span>
+</div>
+</div>
+<!-- Hardware Resolution Tag -->
+<div class="bg-surface-container rounded-lg p-2 flex items-center justify-between text-xs border border-outline-variant/40">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline text-base" data-icon="settings_input_hdmi">settings_input_hdmi</span>
+<span class="font-label-code-md text-on-surface text-xs font-medium">1080p 60Hz</span>
+</div>
+<span class="font-label-code-sm text-outline text-[11px]">Display #2 · Optoma Pro</span>
+</div>
+<!-- Primary Safety Toggle Switch: Send clean output -->
+<div class="bg-surface-container-lowest/80 p-3 rounded-xl border border-outline-variant flex items-center justify-between gap-3">
+<div class="space-y-0.5">
+<div class="flex items-center gap-1.5">
+<span class="font-label-lg text-label-lg text-on-surface">Send clean output</span>
+<span class="px-1.5 py-0.2 rounded bg-surface-container text-outline font-label-code-sm text-[9px]">OFF / SAFE</span>
+</div>
+<p class="font-body-sm text-[11px] text-outline leading-tight">
+                      Your phone stays in Edit. The connected display shows only mapped media.
+                    </p>
+</div>
+<!-- 48dp Touch Frame Switch (State: OFF) -->
+<label class="relative inline-flex items-center cursor-pointer touch-target justify-center shrink-0">
+<input class="sr-only peer" id="toggleCleanOutput" type="checkbox" value=""/>
+<div class="w-12 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[14px] after:left-[6px] after:bg-on-surface-variant after:border-outline after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary peer-checked:after:bg-black peer-checked:after:border-transparent"></div>
+</label>
+</div>
+<!-- Action Button: Choose Display (48dp height) -->
+<div class="space-y-1.5">
+<label class="font-label-code-sm text-[11px] text-outline flex items-center justify-between">
+<span>OUTPUT ROUTE SINK</span>
+<span class="text-secondary font-medium">Multi-display ready</span>
+</label>
+<button class="w-full touch-target h-12 bg-surface-container hover:bg-surface-container-high border border-outline-variant rounded-lg px-3.5 flex items-center justify-between text-left active:scale-[0.98] transition-transform">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-secondary" data-icon="screenshot_monitor">screenshot_monitor</span>
+<div>
+<div class="font-label-lg text-label-lg text-on-surface font-semibold">OPTOMA UHD38 — HDMI 1</div>
+<div class="font-label-code-sm text-[10px] text-outline">EDID: OPT-4921 · Native 3840×2160 scaler</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline" data-icon="expand_more">expand_more</span>
+</button>
+</div>
+<!-- Local Preview Disclaimer -->
+<div class="p-2.5 rounded-lg bg-surface-container/50 border border-outline-variant/30 flex items-start gap-2">
+<span class="material-symbols-outlined text-secondary text-base mt-0.5" data-icon="info">info</span>
+<p class="font-body-sm text-[11px] text-outline leading-tight">
+<strong class="text-on-surface-variant">Local preview disclaimer:</strong> Phone Edit | Output remains a local preview toggle, independent of hardware external feed.
+                  </p>
+</div>
+<!-- Direct Stream Launch Button (48dp touch compliance) -->
+<button class="w-full touch-target h-12 rounded-lg bg-primary-container hover:bg-primary-container/90 text-on-primary-container font-label-lg font-bold text-label-lg flex items-center justify-center gap-2 active:scale-[0.97] transition-all shadow-[0_0_16px_rgba(167,139,250,0.35)]">
+<span class="material-symbols-outlined text-xl" data-icon="cast_connected">cast_connected</span>
+                  Broadcasting Ready: Commit Output
+                </button>
+</div>
+<!-- Secondary quick controls on phone -->
+<div class="grid grid-cols-2 gap-2 text-xs">
+<div class="bg-surface-container-low p-2.5 rounded-xl border border-outline-variant">
+<span class="font-label-code-sm text-[10px] text-outline block">PROJECTION LUMENS</span>
+<span class="font-label-code-md text-sm text-on-surface font-semibold">4,000 ANSI</span>
+</div>
+<div class="bg-surface-container-low p-2.5 rounded-xl border border-outline-variant">
+<span class="font-label-code-sm text-[10px] text-outline block">LATENCY SYNC</span>
+<span class="font-label-code-md text-sm text-tertiary font-semibold">12ms · V-SYNC</span>
+</div>
+</div>
+</div>
+<!-- Gesture Pill Safe Area -->
+<div class="h-6 w-full flex items-center justify-center bg-surface-container-low/95">
+<div class="w-32 h-1 bg-outline rounded-full"></div>
+</div>
+</div>
+</div>
+<div class="mt-3 text-center">
+<p class="font-label-code-sm text-label-code-sm text-outline">Figure A.1: Handset touch surface in persistent Edit mode</p>
+</div>
+</section>
+<!-- ============================================================ -->
+<!-- SECTION B: PHYSICAL EXTERNAL DISPLAY OUTPUT PREVIEW          -->
+<!-- ============================================================ -->
+<section class="xl:col-span-7 flex flex-col">
+<div class="w-full flex items-center justify-between mb-3 px-1">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container"></span>
+<span class="font-headline-md text-headline-md text-on-surface">Main Section B: Adjacent External Display (Hardware Mirror Sink)</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-surface-container text-secondary font-label-code-sm text-label-code-sm border border-secondary/20">
+              16:9 Cinema Aspect · 1920 × 1080 @ 60Hz
+            </span>
+</div>
+</div>
+<!-- Physical Monitor Bezel Mockup -->
+<div class="w-full bg-[#141821] rounded-2xl p-4 lg:p-6 border border-[#2B3346] shadow-2xl relative">
+<!-- Monitor Brand Header & Signal Stats -->
+<div class="flex items-center justify-between mb-3 pb-3 border-b border-outline-variant/40">
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 rounded-full bg-tertiary shadow-[0_0_8px_#45dfa4]"></div>
+<div>
+<span class="font-label-code-md text-xs font-semibold text-on-surface tracking-wider uppercase">EXTERNAL PORT: DISPLAY_PRESENTATION_SINK</span>
+<span class="block text-[11px] text-outline font-label-code-sm">Optoma UHD38 (Direct DisplayPort-to-HDMI 2.0 Physical Cable)</span>
+</div>
+</div>
+<div class="flex items-center gap-2 font-label-code-sm text-[11px]">
+<span class="bg-black/60 px-2 py-1 rounded text-tertiary border border-tertiary/20">COLOR: FULL RGB (0-255)</span>
+<span class="bg-black/60 px-2 py-1 rounded text-secondary border border-secondary/20">VSYNC LOCKED (60.0 FPS)</span>
+</div>
+</div>
+<!-- The Physical 16:9 Display Screen (PURE BLACK #000000 CANVAS) -->
+<div class="relative w-full aspect-video bg-[#000000] rounded-lg overflow-hidden border-2 border-[#1e1f25] shadow-inner flex items-center justify-center">
+<!-- ZERO OVERLAY CALLOUT ANNOTATIONS (Overlayed to illustrate the spec rule) -->
+<!-- Top Tag: No Chrome/Status Bar -->
+<div class="absolute top-3 left-4 z-20 pointer-events-none flex items-center gap-1.5 bg-black/80 border border-error/50 px-2.5 py-1 rounded text-error text-[11px] font-label-code-sm">
+<span class="material-symbols-outlined text-sm" data-icon="block">block</span>
+              ZERO OVERLAY: No status bar / clock / carrier
+            </div>
+<!-- Top Right: No Edit Buttons or HUD -->
+<div class="absolute top-3 right-4 z-20 pointer-events-none flex items-center gap-1.5 bg-black/80 border border-error/50 px-2.5 py-1 rounded text-error text-[11px] font-label-code-sm">
+<span class="material-symbols-outlined text-sm" data-icon="block">block</span>
+              ZERO OVERLAY: No edit buttons, tools, or HUD
+            </div>
+<!-- Bottom Left: No handles or vertex points -->
+<div class="absolute bottom-3 left-4 z-20 pointer-events-none flex items-center gap-1.5 bg-black/80 border border-error/50 px-2.5 py-1 rounded text-error text-[11px] font-label-code-sm">
+<span class="material-symbols-outlined text-sm" data-icon="block">block</span>
+              ZERO OVERLAY: No corner handles A/B/C/D or wireframes
+            </div>
+<!-- Bottom Right: No toasts / errors -->
+<div class="absolute bottom-3 right-4 z-20 pointer-events-none flex items-center gap-1.5 bg-black/80 border border-error/50 px-2.5 py-1 rounded text-error text-[11px] font-label-code-sm">
+<span class="material-symbols-outlined text-sm" data-icon="block">block</span>
+              ZERO OVERLAY: No toasts, alerts, or touch markers
+            </div>
+<!-- Pure Keystoned Video Stream (Only mapped media rendered!) -->
+<div class="w-full h-full relative flex items-center justify-center p-8">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 800 450">
+<defs>
+<!-- Ultra high fidelity video texture shader proxy -->
+<lineargradient id="neonGradientExternal" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#a78bfa"></stop>
+<stop offset="35%" stop-color="#54d8e8"></stop>
+<stop offset="70%" stop-color="#cebdff"></stop>
+<stop offset="100%" stop-color="#02aebe"></stop>
+</lineargradient>
+<filter height="120%" id="bloomExt" width="120%" x="-10%" y="-10%">
+<fegaussianblur result="blur" stddeviation="3"></fegaussianblur>
+<fecomposite in="SourceGraphic" in2="blur" operator="over"></fecomposite>
+</filter>
+</defs>
+<!-- PURE BLACK OUTSIDE KEESTONE REGION (#000000) -->
+<!-- The Warped Video Stream (Quad Perspective Matrix Applied) -->
+<polygon fill="url(#neonGradientExternal)" filter="url(#bloomExt)" opacity="0.98" points="120,68 710,42 660,402 165,372"></polygon>
+<!-- Internal cinematic generative visual curves inside the mapped quad -->
+<path d="M 120 68 Q 420 220 710 42" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2"></path>
+<path d="M 165 372 Q 410 230 660 402" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2"></path>
+<circle cx="415" cy="225" fill="none" r="50" stroke="white" stroke-dasharray="6,4" stroke-width="1.5"></circle>
+<text fill="white" font-family="'JetBrains Mono'" font-size="14" font-weight="600" letter-spacing="3" text-anchor="middle" x="415" y="230">LUMIS VIDEO MESH</text>
+</svg>
+</div>
+<!-- Absolute isolation boundary line (visual spec marker) -->
+<div class="absolute inset-0 pointer-events-none border border-outline-variant/20"></div>
+</div>
+<!-- Hardware Output Footer Telemetry -->
+<div class="mt-4 pt-3 flex flex-wrap items-center justify-between gap-3 text-xs border-t border-outline-variant/30">
+<div class="flex items-center gap-4">
+<span class="font-label-code-sm text-outline flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-secondary"></span> Frame Latency: <strong class="text-on-surface">3.8ms</strong>
+</span>
+<span class="font-label-code-sm text-outline flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span> Pixel Clock: <strong class="text-on-surface">148.5 MHz</strong>
+</span>
+<span class="font-label-code-sm text-outline flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary"></span> Color Space: <strong class="text-on-surface">BT.709 sRGB</strong>
+</span>
+</div>
+<div class="font-label-code-sm text-[11px] text-tertiary bg-tertiary/10 border border-tertiary/20 px-2 py-0.5 rounded">
+              Android Presentation API Surface: Active Viewport Decoupled
+            </div>
+</div>
+</div>
+<div class="mt-3 text-left">
+<p class="font-label-code-sm text-label-code-sm text-outline">Figure B.1: External HDMI sink viewport displaying pure keystone projection with zero chrome interference.</p>
+</div>
+</section>
+</div>
+<!-- ============================================================== -->
+<!-- SECTION C: REFERENCE STATE VARIANTS (3 Distinct Mobile Cards)  -->
+<!-- ============================================================== -->
+<section class="space-y-4">
+<div class="flex items-center justify-between border-b border-outline-variant/40 pb-2">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Main Section C: Reference State Variants</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Three lifecycle permutations of the mobile External Display control card.</p>
+</div>
+<span class="font-label-code-sm text-label-code-sm text-outline">Lumis State Machine Spec v2.4</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- VARIANT 1: 'No external display' (Disconnected / Standby) -->
+<div class="bg-surface-container-low rounded-2xl p-5 border border-outline-variant flex flex-col justify-between relative overflow-hidden group hover:border-outline transition-colors">
+<div class="space-y-4">
+<!-- Header state tag -->
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded bg-surface-container-highest text-outline font-label-code-sm text-label-code-sm uppercase">
+                Variant 1: Disconnected
+              </span>
+<span class="w-2.5 h-2.5 rounded-full bg-outline"></span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center border border-outline-variant/50 text-outline">
+<span class="material-symbols-outlined text-2xl" data-icon="cable">cable</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">No external display</h3>
+<span class="font-label-code-sm text-label-code-sm text-outline">Port status: Standby (0 sinks)</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              Connect a USB-C display that supports extended output (<strong class="text-on-surface">DisplayPort Alternate Mode</strong> or HDMI adapter).
+            </p>
+<!-- Disabled Controls Preview -->
+<div class="p-3 rounded-xl bg-surface-container-lowest/60 border border-outline-variant/30 space-y-2 opacity-50 cursor-not-allowed">
+<div class="flex items-center justify-between">
+<span class="font-label-lg text-label-lg text-outline">Send clean output</span>
+<div class="w-10 h-5 bg-surface-container rounded-full"></div>
+</div>
+<div class="font-label-code-sm text-[10px] text-outline">Awaiting physical hardware handshake...</div>
+</div>
+</div>
+<!-- Bottom compliance action -->
+<div class="pt-4 mt-4 border-t border-outline-variant/30">
+<button class="w-full touch-target h-12 rounded-lg bg-surface-container border border-outline-variant text-outline hover:text-on-surface font-label-lg text-label-lg flex items-center justify-center gap-2 cursor-not-allowed" disabled="">
+<span class="material-symbols-outlined text-lg" data-icon="help_outline">help_outline</span>
+              Troubleshoot USB-C Display
+            </button>
+</div>
+</div>
+<!-- VARIANT 2: 'External output active' (Streaming / Live) -->
+<div class="bg-surface-container-low rounded-2xl p-5 border border-secondary/50 shadow-[0_0_24px_rgba(84,216,232,0.15)] flex flex-col justify-between relative overflow-hidden">
+<!-- Ambient Cyan Glow -->
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-secondary/15 rounded-full blur-2xl pointer-events-none"></div>
+<div class="space-y-4">
+<!-- Header state tag -->
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded bg-secondary/10 border border-secondary/40 text-secondary font-label-code-sm text-label-code-sm uppercase font-semibold">
+                Variant 2: Streaming Live
+              </span>
+<span class="w-2.5 h-2.5 rounded-full bg-secondary animate-ping"></span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center border border-secondary text-secondary shadow-[0_0_12px_#54d8e8]">
+<span class="material-symbols-outlined text-2xl" data-icon="sensors">sensors</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Live Clean Output</h3>
+<span class="font-label-code-sm text-label-code-sm text-secondary font-medium">Display 2: OPTOMA UHD38</span>
+</div>
+</div>
+<!-- Active glowing switch -->
+<div class="p-3 rounded-xl bg-surface-container-lowest border border-secondary/30 space-y-2">
+<div class="flex items-center justify-between">
+<div>
+<span class="font-label-lg text-label-lg text-on-surface font-semibold">Send clean output</span>
+<span class="block text-[11px] text-tertiary font-label-code-sm">● STREAMING ISOLATED FEED</span>
+</div>
+<div class="w-12 h-6 bg-secondary rounded-full flex items-center justify-end px-1 shadow-[0_0_12px_#54d8e8]">
+<div class="w-4 h-4 rounded-full bg-black"></div>
+</div>
+</div>
+</div>
+<!-- Live Telemetry Readout -->
+<div class="bg-surface-container rounded-lg p-2.5 border border-outline-variant/40 space-y-1">
+<div class="flex justify-between font-label-code-sm text-xs">
+<span class="text-outline">Hardware Timing:</span>
+<span class="text-tertiary font-semibold">1080p @ 60.0 fps</span>
+</div>
+<div class="flex justify-between font-label-code-sm text-xs">
+<span class="text-outline">Dropped Frames:</span>
+<span class="text-on-surface">0 frames (0.00%)</span>
+</div>
+<div class="flex justify-between font-label-code-sm text-xs">
+<span class="text-outline">Output Mode:</span>
+<span class="text-secondary">Direct Keystone Quad</span>
+</div>
+</div>
+</div>
+<!-- Action buttons -->
+<div class="pt-4 mt-4 border-t border-outline-variant/30 grid grid-cols-2 gap-2">
+<button class="touch-target h-12 rounded-lg bg-surface-container hover:bg-surface-container-high border border-outline-variant text-on-surface font-label-lg text-xs font-semibold flex items-center justify-center gap-1 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-base" data-icon="splitscreen">splitscreen</span> Mirror Feed
+            </button>
+<button class="touch-target h-12 rounded-lg bg-error-container/80 hover:bg-error-container text-on-error font-label-lg text-xs font-semibold flex items-center justify-center gap-1 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-base" data-icon="power_settings_new">power_settings_new</span> Disconnect
+            </button>
+</div>
+</div>
+<!-- VARIANT 3: 'External output failed — Retry' (Error / Safe Fallback) -->
+<div class="bg-surface-container-low rounded-2xl p-5 border border-error/50 flex flex-col justify-between relative overflow-hidden">
+<div class="space-y-4">
+<!-- Header state tag -->
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded bg-error-container/20 border border-error/40 text-error font-label-code-sm text-label-code-sm uppercase font-semibold">
+                Variant 3: Pipeline Interrupted
+              </span>
+<span class="w-2.5 h-2.5 rounded-full bg-error"></span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-xl bg-error-container/20 flex items-center justify-center border border-error text-error">
+<span class="material-symbols-outlined text-2xl" data-icon="warning">warning</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Output pipeline interrupted</h3>
+<span class="font-label-code-sm text-label-code-sm text-error">ERR_DISPLAY_DISCONNECT_0x82</span>
+</div>
+</div>
+<div class="p-3 rounded-xl bg-surface-container-lowest/90 border border-error/30 space-y-1.5">
+<span class="font-label-code-sm text-[11px] text-error font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="sync_problem">sync_problem</span>
+                SURFACE_LOST_EXCEPTION
+              </span>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                External presentation surface lost. Phone session preserved in memory with no data corruption.
+              </p>
+</div>
+<div class="font-label-code-sm text-[11px] text-outline space-y-1">
+<div>• Handset UI kept intact in Edit mode</div>
+<div>• Hotplug listener active (Android UEvent)</div>
+</div>
+</div>
+<!-- Bottom Action Buttons (48dp height minimum) -->
+<div class="pt-4 mt-4 border-t border-outline-variant/30 space-y-2">
+<button class="w-full touch-target h-12 rounded-lg bg-primary-container text-on-primary-container font-label-lg text-label-lg font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-md">
+<span class="material-symbols-outlined text-lg" data-icon="replay">replay</span>
+              Retry connection
+            </button>
+<button class="w-full touch-target h-12 rounded-lg bg-surface-container hover:bg-surface-container-high border border-outline-variant text-on-surface font-label-lg text-label-lg flex items-center justify-center gap-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-lg" data-icon="refresh">refresh</span>
+              Re-detect displays
+            </button>
+</div>
+</div>
+</div>
+</section>
+<!-- ============================================================== -->
+<!-- TECHNICAL & ACCESSIBILITY SPECIFICATION BAR                    -->
+<!-- ============================================================== -->
+<section class="bg-surface-container-low rounded-2xl p-6 border border-outline-variant/60 shadow-xl">
+<div class="flex items-center gap-2 mb-4 border-b border-outline-variant/40 pb-3">
+<span class="material-symbols-outlined text-secondary text-2xl" data-icon="verified">verified</span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Technical & Accessibility Specification Matrix</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Spec Item 1: Touch Target Compliance -->
+<div class="space-y-2 bg-surface-container p-4 rounded-xl border border-outline-variant/30">
+<div class="flex items-center gap-2 text-secondary">
+<span class="material-symbols-outlined text-lg" data-icon="touch_app">touch_app</span>
+<span class="font-label-code-md text-label-code-md font-semibold">48dp Hitbox Target</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Every interactive handle (nodes A, B, C, D) and quick action carries a mandatory minimum touch boundary of <strong>48dp × 48dp</strong>, even when rendered as a 16dp optic cyan ring, preventing accidental touches in dark environments.
+          </p>
+</div>
+<!-- Spec Item 2: Large Text Scaling -->
+<div class="space-y-2 bg-surface-container p-4 rounded-xl border border-outline-variant/30">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-lg" data-icon="format_size">format_size</span>
+<span class="font-label-code-md text-label-code-md font-semibold">Dynamic Type 200%</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Monospaced tabular coordinates and technical status labels flex smoothly under Android Dynamic Type scaling up to 200% without clipping cards or causing text wrap collisions on critical hex addresses.
+          </p>
+</div>
+<!-- Spec Item 3: API Contract Isolation -->
+<div class="space-y-2 bg-surface-container p-4 rounded-xl border border-outline-variant/30">
+<div class="flex items-center gap-2 text-tertiary">
+<span class="material-symbols-outlined text-lg" data-icon="layers">layers</span>
+<span class="font-label-code-md text-label-code-md font-semibold">DisplayManager Contract</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+<code>Local Window != Presentation Surface</code>. Handset renders via standard Android Activity hierarchy; the external sink instantiates an isolated <code>android.app.Presentation</code> context hosting a dedicated hardware EGL display surface.
+          </p>
+</div>
+<!-- Spec Item 4: Architectural Decoupling Note -->
+<div class="space-y-2 bg-surface-container p-4 rounded-xl border border-outline-variant/30">
+<div class="flex items-center gap-2 text-secondary">
+<span class="material-symbols-outlined text-lg" data-icon="tune">tune</span>
+<span class="font-label-code-md text-label-code-md font-semibold">Decoupled Toggle Logic</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            The on-phone <strong>Edit | Output</strong> switcher is strictly an on-device inspection preview mode. It does <em>not</em> disrupt or alter the external hardware Presentation route, guaranteeing undisturbed projections during live shows.
+          </p>
+</div>
+</div>
+</section>
+</main>
+<!-- ============================================================== -->
+<!-- BOTTOM APP BAR (From Shared Components JSON)                   -->
+<!-- ============================================================== -->
+<div class="fixed bottom-0 left-0 w-full z-50 flex items-center justify-around px-gutter h-16 pb-safe bg-surface-container-low/95 backdrop-blur-md shadow-2xl">
+<!-- Canvas Destination (Active in editor mode) -->
+<a class="flex flex-col items-center justify-center text-outline hover:text-on-surface py-1 active:scale-95 transition-transform" href="#canvas">
+<span class="material-symbols-outlined text-2xl" data-icon="grid_view">grid_view</span>
+<span class="text-label-code-sm font-label-code-sm">Canvas</span>
+</a>
+<!-- Surfaces Destination -->
+<a class="flex flex-col items-center justify-center text-outline hover:text-on-surface py-1 active:scale-95 transition-transform" href="#surfaces">
+<span class="material-symbols-outlined text-2xl" data-icon="layers">layers</span>
+<span class="text-label-code-sm font-label-code-sm">Surfaces</span>
+</a>
+<!-- Beams Destination (Active: closest match to projector output/beams) -->
+<a class="flex flex-col items-center justify-center text-secondary font-medium py-1 active:scale-95 transition-transform" href="#beams">
+<span class="material-symbols-outlined text-2xl" data-icon="flare" data-weight="fill" style="font-variation-settings: 'FILL' 1;">flare</span>
+<span class="text-label-code-sm font-label-code-sm">Beams</span>
+</a>
+<!-- Calibrate Destination -->
+<a class="flex flex-col items-center justify-center text-outline hover:text-on-surface py-1 active:scale-95 transition-transform" href="#calibrate">
+<span class="material-symbols-outlined text-2xl" data-icon="tune">tune</span>
+<span class="text-label-code-sm font-label-code-sm">Calibrate</span>
+</a>
+</div>
+<!-- Interactive JavaScript for micro-interactions -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggleClean = document.getElementById('toggleCleanOutput');
+      if (toggleClean) {
+        toggleClean.addEventListener('change', (e) => {
+          if (e.target.checked) {
+            console.log("[Lumis DisplayManager] Clean output broadcast activated: HDMI Display #2");
+          } else {
+            console.log("[Lumis DisplayManager] Clean output broadcast muted: safe standby");
+          }
+        });
+      }
+    });
+  </script>
+</body></html>

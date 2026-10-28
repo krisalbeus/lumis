@@ -28,6 +28,7 @@ class VideoRenderer(
     private val onSurface: (Long, MediaSource, Surface) -> Unit,
     private val onFailure: (String) -> Unit,
     private val onMetrics: (Double, Double) -> Unit,
+    private val onExternalState: (Surface, String?) -> Unit = { _, _ -> },
 ) : GLSurfaceView.Renderer {
     enum class ContentType { VIDEO, IMAGE }
 
@@ -60,6 +61,15 @@ class VideoRenderer(
     private var videoProgram: Program? = null
     private var imageProgram: Program? = null
     private var failed = false
+    private val externalLock = Any()
+    private var externalTarget: Surface? = null
+    private var externalFailed = false
+    private var externalAnnounced = false
+    private var external: ExternalEglOutput? = null
+    @Volatile var externalFrames = 0L
+        private set
+    @Volatile var externalViewport: Viewport? = null
+        private set
     private var surfaceWidth = 1
     private var surfaceHeight = 1
     private var metricsStart = 0L
@@ -105,8 +115,19 @@ class VideoRenderer(
         requestFrame()
     }
 
+    fun setExternalTarget(surface: Surface?) {
+        synchronized(externalLock) {
+            externalTarget = surface
+            externalFailed = false
+            externalAnnounced = false
+            externalViewport = null
+        }
+        requestFrame()
+    }
+
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         failed = false
+        external = ExternalEglOutput(requireNotNull(config))
         metricsStart = System.nanoTime()
         metricDraws = 0
         metricFrames = 0
@@ -132,16 +153,7 @@ class VideoRenderer(
         val base = Viewport.fit(surfaceWidth, surfaceHeight, if (output) 0.0 else editInset)
         val fitted = if (output) base else preview.apply(base)
         viewport = fitted
-        // Keep the hardware viewport screen-sized even when the editor camera zooms beyond it.
-        GLES20.glViewport(0, 0, surfaceWidth, surfaceHeight)
-        if (output) GLES20.glClearColor(0f, 0f, 0f, 1f) else GLES20.glClearColor(9f / 255, 11f / 255, 16f / 255, 1f)
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
-        GLES20.glEnable(GLES20.GL_SCISSOR_TEST)
-        GLES20.glScissor(fitted.left.roundToInt(), (surfaceHeight - fitted.top - fitted.height).roundToInt(),
-            fitted.width.roundToInt(), fitted.height.roundToInt())
-        GLES20.glClearColor(0f, 0f, 0f, 1f)
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
-        GLES20.glDisable(GLES20.GL_SCISSOR_TEST)
+        clearTarget(surfaceWidth, surfaceHeight, fitted, output)
         if (failed || videoProgram == null || imageProgram == null) return
         try {
             val snapshot = layers
@@ -173,8 +185,9 @@ class VideoRenderer(
                     frameCounts[s.id] = framesFor(s.id) + 1
                     metricFrames++
                 }
-                if (s.visible && s.opacity > 0f && texture.ready) draw(layer, texture)
             }
+            drawScene(snapshot, fitted, surfaceWidth, surfaceHeight)
+            drawExternal(snapshot)
             pendingImages.keys.filterNot(desired::containsKey).forEach { pendingImages.remove(it)?.bitmap?.recycle() }
             checkGl("compositing scene")
             renderedFrames++
@@ -189,6 +202,55 @@ class VideoRenderer(
             }
         } catch (error: IllegalStateException) {
             fail(error)
+        }
+    }
+
+    private fun clearTarget(width: Int, height: Int, fitted: Viewport, output: Boolean) {
+        GLES20.glViewport(0, 0, width, height)
+        if (output) GLES20.glClearColor(0f, 0f, 0f, 1f) else GLES20.glClearColor(9f / 255, 11f / 255, 16f / 255, 1f)
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
+        GLES20.glEnable(GLES20.GL_SCISSOR_TEST)
+        GLES20.glScissor(fitted.left.roundToInt(), (height - fitted.top - fitted.height).roundToInt(),
+            fitted.width.roundToInt(), fitted.height.roundToInt())
+        GLES20.glClearColor(0f, 0f, 0f, 1f)
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
+        GLES20.glDisable(GLES20.GL_SCISSOR_TEST)
+    }
+
+    private fun drawScene(snapshot: List<Layer>, fitted: Viewport, width: Int, height: Int) {
+        snapshot.forEach { layer ->
+            val texture = textures[layer.surface.id]
+            if (layer.surface.visible && layer.surface.opacity > 0 && texture?.ready == true) {
+                draw(layer, texture, fitted, width, height)
+            }
+        }
+    }
+
+    private fun drawExternal(snapshot: List<Layer>) = synchronized(externalLock) {
+        val target = externalTarget
+        if (target == null) {
+            external?.release()
+            return@synchronized
+        }
+        if (externalFailed) return@synchronized
+        try {
+            requireNotNull(external).draw(target) { width, height ->
+                val fitted = Viewport.fit(width, height, 0.0)
+                clearTarget(width, height, fitted, true)
+                drawScene(snapshot, fitted, width, height)
+                checkGl("drawing external output")
+                externalViewport = fitted
+            }
+            externalFrames++
+            if (!externalAnnounced) {
+                externalAnnounced = true
+                onExternalState(target, null)
+            }
+        } catch (error: IllegalStateException) {
+            if (error is ExternalEglOutput.EditorContextLost) throw error
+            externalFailed = true
+            Log.e("LumisRenderer", "External output failed", error)
+            onExternalState(target, error.message ?: "External output failed")
         }
     }
 
@@ -217,7 +279,7 @@ class VideoRenderer(
         return texture
     }
 
-    private fun draw(layer: Layer, texture: Texture) {
+    private fun draw(layer: Layer, texture: Texture, fitted: Viewport, width: Int, height: Int) {
         val image = layer.surface.source is MediaSource.Image
         val program = requireNotNull(if (image) imageProgram else videoProgram)
         GLES20.glUseProgram(program.id)
@@ -228,11 +290,10 @@ class VideoRenderer(
         GLES20.glBindTexture(if (image) GLES20.GL_TEXTURE_2D else GLES11Ext.GL_TEXTURE_EXTERNAL_OES, texture.id)
         GLES20.glUniform1i(program.sampler, 0)
         GLES20.glUniform1f(program.opacity, layer.surface.opacity)
-        val fitted = viewport
         GLES20.glUniform4f(program.viewport,
-            (fitted.width / surfaceWidth).toFloat(), (fitted.height / surfaceHeight).toFloat(),
-            ((2 * fitted.left + fitted.width) / surfaceWidth - 1).toFloat(),
-            (1 - (2 * fitted.top + fitted.height) / surfaceHeight).toFloat())
+            (fitted.width / width).toFloat(), (fitted.height / height).toFloat(),
+            ((2 * fitted.left + fitted.width) / width - 1).toFloat(),
+            (1 - (2 * fitted.top + fitted.height) / height).toFloat())
         GLES20.glUniformMatrix3fv(program.homography, 1, false, layer.transform, 0)
         if (!image) GLES20.glUniformMatrix4fv(program.matrix, 1, false, texture.matrix, 0)
         GLES20.glEnableVertexAttribArray(program.position)
@@ -243,6 +304,7 @@ class VideoRenderer(
     }
 
     fun release() {
+        synchronized(externalLock) { external?.release(); external = null; externalViewport = null }
         surfaces.clear()
         textures.values.forEach(::releaseTexture)
         textures.clear()
@@ -263,6 +325,9 @@ class VideoRenderer(
     private fun fail(error: IllegalStateException) {
         failed = true
         Log.e("LumisRenderer", "Scene compositing failed", error)
+        synchronized(externalLock) {
+            externalTarget?.let { onExternalState(it, error.message ?: "Scene compositing failed") }
+        }
         onFailure(error.message ?: "Unknown OpenGL error")
     }
 

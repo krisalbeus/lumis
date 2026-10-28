@@ -84,15 +84,69 @@ Use [the Stitch workflow](design/README.md) for missing screens and assets.
 - [ ] Review TalkBack, small-screen layout, and touch targets on a physical device.
 - [ ] Stress-test 1/4 videos, 8 images, and mixed compositions on Pixel 9 Pro.
 
+## Milestone 6 - Independent external output (approved 2026-10-29)
+
+- [x] Create Stitch screen 34 for opt-in phone controls and clean monitor output.
+- [x] Discover Android Presentation displays; select one explicitly and show
+  connection/active/failure states on the phone only.
+- [x] Render the authoritative scene on phone and monitor with one GL context,
+  the same compositor, and no duplicate media decoders.
+- [x] Keep phone preview/navigation independent of clean external pixels.
+- [x] Handle hotplug, reconnect consent, display resize, rotation, background
+  blacking, resource release, and explicit error/retry.
+- [x] Complete full regression/compact validation and build the updated APK.
+- [ ] Validate Samsung USB-C/HDMI extended display, DeX behavior, cable hotplug,
+  system overlays, and sustained playback on physical hardware.
+
 ## Future work (separate approval and Stitch designs required)
 
 - [ ] GPU effects and masks.
-- [ ] External display routing.
 - [ ] Audio-reactive controls.
 - [ ] Camera surface detection.
 - [ ] Physical projector-assisted calibration (requires hardware).
 
 ## Verification log
+
+### Milestone 6
+
+Verified on 2026-10-29 using `e2e_playstore` (Android 16 / API 36).
+Version 0.2.0 / version code 2 is signed with the same development key as the
+previous sideload build, allowing an in-place update without clearing projects.
+
+| Check | Result |
+|---|---|
+| Unit tests | 30 passed |
+| Android lint | 0 errors; 3 existing SDK/Gradle/back-attribute warnings |
+| Full connected suite, 1080x2400 / density 420 | 74 passed (64 regression + 10 external-display tests) |
+| Compact, 720x1280 / density 320 / font scale 1.5 | 30 passed (10 external + 14 editing + 6 Output) |
+| Independent GPU output | Android virtual Presentation displays captured through ImageReader; phone remained in Edit with handles while full external pixels contained mapped media and black |
+| Geometry/navigation | Warped video markers upright, black outside composition, live scene edits/undo, phone zoom independent, phone Edit/Output independent |
+| Same frame/resources | Paused video orientation markers matched within 3/255 across both targets without another decoded frame; decoder Surface identities unchanged |
+| Images/composition | Two images blended within 3/255 with visibility/undo updates; four independently advancing videos plus an image shared the same resources on both targets |
+| Routing | Output initially off; multiple displays selectable; selection alone does not output; unplug never auto-routes to another display; reconnect requires opt-in |
+| Lifecycle | Activity recreation and three background/resume cycles retained scene and route; paused/error Presentation was black; five hotplug/resize cycles preserved decoder identity and 16:9 fit |
+| Recovery | Controlled controller failure covered the output with black, showed Retry only on phone, and recovered without losing scene or restarting unchanged decoders |
+| Accessibility | Status announcements, readable scrollable toggle/selector with at least 48dp touch targets, including 150% font |
+| Visual review | Disconnected/active native cards and simultaneous editor/clean simulated-display output inspected; live warped edit visible on the simulated monitor |
+| APK | Debug APK built and installed; package/version and signing certificate verified |
+
+The renderer consumes/uploads each media frame once, then draws the same scene
+snapshot/shaders/textures into two EGL window surfaces on the same context and
+thread. There is no second decoder set or CPU screenshot-mirroring path.
+Presentation windows contain no editor views. Error and paused states retain a
+black window instead of intentionally exposing Android mirroring. Window/display
+ownership still belongs to the OS: disabling output, leaving the editor,
+rotation's activity replacement, process death, or Samsung/DeX behavior may
+restore mirroring/desktop chrome. System-notification isolation is not guaranteed.
+
+Screen 34 was created in the existing Stitch project for this approved feature.
+Its invented telemetry, mesh tools, and absolute OS-overlay guarantees are not
+implemented. Output routing is session-only and off on cold project open.
+
+The user reported a successful Samsung smoke test of the previous build.
+That is not a physical HDMI/DeX test of this milestone. Real cable compatibility,
+device-specific EGL/drivers, Samsung display exposure, sustained dual-display
+performance, notifications, and projector image quality remain unverified.
 
 ### Milestone 5
 

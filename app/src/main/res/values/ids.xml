@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <item name="external_status" type="id" />
+    <item name="external_toggle" type="id" />
+    <item name="external_choose" type="id" />
+    <item name="external_retry" type="id" />
     <item name="undo" type="id" />
     <item name="redo" type="id" />
     <item name="zoom_in" type="id" />

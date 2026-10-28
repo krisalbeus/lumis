@@ -56,7 +56,9 @@ internal fun await(scenario: ActivityScenario<MainActivity>, condition: (MainAct
     fail("Timed out waiting for video or UI state: " + read(scenario) {
         "frames=${it.renderer.videoFrames}, ready=${it.findViewById<Button>(R.id.play_pause).isEnabled}, " +
             "status=${it.findViewById<TextView>(R.id.playback_state).text}, " +
-            "canvas=${it.findViewById<View>(R.id.video_canvas).width}x${it.findViewById<View>(R.id.video_canvas).height}"
+            "canvas=${it.findViewById<View>(R.id.video_canvas).width}x${it.findViewById<View>(R.id.video_canvas).height}, " +
+            "externalEnabled=${it.externalOutput.enabled}, active=${it.externalOutput.active}, " +
+            "externalFrames=${it.renderer.externalFrames}, externalError=${it.externalOutput.error}"
     })
 }
 
