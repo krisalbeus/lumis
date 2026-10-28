@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="video_canvas" type="id" />
+    <item name="corner_overlay" type="id" />
+    <item name="corner_a" type="id" />
+    <item name="corner_b" type="id" />
+    <item name="corner_c" type="id" />
+    <item name="corner_d" type="id" />
+    <item name="play_pause" type="id" />
+    <item name="reset_corners" type="id" />
+    <item name="fps_toggle" type="id" />
+    <item name="fps_text" type="id" />
+    <item name="playback_state" type="id" />
+    <item name="error_panel" type="id" />
+    <item name="retry_playback" type="id" />
+    <item name="move_left" type="id" />
+    <item name="move_right" type="id" />
+    <item name="move_up" type="id" />
+    <item name="move_down" type="id" />
+</resources>

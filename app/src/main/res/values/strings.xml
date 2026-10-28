@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Lumis</string>
+    <string name="rendering_proof">RENDERING PROOF</string>
+    <string name="instructions">Drag any corner to reshape the playing video.</string>
+    <string name="sample_label">Prism waves</string>
+    <string name="sample_detail">Bundled sample • Looping • Silent</string>
+    <string name="pause">Pause</string>
+    <string name="play">Play</string>
+    <string name="reset">Reset corners</string>
+    <string name="show_fps">Show FPS</string>
+    <string name="fps">%1$.0f render FPS · %2$.0f video FPS</string>
+    <string name="fps_compact">%1$.0f render FPS\n%2$.0f video FPS</string>
+    <string name="loading">Preparing video…</string>
+    <string name="playing">Playing</string>
+    <string name="paused">Paused</string>
+    <string name="offline_note">On-device. Offline. Yours.</string>
+    <string name="canvas_description">Video canvas with four draggable corners</string>
+    <string name="corner_description">Corner %1$s. Swipe up or down to adjust horizontally. Use actions to move vertically.</string>
+    <string name="move_left">Move left</string>
+    <string name="move_right">Move right</string>
+    <string name="move_up">Move up</string>
+    <string name="move_down">Move down</string>
+    <string name="invalid_quad">Keep the corners apart and the surface unfolded.</string>
+    <string name="retry">Retry</string>
+    <string name="video_error">The sample video could not play. Your corner positions are unchanged.</string>
+    <string name="renderer_error">The video renderer could not start. Your corner positions are unchanged.</string>
+    <string name="error_title">Let’s try that again</string>
+</resources>

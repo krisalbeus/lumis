@@ -456,6 +456,21 @@
         "name": "projects/9969649650324268552/files/ff72ccebdf3c4b7a9f25366940ab6311",
         "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/ff72ccebdf3c4b7a9f25366940ab6311:download"
       }
+    },
+    {
+      "id": "1b35b1230d9849e19bb11212ad34f12f",
+      "title": "33 \u2014 Rendering Proof / Landscape",
+      "width": 2560,
+      "height": 2048,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/047fd1f90690480796ae459c51ff15dc",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/047fd1f90690480796ae459c51ff15dc:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/b2eb38ad70ee49fe8535746dc7a31ad0",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/b2eb38ad70ee49fe8535746dc7a31ad0:download"
+      },
+      "localExport": "stitch/33-rendering-proof-landscape.html"
     }
   ],
   "supersededScreens": [

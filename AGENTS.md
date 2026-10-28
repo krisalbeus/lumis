@@ -22,3 +22,13 @@ to implement the entire MVP or roadmap at once.
 - Stitch HTML is a visual reference, not the Android renderer. Preserve one
   authoritative scene and one rendering pipeline for editor preview and output.
   Never put editor chrome, diagnostics, or unavailable-media labels in clean output.
+
+## Implementation and validation
+
+- The native Android app is in `app/`. Read [build/run instructions](README.md)
+  and the persistent [milestone checklist](IMPLEMENTATION.md) before extending it.
+- Run `./gradlew :app:testDebugUnitTest :app:lintDebug` for code changes and
+  `./gradlew :app:connectedDebugAndroidTest` for rendering/interaction changes
+  with a development emulator connected. Set a valid `JAVA_HOME` and Android SDK.
+- Validate perspective and source orientation against actual GPU pixels, not
+  merely moved handles. Emulator results do not prove physical-device frame rates.

@@ -40,7 +40,7 @@ Treat generated brand work as a design candidate, not trademark clearance.
 
 ## Current screen inventory
 
-There are **32 current design references**: 29 application screens/states and
+There are **33 current design references**: 30 application screens/states and
 three asset/component boards. Some references are sheets or dialogs, not separate
 navigation destinations. Their exact resource IDs and export references are in
 [the manifest](stitch/screens.json).
@@ -79,6 +79,7 @@ navigation destinations. Their exact resource IDs and export references are in
 | 30 | Delete Surface Confirmation |
 | 31 | Save Failure / Retry |
 | 32 | About Lumis |
+| 33 | Rendering Proof / Landscape |
 
 Screen 09 was refined to remove technical jargon and unsolicited debug tools.
 Screen 25 was revised because its initial screenshot was not 16:9. Use the
@@ -94,7 +95,13 @@ metadata is 3840x2160, the same aspect ratio at twice the resolution.
 - [Clean output reference](stitch/25-output-clean-fullscreen.html)
 - [Selected-video editor reference](stitch/09-editor-selected-video.html)
 - [Selected-video screenshot](stitch/09-editor-selected-video.png)
+- [Rendering-proof landscape layout](stitch/33-rendering-proof-landscape.html)
 - [Extracted SVG assets](assets/)
+
+Screen 33 was added during Milestone 0 implementation to define the landscape
+canvas/control-rail adaptation. Its screenshot board metadata is 2560x2048; use
+it as a responsive layout reference, not a literal phone framebuffer. Actual
+landscape behavior is verified by the Android instrumentation suite.
 
 All current screen references remain in Stitch. Only the references above are
 exported locally; the manifest is not a full offline archive of every mockup.
@@ -189,12 +196,13 @@ designed here. Generate their designs in the same Stitch project when approved.
 
 ## Verification status
 
-The manifest is checked for exactly one current entry for each number 01-32.
+The manifest contains exactly one current entry for each number 01-33.
 The corrected output aspect ratio and extracted SVG XML/internal references
 were checked. The selected-video screenshot received a visual review and a
 plain-language simplification pass.
 
-This is a design handoff, not a built app or a tested interactive prototype.
+This document describes design references, not a tested interactive prototype.
+For the implemented Android rendering proof, see [the application README](../README.md).
 Every screen still needs implementation-time review on the target Android device.
 Browser preview of the exported boards encountered remote-resource loading
 errors; this does not verify their offline visual rendering.
