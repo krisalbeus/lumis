@@ -84,7 +84,19 @@ class Homography(quad: Quad) {
     }
 }
 
+/** The fixed logical projector frame. Scene points are normalized to this frame. */
+object OutputCanvas {
+    const val WIDTH = 1920
+    const val HEIGHT = 1080
+
+    fun toPixels(point: Point) = Point(point.x * WIDTH, point.y * HEIGHT)
+    fun fromPixels(point: Point) = Point(point.x / WIDTH, point.y / HEIGHT)
+}
+
+/** Where the logical output canvas appears on a physical surface, in surface pixels. */
 data class Viewport(val left: Double, val top: Double, val width: Double, val height: Double) {
+    val scale: Double get() = width / OutputCanvas.WIDTH
+
     fun toScreen(point: Point) = Point(left + point.x * width, top + point.y * height)
     fun toScene(point: Point) = Point((point.x - left) / width, (point.y - top) / height)
 
@@ -92,8 +104,8 @@ data class Viewport(val left: Double, val top: Double, val width: Double, val he
         fun fit(width: Int, height: Int, inset: Double): Viewport {
             val availableWidth = (width - inset * 2).coerceAtLeast(1.0)
             val availableHeight = (height - inset * 2).coerceAtLeast(1.0)
-            val w = min(availableWidth, availableHeight * 16.0 / 9.0)
-            val h = w * 9.0 / 16.0
+            val w = min(availableWidth, availableHeight * OutputCanvas.WIDTH / OutputCanvas.HEIGHT)
+            val h = w * OutputCanvas.HEIGHT / OutputCanvas.WIDTH
             return Viewport((width - w) / 2, (height - h) / 2, w, h)
         }
     }

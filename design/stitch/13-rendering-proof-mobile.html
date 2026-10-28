@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Lumis — Milestone 0: Quad Render Proof</title>
+<!-- Google Fonts: Space Grotesk, Plus Jakarta Sans, JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "primary-fixed": "#e8ddff",
+            "on-surface": "#e2e2e9",
+            "on-background": "#e2e2e9",
+            "inverse-primary": "#674bb5",
+            "on-primary-fixed-variant": "#4f319c",
+            "error": "#ffb4ab",
+            "surface-container": "#1e1f25",
+            "tertiary-fixed-dim": "#45dfa4",
+            "on-tertiary-fixed": "#002114",
+            "error-container": "#93000a",
+            "surface-container-lowest": "#0c0e13",
+            "tertiary": "#45dfa4",
+            "surface-dim": "#111318",
+            "secondary-container": "#02aebe",
+            "inverse-on-surface": "#2e3036",
+            "tertiary-container": "#00b37e",
+            "on-surface-variant": "#cac4d4",
+            "secondary-fixed": "#91f1ff",
+            "surface-variant": "#33353a",
+            "primary-container": "#a78bfa",
+            "primary": "#cebdff",
+            "on-error-container": "#ffdad6",
+            "on-secondary": "#00363c",
+            "on-error": "#690005",
+            "inverse-surface": "#e2e2e9",
+            "on-tertiary-container": "#003d28",
+            "surface-container-highest": "#33353a",
+            "on-primary-fixed": "#21005e",
+            "on-tertiary-fixed-variant": "#005137",
+            "on-secondary-fixed-variant": "#004f57",
+            "on-secondary-container": "#003b42",
+            "on-secondary-fixed": "#001f23",
+            "surface": "#111318",
+            "on-tertiary": "#003825",
+            "primary-fixed-dim": "#cebdff",
+            "outline": "#948e9d",
+            "surface-container-low": "#1a1b21",
+            "tertiary-fixed": "#68fcbf",
+            "outline-variant": "#494552",
+            "on-primary-container": "#3c1989",
+            "background": "#111318",
+            "secondary": "#54d8e8",
+            "surface-bright": "#37393f",
+            "on-primary": "#381385",
+            "surface-tint": "#cebdff",
+            "surface-container-high": "#282a2f",
+            "secondary-fixed-dim": "#54d8e8"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "gutter": "0.75rem",
+            "space-xl": "2rem",
+            "margin": "1rem"
+          },
+          "fontFamily": {
+            "label-lg": ["Plus Jakarta Sans"],
+            "label-code-sm": ["JetBrains Mono"],
+            "headline-xl": ["Space Grotesk"],
+            "headline-md": ["Space Grotesk"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "label-code-md": ["JetBrains Mono"],
+            "headline-lg": ["Space Grotesk"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "title-sm": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "label-lg": ["13px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "label-code-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+            "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "label-code-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "title-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 20px;
+      line-height: 1;
+      display: inline-block;
+      text-transform: none;
+      letter-spacing: normal;
+      word-wrap: normal;
+      white-space: nowrap;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Optical Keystone Node Glow */
+    .vertex-glow {
+      box-shadow: 0 0 16px rgba(103, 232, 249, 0.65), 0 0 4px #54d8e8;
+    }
+
+    /* Subtle grid canvas background pattern */
+    .canvas-grid {
+      background-size: 24px 24px;
+      background-image:
+        linear-gradient(to right, rgba(43, 51, 70, 0.25) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(43, 51, 70, 0.25) 1px, transparent 1px);
+    }
+
+    /* Hardware status punchhole clear */
+    .safe-top {
+      padding-top: max(env(safe-area-inset-top, 44px), 44px);
+    }
+    .safe-bottom {
+      padding-bottom: max(env(safe-area-inset-bottom, 24px), 24px);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md antialiased overflow-hidden select-none m-0 p-0 flex justify-center items-center min-h-screen">
+<!-- Mobile Portrait Shell (412 x 924 Android Pixel 9 Pro bounds emulation) -->
+<main class="w-full max-w-[420px] h-[924px] max-h-screen bg-surface-container-lowest flex flex-col relative overflow-hidden shadow-2xl border border-outline-variant/30">
+<!-- Top Status / Development Proof Bar -->
+<header class="safe-top w-full px-space-md pb-space-sm bg-surface flex flex-col justify-end border-b border-outline-variant/30 z-20 shrink-0"><div class="flex items-center justify-between h-10">
+<div class="flex items-center space-x-2">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+<h1 class="font-headline-md text-[17px] font-bold tracking-tight text-on-surface uppercase">LUMIS</h1>
+</div>
+<div class="flex items-center rounded-full bg-surface-container-low border border-outline-variant/50 p-0.5 text-xs">
+<button class="flex items-center space-x-1 px-3 py-1 rounded-full bg-primary-container text-on-primary-container font-label-lg shadow-sm">
+<span class="material-symbols-outlined text-[17px]">edit</span>
+<span>Edit</span>
+</button>
+<button class="flex items-center space-x-1 px-3 py-1 rounded-full text-on-surface-variant hover:text-on-surface font-label-lg transition-colors">
+<span class="material-symbols-outlined text-[17px]">visibility</span>
+<span>Output</span>
+</button>
+</div>
+<div class="flex items-center space-x-1.5 px-2 py-1 rounded bg-surface-container-low border border-outline-variant/50">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+<span class="font-label-code-sm text-label-code-sm text-secondary tracking-tighter" id="fpsReadout">60.1 FPS • 16.6ms</span>
+</div>
+</div></header>
+<!-- Center Viewport: Fixed Projection Mapping Canvas Stage -->
+<section class="relative flex-1 w-full bg-surface-container-lowest canvas-grid flex items-center justify-center overflow-hidden" id="canvasViewport">
+<!-- Coordinate Origin HUD crosshair watermark (Center of display) -->
+<!-- Virtual Projector Canvas Boundary Header Banner -->
+<div class="absolute top-3 left-4 right-4 z-20 flex flex-col gap-1 pointer-events-none">
+<div class="flex items-center justify-between text-outline font-label-code-sm text-[11px] tracking-wide">
+<span class="px-2 py-0.5 rounded bg-surface-container-low/80 border border-outline-variant/40 text-on-surface-variant flex items-center space-x-1">
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-secondary/80"></span>
+<span>Output 1920 × 1080</span>
+</span>
+<span class="text-[10px] text-outline uppercase">16:9 Canvas</span>
+</div>
+<p class="font-body-sm text-[11px] text-on-surface-variant bg-surface-container-lowest/80 px-2 py-1 rounded border border-outline-variant/30 leading-snug">
+Drag the four corners to map the video. Tap Output to project fullscreen; press Back to return.
+</p>
+</div><div class="absolute inset-0 pointer-events-none flex items-center justify-center opacity-20">
+<div class="w-12 h-[1px] bg-outline"></div>
+<div class="h-12 w-[1px] bg-outline absolute"></div>
+<span class="absolute font-label-code-sm text-[9px] text-outline mt-7 ml-7">[0.0, 0.0] PROJ_SPACE</span>
+</div>
+<!-- Live Warped Trapezoid Vector/Quad Plane SVG Canvas -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none z-10" id="quadSvg">
+<defs>
+<!-- Grid fill pattern to visualize homography warping inside trapezoid -->
+<pattern height="40" id="neonWarpGrid" patternunits="userSpaceOnUse" width="40">
+<path d="M 40 0 L 0 0 0 40" fill="none" stroke="#54d8e8" stroke-opacity="0.35" stroke-width="0.75"></path>
+</pattern>
+<lineargradient id="neonGradient" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#02aebe" stop-opacity="0.8"></stop>
+<stop offset="50%" stop-color="#a78bfa" stop-opacity="0.75"></stop>
+<stop offset="100%" stop-color="#54d8e8" stop-opacity="0.85"></stop>
+</lineargradient>
+</defs>
+<!-- Dynamic Polygon Surface (Trapezoid Render Fill) -->
+<polygon class="transition-all duration-75" fill="url(#neonGradient)" id="quadPolygon" points="52,140 360,95 330,480 82,530" stroke="#54d8e8" stroke-width="2"></polygon>
+<!-- Wireframe Interior Vectors (Bisectors & Subdivisions) -->
+<g class="opacity-100 transition-opacity duration-150" id="wireframeLines">
+<line id="lineDiag1" stroke="#54d8e8" stroke-dasharray="3,3" stroke-opacity="0.6" stroke-width="1" x1="52" x2="330" y1="140" y2="480"></line>
+<line id="lineDiag2" stroke="#54d8e8" stroke-dasharray="3,3" stroke-opacity="0.6" stroke-width="1" x1="360" x2="82" y1="95" y2="530"></line>
+<polygon fill="url(#neonWarpGrid)" fill-opacity="0.85" id="quadGridOverlay" points="52,140 360,95 330,480 82,530" stroke="none"></polygon>
+</g>
+</svg>
+<!-- Video Feed Visual Mockup Layer (Geometric simulation of hardware quad rasterizer) -->
+<div class="absolute inset-0 pointer-events-none flex items-center justify-center z-0">
+<div class="relative w-full h-full flex items-center justify-center">
+<div class="px-3 py-1.5 rounded bg-surface-dim/80 border border-outline-variant/60 backdrop-blur-sm flex items-center space-x-2">
+<span class="w-2 h-2 rounded-full bg-tertiary animate-ping"></span>
+<span class="font-label-code-sm text-label-code-sm text-on-surface tracking-wide uppercase">SRC: BUNDLED_NEON_FLOW.H264</span>
+<span class="font-label-code-sm text-[10px] text-outline">1080p60</span>
+</div>
+</div>
+</div>
+<!-- Touch Keystone Corner Handles (Oversized 48dp+ Hitboxes with Optical White Cores & Neon Cyan Rings) -->
+<!-- Vertex A: Top-Left -->
+<div class="absolute z-30 w-14 h-14 -ml-7 -mt-7 flex items-center justify-center cursor-pointer touch-none" id="handleA" style="left: 52px; top: 140px;">
+<div class="w-8 h-8 rounded-full border-2 border-secondary bg-surface-container-lowest flex items-center justify-center vertex-glow relative">
+<!-- Crosshair -->
+<div class="w-4 h-[1.5px] bg-on-surface absolute"></div>
+<div class="h-4 w-[1.5px] bg-on-surface absolute"></div>
+<div class="w-2 h-2 rounded-full bg-white z-10"></div>
+<span class="absolute -top-5 left-1/2 -translate-x-1/2 font-headline-md font-bold text-xs text-secondary bg-surface-container-lowest/90 px-1 rounded border border-secondary/40">A</span>
+</div>
+</div>
+<!-- Vertex B: Top-Right -->
+<div class="absolute z-30 w-14 h-14 -ml-7 -mt-7 flex items-center justify-center cursor-pointer touch-none" id="handleB" style="left: 360px; top: 95px;">
+<div class="w-8 h-8 rounded-full border-2 border-secondary bg-surface-container-lowest flex items-center justify-center vertex-glow relative">
+<!-- Crosshair -->
+<div class="w-4 h-[1.5px] bg-on-surface absolute"></div>
+<div class="h-4 w-[1.5px] bg-on-surface absolute"></div>
+<div class="w-2 h-2 rounded-full bg-white z-10"></div>
+<span class="absolute -top-5 left-1/2 -translate-x-1/2 font-headline-md font-bold text-xs text-secondary bg-surface-container-lowest/90 px-1 rounded border border-secondary/40">B</span>
+</div>
+</div>
+<!-- Vertex C: Bottom-Right -->
+<div class="absolute z-30 w-14 h-14 -ml-7 -mt-7 flex items-center justify-center cursor-pointer touch-none" id="handleC" style="left: 330px; top: 480px;">
+<div class="w-8 h-8 rounded-full border-2 border-secondary bg-surface-container-lowest flex items-center justify-center vertex-glow relative">
+<!-- Crosshair -->
+<div class="w-4 h-[1.5px] bg-on-surface absolute"></div>
+<div class="h-4 w-[1.5px] bg-on-surface absolute"></div>
+<div class="w-2 h-2 rounded-full bg-white z-10"></div>
+<span class="absolute -bottom-5 left-1/2 -translate-x-1/2 font-headline-md font-bold text-xs text-secondary bg-surface-container-lowest/90 px-1 rounded border border-secondary/40">C</span>
+</div>
+</div>
+<!-- Vertex D: Bottom-Left -->
+<div class="absolute z-30 w-14 h-14 -ml-7 -mt-7 flex items-center justify-center cursor-pointer touch-none" id="handleD" style="left: 82px; top: 530px;">
+<div class="w-8 h-8 rounded-full border-2 border-secondary bg-surface-container-lowest flex items-center justify-center vertex-glow relative">
+<!-- Crosshair -->
+<div class="w-4 h-[1.5px] bg-on-surface absolute"></div>
+<div class="h-4 w-[1.5px] bg-on-surface absolute"></div>
+<div class="w-2 h-2 rounded-full bg-white z-10"></div>
+<span class="absolute -bottom-5 left-1/2 -translate-x-1/2 font-headline-md font-bold text-xs text-secondary bg-surface-container-lowest/90 px-1 rounded border border-secondary/40">D</span>
+</div>
+</div>
+<!-- Coordinates Telemetry Footnote overlay -->
+<div class="absolute bottom-2 left-4 right-4 flex justify-between pointer-events-none text-outline font-label-code-sm text-[10px]">
+<span id="coordsAB">A: [52, 140] • B: [360, 95]</span>
+<span id="coordsCD">C: [330, 480] • D: [82, 530]</span>
+</div>
+</section>
+<!-- Spartan Bottom Developer Utility Bar (Docked M0 Engineering Controls) -->
+<footer class="safe-bottom w-full px-space-md py-space-md bg-surface-container-low border-t border-outline-variant/40 flex flex-col gap-3 z-30 shrink-0">
+<!-- Essential Action Rack -->
+<div class="grid grid-cols-12 gap-2 items-center">
+<!-- Large Primary Play/Pause Button -->
+<button class="col-span-5 h-12 bg-primary-container text-on-primary-container rounded flex items-center justify-center space-x-2 font-label-lg text-label-lg active:scale-95 transition-transform" id="btnPlayPause">
+<span class="material-symbols-outlined" id="playIcon">pause</span>
+<span id="playLabel">PAUSE</span>
+</button>
+<!-- Wireframe Toggle Button -->
+<button class="col-span-4 h-12 bg-surface-container-high border border-outline-variant text-on-surface rounded flex items-center justify-center space-x-1.5 font-label-lg text-label-lg active:scale-95 transition-all text-secondary" id="btnWireframe">
+<span class="material-symbols-outlined text-[18px]">grid_4x4</span>
+<span>WIREFRAME</span>
+</button>
+<!-- Reset Corners Button -->
+<button class="col-span-3 h-12 bg-surface-container-high border border-outline-variant text-on-surface-variant hover:text-on-surface rounded flex items-center justify-center space-x-1 font-label-lg text-label-lg active:scale-95 transition-transform" id="btnReset" title="Reset Vertices to 16:9 Aspect">
+<span class="material-symbols-outlined text-[18px]">restart_alt</span>
+<span>RESET</span>
+</button>
+</div>
+<!-- Status Indicator Line -->
+<div class="flex items-center justify-between text-outline px-0.5">
+<span class="font-label-code-sm text-[11px] flex items-center space-x-1">
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span>PIPELINE: GLES30_PERSPECTIVE_WARP</span>
+</span>
+<span class="font-label-code-sm text-[11px] text-tertiary">BUFFER: 0 DROP</span>
+</div>
+</footer>
+</main>
+<!-- Interactive JavaScript logic for corner dragging, wireframe toggle, and play/pause -->
+<script>
+    (function () {
+      // Default Corner Coordinates
+      const defaultCoords = {
+        A: { x: 52, y: 140 },
+        B: { x: 360, y: 95 },
+        C: { x: 330, y: 480 },
+        D: { x: 82, y: 530 }
+      };
+
+      const coords = { ...defaultCoords };
+
+      const handleA = document.getElementById('handleA');
+      const handleB = document.getElementById('handleB');
+      const handleC = document.getElementById('handleC');
+      const handleD = document.getElementById('handleD');
+      const quadPolygon = document.getElementById('quadPolygon');
+      const lineDiag1 = document.getElementById('lineDiag1');
+      const lineDiag2 = document.getElementById('lineDiag2');
+      const quadGridOverlay = document.getElementById('quadGridOverlay');
+      const coordsAB = document.getElementById('coordsAB');
+      const coordsCD = document.getElementById('coordsCD');
+      const viewport = document.getElementById('canvasViewport');
+
+      function updateQuadVisuals() {
+        const pointsStr = `${coords.A.x},${coords.A.y} ${coords.B.x},${coords.B.y} ${coords.C.x},${coords.C.y} ${coords.D.x},${coords.D.y}`;
+        quadPolygon.setAttribute('points', pointsStr);
+        quadGridOverlay.setAttribute('points', pointsStr);
+
+        lineDiag1.setAttribute('x1', coords.A.x);
+        lineDiag1.setAttribute('y1', coords.A.y);
+        lineDiag1.setAttribute('x2', coords.C.x);
+        lineDiag1.setAttribute('y2', coords.C.y);
+
+        lineDiag2.setAttribute('x1', coords.B.x);
+        lineDiag2.setAttribute('y1', coords.B.y);
+        lineDiag2.setAttribute('x2', coords.D.x);
+        lineDiag2.setAttribute('y2', coords.D.y);
+
+        coordsAB.textContent = `A: [${Math.round(coords.A.x)}, ${Math.round(coords.A.y)}] • B: [${Math.round(coords.B.x)}, ${Math.round(coords.B.y)}]`;
+        coordsCD.textContent = `C: [${Math.round(coords.C.x)}, ${Math.round(coords.C.y)}] • D: [${Math.round(coords.D.x)}, ${Math.round(coords.D.y)}]`;
+      }
+
+      function setupDraggable(handle, key) {
+        let isDragging = false;
+
+        const onPointerDown = (e) => {
+          isDragging = true;
+          handle.setPointerCapture(e.pointerId);
+          handle.classList.add('scale-110');
+        };
+
+        const onPointerMove = (e) => {
+          if (!isDragging) return;
+          const rect = viewport.getBoundingClientRect();
+          const newX = Math.max(16, Math.min(rect.width - 16, e.clientX - rect.left));
+          const newY = Math.max(16, Math.min(rect.height - 16, e.clientY - rect.top));
+
+          coords[key].x = newX;
+          coords[key].y = newY;
+
+          handle.style.left = `${newX}px`;
+          handle.style.top = `${newY}px`;
+
+          updateQuadVisuals();
+        };
+
+        const onPointerUp = (e) => {
+          if (isDragging) {
+            isDragging = false;
+            handle.releasePointerCapture(e.pointerId);
+            handle.classList.remove('scale-110');
+          }
+        };
+
+        handle.addEventListener('pointerdown', onPointerDown);
+        handle.addEventListener('pointermove', onPointerMove);
+        handle.addEventListener('pointerup', onPointerUp);
+        handle.addEventListener('pointercancel', onPointerUp);
+      }
+
+      setupDraggable(handleA, 'A');
+      setupDraggable(handleB, 'B');
+      setupDraggable(handleC, 'C');
+      setupDraggable(handleD, 'D');
+
+      // Reset Corners
+      const btnReset = document.getElementById('btnReset');
+      btnReset.addEventListener('click', () => {
+        coords.A = { x: 52, y: 140 };
+        coords.B = { x: 360, y: 95 };
+        coords.C = { x: 330, y: 480 };
+        coords.D = { x: 82, y: 530 };
+
+        handleA.style.left = `${coords.A.x}px`;
+        handleA.style.top = `${coords.A.y}px`;
+        handleB.style.left = `${coords.B.x}px`;
+        handleB.style.top = `${coords.B.y}px`;
+        handleC.style.left = `${coords.C.x}px`;
+        handleC.style.top = `${coords.C.y}px`;
+        handleD.style.left = `${coords.D.x}px`;
+        handleD.style.top = `${coords.D.y}px`;
+
+        updateQuadVisuals();
+      });
+
+      // Wireframe Toggle
+      let wireframeActive = true;
+      const btnWireframe = document.getElementById('btnWireframe');
+      const wireframeLines = document.getElementById('wireframeLines');
+
+      btnWireframe.addEventListener('click', () => {
+        wireframeActive = !wireframeActive;
+        if (wireframeActive) {
+          wireframeLines.classList.remove('opacity-0');
+          wireframeLines.classList.add('opacity-100');
+          btnWireframe.classList.add('text-secondary', 'border-secondary/50');
+          btnWireframe.classList.remove('text-on-surface');
+        } else {
+          wireframeLines.classList.remove('opacity-100');
+          wireframeLines.classList.add('opacity-0');
+          btnWireframe.classList.remove('text-secondary', 'border-secondary/50');
+          btnWireframe.classList.add('text-on-surface');
+        }
+      });
+
+      // Play / Pause Toggle
+      let isPlaying = true;
+      const btnPlayPause = document.getElementById('btnPlayPause');
+      const playIcon = document.getElementById('playIcon');
+      const playLabel = document.getElementById('playLabel');
+
+      btnPlayPause.addEventListener('click', () => {
+        isPlaying = !isPlaying;
+        if (isPlaying) {
+          playIcon.textContent = 'pause';
+          playLabel.textContent = 'PAUSE';
+          btnPlayPause.classList.add('bg-primary-container', 'text-on-primary-container');
+          btnPlayPause.classList.remove('bg-surface-container-high', 'text-on-surface');
+        } else {
+          playIcon.textContent = 'play_arrow';
+          playLabel.textContent = 'RESUME';
+          btnPlayPause.classList.remove('bg-primary-container', 'text-on-primary-container');
+          btnPlayPause.classList.add('bg-surface-container-high', 'text-on-surface');
+        }
+      });
+
+      // Live FPS subtle micro-jitter simulation
+      const fpsReadout = document.getElementById('fpsReadout');
+      setInterval(() => {
+        if (!isPlaying) {
+          fpsReadout.textContent = '00.0 FPS • PAUSED';
+          return;
+        }
+        const fps = (59.8 + Math.random() * 0.4).toFixed(1);
+        const ms = (1000 / fps).toFixed(1);
+        fpsReadout.textContent = `${fps} FPS • ${ms}ms`;
+      }, 800);
+
+      updateQuadVisuals();
+    })();
+  </script>
+</body></html>

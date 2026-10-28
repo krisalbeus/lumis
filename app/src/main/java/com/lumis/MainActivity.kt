@@ -9,6 +9,7 @@ import android.opengl.GLSurfaceView
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
+import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
@@ -20,6 +21,7 @@ import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import com.lumis.editor.CornerOverlay
+import com.lumis.geometry.OutputCanvas
 import com.lumis.geometry.Point
 import com.lumis.geometry.Quad
 import com.lumis.media.SamplePlayer
@@ -39,6 +41,13 @@ class MainActivity : Activity() {
     private lateinit var metrics: TextView
     private lateinit var errorPanel: LinearLayout
     private lateinit var errorMessage: TextView
+    private lateinit var root: LinearLayout
+    private lateinit var editModeButton: Button
+    private lateinit var outputModeButton: Button
+    private val editorChrome = mutableListOf<View>()
+    var outputMode = false
+        private set
+    private var backCallback: Any? = null
     private var resumed = false
     private var rendererFailed = false
     private var showFps = false
@@ -55,16 +64,19 @@ class MainActivity : Activity() {
         player = SamplePlayer(this, ::playbackChanged) { showError(false) }
         player.restore(savedInstanceState?.getBoolean("playing") ?: true, savedInstanceState?.getInt("position") ?: 0)
         buildUi()
+        setOutputMode(savedInstanceState?.getBoolean("output") ?: false)
     }
 
     private fun buildUi() {
         val landscape = resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
-        val root = LinearLayout(this).apply {
+        root = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setBackgroundColor(this@MainActivity.background)
             setPadding(dp(20), 0, dp(20), 0)
             setOnApplyWindowInsetsListener { view, insets ->
-                if (android.os.Build.VERSION.SDK_INT >= 30) {
+                if (outputMode) {
+                    view.setPadding(0, 0, 0, 0)
+                } else if (android.os.Build.VERSION.SDK_INT >= 30) {
                     val bars = insets.getInsets(android.view.WindowInsets.Type.systemBars() or android.view.WindowInsets.Type.displayCutout())
                     view.setPadding(dp(20) + bars.left, bars.top + dp(8), dp(20) + bars.right, bars.bottom + dp(12))
                 } else {
@@ -81,11 +93,14 @@ class MainActivity : Activity() {
             importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
         }, LinearLayout.LayoutParams(dp(40), dp(40)))
         header.addView(text("Lumis", 24, Color.WHITE, true), LinearLayout.LayoutParams(0, dp(52), 1f))
-        header.addView(text(getString(R.string.rendering_proof), 10, cyan, true))
+        header.addView(modeSwitch())
         root.addView(header)
-        root.addView(text(getString(R.string.instructions), 14, secondary).apply {
+        val instructions = text(getString(R.string.instructions), 14, secondary).apply {
             setPadding(0, dp(if (landscape) 0 else 14), 0, dp(4))
-        })
+        }
+        root.addView(instructions)
+        val caption = outputCaption()
+        if (!landscape) root.addView(caption, LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(6) })
 
         val body = LinearLayout(this).apply {
             orientation = if (landscape) LinearLayout.HORIZONTAL else LinearLayout.VERTICAL
@@ -100,7 +115,7 @@ class MainActivity : Activity() {
             preserveEGLContextOnPause = false
         }
         renderer = VideoRenderer(
-            dp(28).toFloat(),
+            CornerOverlay.INSET_DP * resources.displayMetrics.density,
             { glView.requestRender() },
             { videoSurface ->
                 runOnUiThread {
@@ -150,6 +165,8 @@ class MainActivity : Activity() {
             addView(panel)
         }
         body.addView(scroll, if (landscape) LinearLayout.LayoutParams(dp(232), -1) else LinearLayout.LayoutParams(-1, -2))
+        if (landscape) panel.addView(caption, LinearLayout.LayoutParams(-2, -2).apply { bottomMargin = dp(8) })
+        editorChrome += listOf(header, instructions, caption, overlay, scroll)
 
         errorPanel = LinearLayout(this).apply {
             id = R.id.error_panel
@@ -239,6 +256,133 @@ class MainActivity : Activity() {
         setContentView(root)
     }
 
+    private fun modeSwitch() = LinearLayout(this).apply {
+        background = GradientDrawable().apply {
+            setColor(Color.rgb(13, 16, 23))
+            setStroke(dp(1), Color.rgb(44, 50, 64))
+            cornerRadius = dp(24).toFloat()
+        }
+        setPadding(dp(3), dp(3), dp(3), dp(3))
+        isBaselineAligned = false
+        editModeButton = modeButton(R.string.mode_edit, R.id.mode_edit) { setOutputMode(false) }
+        outputModeButton = modeButton(R.string.mode_output, R.id.mode_output) { setOutputMode(true) }
+        addView(editModeButton)
+        addView(outputModeButton)
+    }
+
+    private fun modeButton(label: Int, viewId: Int, action: () -> Unit) = Button(this).apply {
+        id = viewId
+        setText(label)
+        isAllCaps = false
+        textSize = 13f
+        typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
+        minWidth = dp(64)
+        minimumWidth = dp(64)
+        minHeight = dp(44)
+        minimumHeight = dp(44)
+        setPadding(dp(14), 0, dp(14), 0)
+        stateListAnimator = null
+        setOnClickListener { action() }
+    }
+
+    private fun outputCaption() = text(getString(R.string.output_size, OutputCanvas.WIDTH, OutputCanvas.HEIGHT), 11, secondary).apply {
+        id = R.id.output_caption
+        typeface = Typeface.MONOSPACE
+        background = GradientDrawable().apply {
+            setColor(Color.rgb(13, 16, 23))
+            setStroke(dp(1), Color.rgb(44, 50, 64))
+            cornerRadius = dp(8).toFloat()
+        }
+        setPadding(dp(10), dp(4), dp(10), dp(4))
+    }
+
+    /** Edit and Output share the same GL view, scene, video surface, and player. */
+    fun setOutputMode(enabled: Boolean) {
+        outputMode = enabled
+        editorChrome.forEach { it.visibility = if (enabled) View.GONE else View.VISIBLE }
+        root.setBackgroundColor(if (enabled) Color.BLACK else background)
+        window.decorView.setBackgroundColor(if (enabled) Color.BLACK else background)
+        renderer.setOutputMode(enabled)
+        glView.importantForAccessibility =
+            if (enabled) View.IMPORTANT_FOR_ACCESSIBILITY_YES else View.IMPORTANT_FOR_ACCESSIBILITY_NO
+        glView.contentDescription = getString(if (enabled) R.string.output_description else R.string.canvas_description)
+        styleMode(editModeButton, !enabled)
+        styleMode(outputModeButton, enabled)
+        if (android.os.Build.VERSION.SDK_INT >= 28) {
+            window.attributes = window.attributes.apply {
+                layoutInDisplayCutoutMode = when {
+                    !enabled -> WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_DEFAULT
+                    android.os.Build.VERSION.SDK_INT >= 30 -> WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
+                    else -> WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+                }
+            }
+        }
+        applySystemBars()
+        updateBackHandling()
+        updateKeepScreenOn()
+        root.requestApplyInsets()
+    }
+
+    private fun styleMode(button: Button, selected: Boolean) {
+        button.isSelected = selected
+        button.background = GradientDrawable().apply {
+            setColor(if (selected) violet else Color.TRANSPARENT)
+            cornerRadius = dp(22).toFloat()
+        }
+        button.setTextColor(if (selected) Color.rgb(29, 20, 55) else secondary)
+    }
+
+    private fun applySystemBars() {
+        if (android.os.Build.VERSION.SDK_INT >= 30) {
+            val controller = window.insetsController ?: return
+            if (outputMode) {
+                controller.systemBarsBehavior = android.view.WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                controller.hide(android.view.WindowInsets.Type.systemBars())
+            } else {
+                controller.show(android.view.WindowInsets.Type.systemBars())
+            }
+        } else {
+            @Suppress("DEPRECATION")
+            window.decorView.systemUiVisibility = if (outputMode) {
+                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_FULLSCREEN or
+                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            } else 0
+        }
+    }
+
+    private fun updateBackHandling() {
+        if (android.os.Build.VERSION.SDK_INT < 33) return
+        val dispatcher = onBackInvokedDispatcher
+        if (outputMode && backCallback == null) {
+            val callback = android.window.OnBackInvokedCallback { setOutputMode(false) }
+            dispatcher.registerOnBackInvokedCallback(android.window.OnBackInvokedDispatcher.PRIORITY_DEFAULT, callback)
+            backCallback = callback
+        } else if (!outputMode) {
+            (backCallback as? android.window.OnBackInvokedCallback)?.let { dispatcher.unregisterOnBackInvokedCallback(it) }
+            backCallback = null
+        }
+    }
+
+    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        // Android 13+ uses OnBackInvokedCallback; older versions still deliver Back as a key.
+        if (android.os.Build.VERSION.SDK_INT < 33 && outputMode && event.keyCode == KeyEvent.KEYCODE_BACK) {
+            if (event.action == KeyEvent.ACTION_UP && !event.isCanceled) setOutputMode(false)
+            return true
+        }
+        return super.dispatchKeyEvent(event)
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus && outputMode) applySystemBars()
+    }
+
+    private fun updateKeepScreenOn() {
+        if (outputMode || (player.wantsToPlay && playButton.isEnabled)) window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        else window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
     private fun moveCorner(index: Int, point: Point): Boolean {
         val moved = quad.moveCorner(index, point) ?: return false
         if (moved === quad) return true
@@ -252,12 +396,14 @@ class MainActivity : Activity() {
         playButton.isEnabled = ready
         playButton.setText(if (playing) R.string.pause else R.string.play)
         status.setText(if (!ready) R.string.loading else if (playing) R.string.playing else R.string.paused)
-        if (playing) window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        if (playing || outputMode) window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         else window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         if (!playing) metrics.setText(R.string.paused)
     }
 
     private fun showError(gpu: Boolean) {
+        // Recovery UI belongs to the editor, never to clean output.
+        if (outputMode) setOutputMode(false)
         rendererFailed = gpu
         player.release()
         playButton.isEnabled = false
@@ -298,6 +444,7 @@ class MainActivity : Activity() {
         outState.putBoolean("playing", player.wantsToPlay)
         outState.putInt("position", player.position())
         outState.putBoolean("fps", showFps)
+        outState.putBoolean("output", outputMode)
         super.onSaveInstanceState(outState)
     }
 

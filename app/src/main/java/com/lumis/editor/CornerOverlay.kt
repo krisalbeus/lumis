@@ -33,7 +33,7 @@ class CornerOverlay(
     private var pointerId = -1
     private var warned = false
     private var grabOffset = Point(0.0, 0.0)
-    var viewport = Viewport.fit(1, 1, 28.0 * density)
+    var viewport = Viewport.fit(1, 1, INSET_DP * density)
         private set
     private val handles = listOf(R.id.corner_a, R.id.corner_b, R.id.corner_c, R.id.corner_d)
         .mapIndexed { index, viewId ->
@@ -57,7 +57,7 @@ class CornerOverlay(
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        viewport = Viewport.fit(width, height, 28.0 * density)
+        viewport = Viewport.fit(width, height, INSET_DP * density)
         scene().points.forEachIndexed { index, point ->
             val screen = viewport.toScreen(point)
             val handle = handles[index]
@@ -190,6 +190,8 @@ class CornerOverlay(
     }
 
     companion object {
+        /** Shared with the renderer so handles and GPU pixels use identical preview framing. */
+        const val INSET_DP = 28.0
         private val actions = listOf(
             R.id.move_left to R.string.move_left, R.id.move_right to R.string.move_right,
             R.id.move_up to R.string.move_up, R.id.move_down to R.string.move_down,

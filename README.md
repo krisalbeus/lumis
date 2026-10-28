@@ -1,11 +1,14 @@
 # Lumis
 
 An Android-first, offline projection-mapping app. Currently implemented:
-**Milestone 0, the rendering proof**. This is intentionally not the complete MVP.
+**Milestone 0, the rendering proof**, and **Milestone 1, the virtual projector
+canvas**. This is intentionally not the complete MVP.
 
 Play a bundled video, independently drag its four corners, and watch the GPU
-preserve perspective in real time. Includes Play/Pause, Reset corners, optional
-measured FPS, portrait/landscape layouts, and accessible corner-movement actions.
+preserve perspective in real time. Switch between **Edit** and a clean,
+fullscreen **Output** of the same fixed 1920x1080 scene. Includes Play/Pause,
+Reset corners, optional measured FPS, portrait/landscape layouts, and accessible
+corner-movement actions.
 No projector, account, network access, or media permissions are required.
 
 - [Implementation checklist](IMPLEMENTATION.md)
@@ -46,6 +49,14 @@ are test-only dependencies; the first build needs access to Gradle/Maven artifac
 
 ## Controls
 
+- **Edit | Output** switches presentation without restarting video or changing
+  geometry. Output is immersive and black outside the mapped video. It has no
+  handles, outlines, labels, FPS, buttons, or system bars. Press or gesture
+  **Back** to return to Edit. Output ignores touches so the projected scene
+  cannot be edited accidentally.
+- The first time Android enters immersive mode, the OS may show its own
+  one-time "Viewing full screen" tutorial over the app. Dismiss it before
+  projecting; it is system UI, not Lumis output.
 - Drag handles **A, B, C, D**. Each has a 56dp target.
 - Corners stay within the canvas. Folded, crossed, or nearly collapsed geometry
   is rejected with a visible message instead of feeding a singular transform to
@@ -57,7 +68,9 @@ are test-only dependencies; the first build needs access to Gradle/Maven artifac
   roughly 30 redraws/sec is expected; paused playback does not spin a render loop.
 - Screen-reader users can focus each labeled corner and use left/right/up/down
   actions. Scroll-forward/backward actions adjust horizontally.
-- Rotation and background/resume preserve corner geometry and playback intent.
+- Rotation and background/resume preserve corner geometry, playback intent,
+  and Edit/Output mode. A playback or renderer error exits Output so recovery UI
+  never appears in clean output.
   Android saved-instance-state also survives activity recreation; permanent
   project persistence is a later milestone.
 
@@ -67,11 +80,11 @@ geometry intact and shows an explicit Retry action.
 ## Rendering architecture
 
 ```text
-MainActivity: one immutable normalized Quad
+MainActivity: one immutable Quad in 1920x1080 logical output space
      |                         |
      v                         v
-CornerOverlay             VideoRenderer (GL thread)
-editing handles           projective clip-space transform
+CornerOverlay (Edit only)  VideoRenderer (GL thread, Edit and Output)
+editing handles           projective transform + presentation viewport
                                ^
                                |
 MediaPlayer -> Surface -> SurfaceTexture / external OES texture
@@ -90,9 +103,14 @@ MediaPlayer -> Surface -> SurfaceTexture / external OES texture
 - Player and GPU resources are released on backgrounding and recreated on resume.
   Geometry, play/pause intent, and position are saved separately from those resources.
 
-The preview is aspect-fitted at 16:9. This milestone renders directly into its GL
-surface; a separate 1920x1080 output target and clean fullscreen mode belong to
-Milestone 1. This code does not yet claim external-display routing.
+Scene coordinates are normalized to the fixed 1920x1080 logical output frame
+(`OutputCanvas`). A `Viewport` places that frame on a physical surface. Edit uses
+a 28dp inset preview shared exactly by the renderer and handle overlay. Output uses
+the same `GLSurfaceView`, renderer, decoder surface, and quad with no inset,
+letterboxed or pillarboxed in black at 16:9. Switching modes only changes view
+visibility, system bars, and the viewport; it never recreates the video pipeline.
+On a 2400x1080 landscape phone, Output is exactly 1920x1080 pixels. External
+HDMI/Presentation display routing is not implemented yet.
 
 Key source:
 
@@ -102,7 +120,10 @@ Key source:
 - [Corner editing and accessibility](app/src/main/java/com/lumis/editor/CornerOverlay.kt)
 - [Native screen](app/src/main/java/com/lumis/MainActivity.kt)
 
-The UI follows Stitch references 13 and 33. It uses Android's system sans font
+The UI follows the Milestone 1 Stitch revisions of references 13 and 33, plus
+screen 25 for clean Output. Stitch added decorative
+wireframe/pipeline diagnostics to those revisions; they are outside approved scope
+and intentionally not implemented. It uses Android's system sans font
 for an offline, dependency-free technical spike. The Android vector logo adapts
 the Stitch foreground's geometry and gradients, omitting tiny dashed construction
 guides for small-size legibility.
@@ -115,7 +136,8 @@ guides for small-size legibility.
 ANDROID_SERIAL=emulator-5554 ./gradlew :app:connectedDebugAndroidTest
 ```
 
-The instrumentation harness wakes the test device. Use only a development device
+The instrumentation harness wakes the test device and pre-confirms Android's
+one-time immersive tutorial so it cannot cover output assertions. Use only a development device
 or emulator: rotation and touch tests interact with its display. The multi-pointer
 test dispatches to the real overlay inside the app; single-finger drags go through
 Android's system input pipeline.
@@ -129,6 +151,13 @@ Android's system input pipeline.
   reset, absolute video orientation, GPU pixel comparison against a homography,
   recreation/rotation, repeated backgrounding, accessible actions, invalid geometry,
   multi-touch ownership, and explicit error/retry without scene loss.
+- [Output tests](app/src/androidTest/java/com/lumis/OutputModeTest.kt) cover
+  the 1920x1080 caption and preview aspect, fullscreen immersive output with all
+  editor chrome/diagnostics hidden, Back returning to the same editing session,
+  identical decoder surface and continuous playback, Edit-vs-Output GPU pixels,
+  upright output, touch rejection, rotation, backgrounding, and error recovery.
+  A full-display screenshot asserts every sampled pixel outside the projected
+  quad is black, catching system bars and stray views.
 - GPU tests use `PixelCopy` on the actual GL surface, not a UI screenshot proxy.
   They compare 20 source points after a strong trapezoid warp, requiring average
   per-channel error under 5/255 and at least 18/20 samples under 12/255.
@@ -153,7 +182,7 @@ sh tools/generate-sample.sh
 ## Not implemented yet
 
 Project management/saving, imported media, multiple surfaces, undo/redo, viewport
-pan/zoom, clean Output mode, shaders, masks, cameras, and external displays are
+pan/zoom, external Output displays, shaders, masks, cameras, and external displays are
 not part of this build. Physical Pixel 9 Pro performance, thermal behavior,
 hardware-specific decoding, and projector output still need device testing.
 Follow the [milestone checklist](IMPLEMENTATION.md) rather than expanding everything

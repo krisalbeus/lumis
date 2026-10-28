@@ -17,4 +17,7 @@
     <item name="move_right" type="id" />
     <item name="move_up" type="id" />
     <item name="move_down" type="id" />
+    <item name="mode_edit" type="id" />
+    <item name="mode_output" type="id" />
+    <item name="output_caption" type="id" />
 </resources>

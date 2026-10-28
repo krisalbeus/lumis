@@ -12,11 +12,12 @@ import com.lumis.geometry.Viewport
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.math.roundToInt
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
 class VideoRenderer(
-    private val inset: Float,
+    private val editInset: Double,
     private val requestFrame: () -> Unit,
     private val onSurface: (Surface) -> Unit,
     private val onFailure: (String) -> Unit,
@@ -38,6 +39,12 @@ class VideoRenderer(
     private var textureMatrixLocation = 0
     private var samplerLocation = 0
     private val viewportBounds = IntArray(4)
+    private var surfaceWidth = 1
+    private var surfaceHeight = 1
+    @Volatile var outputMode = false
+        private set
+    @Volatile var viewport = Viewport.fit(1, 1, 0.0)
+        private set
     private var failed = false
     private var hasFrame = false
     private var metricsStart = 0L
@@ -49,6 +56,12 @@ class VideoRenderer(
 
     fun updateQuad(quad: Quad) {
         transform = Homography(quad).matrix
+        requestFrame()
+    }
+
+    /** Output reuses this scene and video texture; only the presentation framing changes. */
+    fun setOutputMode(enabled: Boolean) {
+        outputMode = enabled
         requestFrame()
     }
 
@@ -92,16 +105,25 @@ class VideoRenderer(
     }
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
-        val viewport = Viewport.fit(width, height, inset.toDouble())
-        viewportBounds[0] = viewport.left.toInt()
-        viewportBounds[1] = (height - viewport.top - viewport.height).toInt()
-        viewportBounds[2] = viewport.width.toInt()
-        viewportBounds[3] = viewport.height.toInt()
+        surfaceWidth = width
+        surfaceHeight = height
+    }
+
+    private fun updateViewport(): Boolean {
+        val output = outputMode
+        val fitted = Viewport.fit(surfaceWidth, surfaceHeight, if (output) 0.0 else editInset)
+        viewport = fitted
+        viewportBounds[0] = fitted.left.roundToInt()
+        viewportBounds[1] = (surfaceHeight - fitted.top - fitted.height).roundToInt()
+        viewportBounds[2] = fitted.width.roundToInt()
+        viewportBounds[3] = fitted.height.roundToInt()
         GLES20.glViewport(viewportBounds[0], viewportBounds[1], viewportBounds[2], viewportBounds[3])
+        return output
     }
 
     override fun onDrawFrame(gl: GL10?) {
-        GLES20.glClearColor(9f / 255, 11f / 255, 16f / 255, 1f)
+        if (updateViewport()) GLES20.glClearColor(0f, 0f, 0f, 1f)
+        else GLES20.glClearColor(9f / 255, 11f / 255, 16f / 255, 1f)
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
         GLES20.glEnable(GLES20.GL_SCISSOR_TEST)
         GLES20.glScissor(viewportBounds[0], viewportBounds[1], viewportBounds[2], viewportBounds[3])

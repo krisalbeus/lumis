@@ -95,13 +95,23 @@ metadata is 3840x2160, the same aspect ratio at twice the resolution.
 - [Clean output reference](stitch/25-output-clean-fullscreen.html)
 - [Selected-video editor reference](stitch/09-editor-selected-video.html)
 - [Selected-video screenshot](stitch/09-editor-selected-video.png)
-- [Rendering-proof landscape layout](stitch/33-rendering-proof-landscape.html)
+- [Rendering-proof mobile layout, Milestone 1](stitch/13-rendering-proof-mobile.html)
+- [Rendering-proof landscape layout, Milestone 1](stitch/33-rendering-proof-landscape.html)
 - [Extracted SVG assets](assets/)
 
 Screen 33 was added during Milestone 0 implementation to define the landscape
 canvas/control-rail adaptation. Its screenshot board metadata is 2560x2048; use
 it as a responsive layout reference, not a literal phone framebuffer. Actual
 landscape behavior is verified by the Android instrumentation suite.
+
+Screens 13 and 33 were revised for Milestone 1. The revisions replace the
+"Rendering proof" badge with screen 09's **Edit | Output** segmented control and
+add an editor-only "Output 1920 × 1080" caption. Stitch also introduced
+wireframe/pipeline/buffer diagnostics and coordinate readouts in those revisions.
+They are decorative here, outside approved scope, and not implemented. Output
+itself follows screen 25: black, fullscreen, mapped content only, with Back
+returning to Edit. The Milestone 0 versions are listed under
+`supersededScreens`.
 
 All current screen references remain in Stitch. Only the references above are
 exported locally; the manifest is not a full offline archive of every mockup.

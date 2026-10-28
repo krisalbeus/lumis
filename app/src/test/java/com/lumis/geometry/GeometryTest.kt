@@ -119,4 +119,35 @@ class GeometryTest {
         val small = Quad(Point(.1, .1), Point(.13, .1), Point(.13, .13), Point(.1, .13))
         assertTrue(Homography(small).matrix.all { it.isFinite() })
     }
+
+    @Test fun logicalOutputIsFixed1920By1080AndRoundTripsPixels() {
+        assertEquals(1920, OutputCanvas.WIDTH)
+        assertEquals(1080, OutputCanvas.HEIGHT)
+        assertPoint(Point(960.0, 540.0), OutputCanvas.toPixels(Point(.5, .5)))
+        assertPoint(Point(.12, .88), OutputCanvas.fromPixels(OutputCanvas.toPixels(Point(.12, .88))))
+    }
+
+    @Test fun cleanOutputFitsLogicalCanvasWithoutInsetInBothOrientations() {
+        val landscape = Viewport.fit(2400, 1080, 0.0)
+        assertEquals(Viewport(240.0, 0.0, 1920.0, 1080.0), landscape)
+        assertEquals(1.0, landscape.scale, 1e-12)
+        val portrait = Viewport.fit(1080, 2400, 0.0)
+        assertEquals(1080.0, portrait.width, 1e-9)
+        assertEquals(607.5, portrait.height, 1e-9)
+        assertEquals((2400 - 607.5) / 2, portrait.top, 1e-9)
+        assertEquals(.5625, portrait.scale, 1e-12)
+    }
+
+    @Test fun previewAndOutputShowTheSameLogicalPointAtTheirOwnScale() {
+        val preview = Viewport.fit(1080, 1300, 73.5)
+        val output = Viewport.fit(2400, 1080, 0.0)
+        val logical = Point(1440.0, 270.0)
+        val scene = OutputCanvas.fromPixels(logical)
+        val inPreview = preview.toScreen(scene)
+        val inOutput = output.toScreen(scene)
+        assertPoint(Point(preview.left + logical.x * preview.scale, preview.top + logical.y * preview.scale), inPreview)
+        assertPoint(Point(output.left + logical.x, logical.y), inOutput)
+        assertPoint(scene, preview.toScene(inPreview))
+        assertPoint(scene, output.toScene(inOutput))
+    }
 }

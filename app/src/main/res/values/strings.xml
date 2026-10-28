@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Lumis</string>
-    <string name="rendering_proof">RENDERING PROOF</string>
-    <string name="instructions">Drag any corner to reshape the playing video.</string>
+    <string name="instructions">Drag the four corners to map the video. Tap Output to project fullscreen; press Back to return.</string>
+    <string name="mode_edit">Edit</string>
+    <string name="mode_output">Output</string>
+    <string name="output_size">Output %1$d × %2$d</string>
+    <string name="output_description">Projector output. Press Back to return to editing.</string>
     <string name="sample_label">Prism waves</string>
     <string name="sample_detail">Bundled sample • Looping • Silent</string>
     <string name="pause">Pause</string>

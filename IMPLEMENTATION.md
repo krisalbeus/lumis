@@ -25,13 +25,19 @@ Use [the Stitch workflow](design/README.md) for missing screens and assets.
   an Android emulator.
 - [x] Inspect emulator screenshots and record measured results and limitations.
 
-## Milestone 1 - Virtual projector canvas (next)
+## Milestone 1 - Virtual projector canvas (complete)
 
-- [ ] Establish fixed 1920x1080 logical output and correctly scaled preview.
-- [ ] Add Edit/Output mode switch using the same renderer.
-- [ ] Test clean fullscreen output without editing chrome or diagnostic overlays.
+- [x] Revise Stitch rendering-proof screens with the Edit | Output control and
+  output-size caption; reuse screen 25 for clean output.
+- [x] Establish fixed 1920x1080 logical output and correctly scaled preview.
+- [x] Share one exact preview inset between GPU rendering and editing handles.
+- [x] Add Edit/Output mode switch using the same renderer, video surface, and scene.
+- [x] Make Output immersive and black-letterboxed, ignore touches, keep the screen
+  on, and return to Edit with Back.
+- [x] Preserve mode across rotation and backgrounding; exit Output on errors.
+- [x] Test clean fullscreen output without editing chrome or diagnostic overlays.
 
-## Milestone 2 - Media import
+## Milestone 2 - Media import (next)
 
 - [ ] Use the Android photo picker for images/videos.
 - [ ] Import and replace sources; handle unsupported/denied/missing media.
@@ -64,6 +70,30 @@ Use [the Stitch workflow](design/README.md) for missing screens and assets.
 - [ ] Physical projector-assisted calibration (requires hardware).
 
 ## Verification log
+
+### Milestone 1
+
+Verified on 2026-10-29 with the same `e2e_playstore` AVD (Android 16 / API 36).
+
+| Check | Result |
+|---|---|
+| Unit tests | 15 passed, including logical-pixel and Edit/Output viewport mapping |
+| Connected tests, 1080x2400 / density 420 | 19 passed (13 rendering proof + 6 Output) |
+| Compact tests, 720x1280 / density 320 / font scale 1.5 | 10 passed (all 6 Output + 4 rendering checks) |
+| Android lint | 0 errors; 3 warnings (2 version advisories, API-33 back attribute ignored on older Android) |
+| Edit vs Output GPU pixels | 20 projected samples; mean per-channel error 0.2-0.35/255, maximum 1 |
+| Clean output | Full-display screenshots black outside the mapped quad in portrait and landscape; no system bars, handles, labels, or FPS |
+| Output framing | Landscape 2400x1080 output is exactly 1920x1080 at x=240; portrait is letterboxed 1080x607.5 |
+| Same pipeline | Decoder `Surface` identity unchanged through Edit -> Output -> Edit; playback continued |
+| Back / rotation / background | Back returns to Edit; Output and geometry survive rotation and two background cycles |
+| Error in Output | Returns to Edit recovery UI; Retry keeps geometry and Output can be re-entered |
+
+Testing found and fixed a half-pixel mismatch: the renderer rounded its 28dp
+inset while handles used the fractional value. Visual review also exposed
+Android's one-time immersive-mode tutorial, which is now documented and confirmed
+before tests. Emulator display, font, rotation, and immersive settings were restored.
+
+### Milestone 0
 
 Verified on 2026-10-29 with the existing `e2e_playstore` AVD: Pixel 8 profile,
 Android 16 / API 36, arm64, OpenGL emulator backend. Native debug APK built and
@@ -108,4 +138,4 @@ keystore, or emulator state is committed as source.
 Emulator results do **not** establish physical Pixel 9 Pro frame-rate, thermal,
 codec, or HDMI performance. This proof uses a single bundled 720p silent video;
 60fps sources, imported media, concurrent decoders, permanent project saving,
-and clean external output remain future milestones.
+and external-display output remain future milestones.

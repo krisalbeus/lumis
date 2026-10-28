@@ -174,18 +174,19 @@
       }
     },
     {
-      "id": "221af87384804c11bfc6d30e953f45a1",
-      "title": "13 \u2014 Rendering Proof / Milestone 0",
+      "id": "fa131d9dce884aea8105172699e2658d",
+      "title": "13 \u2014 Rendering Proof / Milestone 1 Mobile",
       "width": 780,
       "height": 1768,
       "screenshot": {
-        "name": "projects/9969649650324268552/files/bf6dcf90e1b145d7b28b441659c8ab45",
-        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/bf6dcf90e1b145d7b28b441659c8ab45:download"
+        "name": "projects/9969649650324268552/files/46c16cad22d74e8f983be43c615c1439",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/46c16cad22d74e8f983be43c615c1439:download"
       },
       "html": {
-        "name": "projects/9969649650324268552/files/a9c3bce6b7274e1d818131a0947fcf18",
-        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/a9c3bce6b7274e1d818131a0947fcf18:download"
-      }
+        "name": "projects/9969649650324268552/files/662510ffd27440d98745b4d61fe4100c",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/662510ffd27440d98745b4d61fe4100c:download"
+      },
+      "localExport": "stitch/13-rendering-proof-mobile.html"
     },
     {
       "id": "32b4fd24f5ab475d9fd9644d8a273703",
@@ -458,17 +459,17 @@
       }
     },
     {
-      "id": "1b35b1230d9849e19bb11212ad34f12f",
-      "title": "33 \u2014 Rendering Proof / Landscape",
+      "id": "f1a5c220b8dc4fd996a117b17994fe15",
+      "title": "33 \u2014 Rendering Proof / Milestone 1 Landscape",
       "width": 2560,
       "height": 2048,
       "screenshot": {
-        "name": "projects/9969649650324268552/files/047fd1f90690480796ae459c51ff15dc",
-        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/047fd1f90690480796ae459c51ff15dc:download"
+        "name": "projects/9969649650324268552/files/c896fbcb97004426a0665aaa3bb233fc",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/c896fbcb97004426a0665aaa3bb233fc:download"
       },
       "html": {
-        "name": "projects/9969649650324268552/files/b2eb38ad70ee49fe8535746dc7a31ad0",
-        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/b2eb38ad70ee49fe8535746dc7a31ad0:download"
+        "name": "projects/9969649650324268552/files/7ef7c1d278094ca187698996a13bdb07",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/7ef7c1d278094ca187698996a13bdb07:download"
       },
       "localExport": "stitch/33-rendering-proof-landscape.html"
     }
@@ -503,6 +504,36 @@
         "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/25c6ce4e652d4dffb25bb9eff643391b:download"
       },
       "reason": "replaced by approachable editor without default diagnostics or engineering jargon"
+    },
+    {
+      "id": "221af87384804c11bfc6d30e953f45a1",
+      "title": "13 \u2014 Rendering Proof / Milestone 0",
+      "width": 780,
+      "height": 1768,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/bf6dcf90e1b145d7b28b441659c8ab45",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/bf6dcf90e1b145d7b28b441659c8ab45:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/a9c3bce6b7274e1d818131a0947fcf18",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/a9c3bce6b7274e1d818131a0947fcf18:download"
+      },
+      "reason": "Milestone 0 version; revised with the Milestone 1 Edit | Output control and output-size caption"
+    },
+    {
+      "id": "1b35b1230d9849e19bb11212ad34f12f",
+      "title": "33 \u2014 Rendering Proof / Landscape",
+      "width": 2560,
+      "height": 2048,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/047fd1f90690480796ae459c51ff15dc",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/047fd1f90690480796ae459c51ff15dc:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/b2eb38ad70ee49fe8535746dc7a31ad0",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/b2eb38ad70ee49fe8535746dc7a31ad0:download"
+      },
+      "reason": "Milestone 0 version; revised with the Milestone 1 Edit | Output control and output-size caption"
     }
   ],
   "assets": [
