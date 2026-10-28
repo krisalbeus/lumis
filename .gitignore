@@ -6,3 +6,6 @@ local.properties
 *.iml
 .DS_Store
 captures/
+
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+/graft/
