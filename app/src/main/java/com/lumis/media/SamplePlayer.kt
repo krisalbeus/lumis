@@ -60,7 +60,8 @@ class SamplePlayer(
                 if (wantsToPlay) it.start()
                 onState(true, wantsToPlay)
             }
-            next.setOnErrorListener { _, what, extra ->
+            next.setOnErrorListener { failedPlayer, what, extra ->
+                if (player !== failedPlayer) return@setOnErrorListener true
                 Log.e("LumisPlayer", "Video decoder error: what=$what extra=$extra")
                 release(preservePosition = false)
                 onFailure(MediaFailure.DECODER)
@@ -109,7 +110,7 @@ class SamplePlayer(
     }
 
     private fun fail(error: Exception, failure: MediaFailure) {
-        Log.e("LumisPlayer", "Unable to play bundled sample", error)
+        Log.e("LumisPlayer", "Unable to play video source", error)
         release(preservePosition = false)
         onFailure(failure)
     }

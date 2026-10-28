@@ -90,16 +90,24 @@ internal fun drag(fromX: Float, fromY: Float, toX: Float, toY: Float) {
 }
 
 internal fun capture(scenario: ActivityScenario<MainActivity>): Bitmap {
-    val latch = CountDownLatch(1)
-    var bitmap: Bitmap? = null
-    var result = -1
-    scenario.onActivity {
-        val view = it.findViewById<GLSurfaceView>(R.id.video_canvas)
-        val image = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
-        bitmap = image
-        PixelCopy.request(view, image, { status -> result = status; latch.countDown() }, Handler(Looper.getMainLooper()))
+    val deadline = SystemClock.uptimeMillis() + 5000
+    while (true) {
+        val latch = CountDownLatch(1)
+        var bitmap: Bitmap? = null
+        var result = -1
+        scenario.onActivity {
+            val view = it.findViewById<GLSurfaceView>(R.id.video_canvas)
+            val image = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+            bitmap = image
+            PixelCopy.request(view, image, { status -> result = status; latch.countDown() }, Handler(Looper.getMainLooper()))
+        }
+        assertTrue(latch.await(5, TimeUnit.SECONDS))
+        val image = requireNotNull(bitmap)
+        if (result == PixelCopy.SUCCESS) return image
+        image.recycle()
+        assertEquals("Only a newly resized, not-yet-buffered surface may be retried", PixelCopy.ERROR_SOURCE_NO_DATA, result)
+        assertTrue("GL surface produced no capturable frame within five seconds", SystemClock.uptimeMillis() < deadline)
+        scenario.onActivity { it.findViewById<GLSurfaceView>(R.id.video_canvas).requestRender() }
+        SystemClock.sleep(50)
     }
-    assertTrue(latch.await(5, TimeUnit.SECONDS))
-    assertEquals(PixelCopy.SUCCESS, result)
-    return requireNotNull(bitmap)
 }

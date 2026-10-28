@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Lumis Studio — Delete Surface Confirmation</title>
+<!-- Google Fonts: Space Grotesk, Plus Jakarta Sans, JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-secondary": "#00363c",
+            "surface-container-low": "#1a1b21",
+            "on-surface": "#e2e2e9",
+            "on-surface-variant": "#cac4d4",
+            "on-secondary-container": "#003b42",
+            "outline": "#948e9d",
+            "on-tertiary-fixed-variant": "#005137",
+            "on-primary-fixed-variant": "#4f319c",
+            "tertiary-container": "#00b37e",
+            "on-background": "#e2e2e9",
+            "tertiary-fixed": "#68fcbf",
+            "on-error-container": "#ffdad6",
+            "secondary-container": "#02aebe",
+            "on-tertiary-fixed": "#002114",
+            "on-tertiary-container": "#003d28",
+            "error": "#ffb4ab",
+            "inverse-surface": "#e2e2e9",
+            "tertiary": "#45dfa4",
+            "on-tertiary": "#003825",
+            "primary-fixed": "#e8ddff",
+            "on-secondary-fixed-variant": "#004f57",
+            "on-primary-container": "#3c1989",
+            "surface-container": "#1e1f25",
+            "outline-variant": "#494552",
+            "surface-container-highest": "#33353a",
+            "secondary-fixed-dim": "#54d8e8",
+            "secondary": "#54d8e8",
+            "on-error": "#690005",
+            "surface-variant": "#33353a",
+            "on-primary": "#381385",
+            "surface-bright": "#37393f",
+            "secondary-fixed": "#91f1ff",
+            "surface-tint": "#cebdff",
+            "on-secondary-fixed": "#001f23",
+            "background": "#111318",
+            "surface-container-lowest": "#0c0e13",
+            "primary-fixed-dim": "#cebdff",
+            "surface-container-high": "#282a2f",
+            "primary": "#cebdff",
+            "tertiary-fixed-dim": "#45dfa4",
+            "primary-container": "#a78bfa",
+            "error-container": "#93000a",
+            "surface-dim": "#111318",
+            "on-primary-fixed": "#21005e",
+            "inverse-primary": "#674bb5",
+            "inverse-on-surface": "#2e3036",
+            "surface": "#111318"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-lg": "1.5rem",
+            "space-xl": "2rem",
+            "space-sm": "0.5rem",
+            "space-xs": "0.25rem",
+            "space-md": "1rem",
+            "gutter": "0.75rem",
+            "margin": "1rem"
+          },
+          "fontFamily": {
+            "headline-xl": ["Space Grotesk"],
+            "headline-md": ["Space Grotesk"],
+            "body-md": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "title-sm": ["Plus Jakarta Sans"],
+            "label-code-md": ["JetBrains Mono"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "headline-lg": ["Space Grotesk"],
+            "label-code-sm": ["JetBrains Mono"],
+            "body-sm": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "title-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "label-code-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "label-lg": ["13px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "label-code-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      line-height: 1;
+      text-transform: none;
+      letter-spacing: normal;
+      word-wrap: normal;
+      white-space: nowrap;
+      direction: ltr;
+    }
+    /* Android safe insets */
+    .pt-safe-status {
+      padding-top: max(48px, env(safe-area-inset-top));
+    }
+    .pb-safe-gesture {
+      padding-bottom: max(32px, env(safe-area-inset-bottom));
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-md antialiased overflow-x-hidden selection:bg-secondary/30 selection:text-secondary min-h-screen relative flex flex-col justify-end">
+<!-- ========================================================================= -->
+<!-- BACKGROUND LAYER: Blurred Projection Editor Workspace Canvas              -->
+<!-- ========================================================================= -->
+<div aria-hidden="true" class="fixed inset-0 pointer-events-none z-0 overflow-hidden bg-[#090B10]">
+<!-- Top System Bar Mock & Telemetry Pill (Blurred background state) -->
+<div class="w-full flex items-center justify-between px-space-md pt-4 opacity-40 filter blur-[1px]">
+<div class="flex items-center gap-2">
+<span class="font-label-code-sm text-label-code-sm text-outline">LUMIS // OPTIC_ENGINE</span>
+</div>
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container border border-outline-variant">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="font-label-code-sm text-label-code-sm text-on-surface">1920x1080 @ 60Hz</span>
+</div>
+</div>
+<!-- Projection Matrix Spatial Grid (Vector canvas simulation) -->
+<div class="absolute inset-0 opacity-20 bg-[radial-gradient(#2B3346_1px,transparent_1px)] [background-size:24px_24px]"></div>
+<!-- Active Keystone Quad Wireframe (Defines Surface 2 on canvas) -->
+<div class="absolute top-[18%] left-[8%] right-[10%] h-[380px] pointer-events-none opacity-40 filter blur-[2px]">
+<!-- Skewed Quad Surface Boundary -->
+<div class="relative w-full h-full border border-secondary/60 rounded-sm bg-secondary/5 transform -rotate-1 skew-x-3">
+<!-- Coordinate Crosshairs / Diagonals -->
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-full h-[1px] bg-secondary/20"></div>
+<div class="h-full w-[1px] bg-secondary/20 absolute"></div>
+</div>
+<!-- Projected Brick Texture Mock -->
+<div class="absolute inset-4 border border-dashed border-outline-variant/50 rounded flex items-center justify-center bg-surface-container-low/60">
+<span class="font-label-code-sm text-label-code-sm text-outline tracking-widest">SRF-02-QUAD // HOMOGRAPHY_ACTIVE</span>
+</div>
+</div>
+<!-- Keystone Handles & Nodes (4 Corners) -->
+<div class="absolute -top-2 -left-2 w-4 h-4 rounded-full border-2 border-secondary bg-surface shadow-[0_0_12px_#54d8e8]"></div>
+<div class="absolute -top-2 -right-2 w-4 h-4 rounded-full border-2 border-secondary bg-surface shadow-[0_0_12px_#54d8e8]"></div>
+<div class="absolute -bottom-2 -left-2 w-4 h-4 rounded-full border-2 border-secondary bg-surface shadow-[0_0_12px_#54d8e8]"></div>
+<div class="absolute -bottom-2 -right-2 w-4 h-4 rounded-full border-2 border-secondary bg-surface shadow-[0_0_12px_#54d8e8]"></div>
+</div>
+<!-- Dark Scrim Backdrop Filter with High Blur -->
+<div class="absolute inset-0 bg-surface-container-lowest/80 backdrop-blur-md"></div>
+</div>
+<!-- ========================================================================= -->
+<!-- MODAL LAYER: High-Density Destructive Confirmation Dialog                 -->
+<!-- ========================================================================= -->
+<main class="relative z-10 w-full max-w-[440px] mx-auto flex flex-col justify-end px-gutter pb-safe-gesture pt-safe-status">
+<!-- Modal Card / Dialog Container -->
+<div aria-describedby="dialog-desc" aria-labelledby="dialog-title" aria-modal="true" class="w-full rounded-xl bg-surface-container-low border border-outline-variant/60 shadow-[0_16px_48px_rgba(0,0,0,0.85)] overflow-hidden transition-all duration-200" role="dialog">
+<!-- Top Decorative Accent Bar: Strict Destructive Alert Stroke -->
+<div class="h-1 w-full bg-gradient-to-r from-error-container via-error to-error-container opacity-90"></div>
+<!-- Inner Content Container -->
+<div class="p-space-md sm:p-space-lg flex flex-col gap-space-md">
+<!-- Header Row: Destructive Icon Pill + Contextual Surface Chip -->
+<div class="flex items-center justify-between gap-3">
+<!-- Warning Header Icon Box -->
+<div class="flex items-center gap-2.5">
+<div class="w-10 h-10 rounded-lg bg-error-container/20 border border-error/30 flex items-center justify-center text-error">
+<span class="material-symbols-outlined text-[22px]">delete_forever</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-code-sm text-label-code-sm text-error uppercase tracking-wider font-semibold">Destructive Action</span>
+<span class="font-label-code-sm text-label-code-sm text-outline">Stage Layer Matrix</span>
+</div>
+</div>
+<!-- Chip Indicator in Corner -->
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-surface-container-high border border-outline-variant/50">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="font-label-code-sm text-label-code-sm text-on-surface font-medium uppercase tracking-tight">ACTIVE KEYSTONE QUAD</span>
+</div>
+</div>
+<!-- Title & Identification Cluster -->
+<div class="flex flex-col gap-1 border-b border-outline-variant/40 pb-space-sm">
+<div class="flex items-baseline justify-between gap-2">
+<h1 class="font-headline-md text-headline-md text-on-surface tracking-tight" id="dialog-title">
+              Delete “Stage Left Box”?
+            </h1>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-code-sm text-label-code-sm px-1.5 py-0.5 rounded bg-surface-container-highest/60 text-secondary border border-outline-variant/40">
+              SURFACE ID: SRF-02-QUAD
+            </span>
+<span class="text-outline text-xs">•</span>
+<span class="font-label-code-sm text-label-code-sm text-outline">Type: Bitmap Quad</span>
+</div>
+</div>
+<!-- Warning Explanation Bento / Information Cards -->
+<div class="flex flex-col gap-2.5">
+<!-- Card 1: Keystone & Geometry Removal Warning -->
+<div class="flex items-start gap-3 p-3 rounded-lg bg-surface-container border border-outline-variant/50">
+<div class="mt-0.5 w-6 h-6 rounded flex items-center justify-center bg-surface-container-highest text-error shrink-0">
+<span class="material-symbols-outlined text-[18px]">polyline</span>
+</div>
+<div class="flex flex-col gap-0.5">
+<div class="flex items-center justify-between">
+<span class="font-headline-md text-body-sm font-semibold text-on-surface">Keystone &amp; geometry removal</span>
+<span class="font-label-code-sm text-[10px] text-error px-1 rounded bg-error-container/10 border border-error/20">PERMANENT</span>
+</div>
+<p class="font-body-sm text-body-sm text-outline leading-snug" id="dialog-desc">
+                Permanently removes 4 corner pins, homography warp matrix, and quad mapping from the project scene.
+              </p>
+</div>
+</div>
+<!-- Card 2: Device Gallery Safe (Asset Intact Assurance) -->
+<div class="flex items-start gap-3 p-3 rounded-lg bg-surface-container border border-outline-variant/50">
+<div class="mt-0.5 w-6 h-6 rounded flex items-center justify-center bg-tertiary/15 text-tertiary shrink-0">
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+</div>
+<div class="flex flex-col gap-0.5 flex-1">
+<div class="flex items-center justify-between">
+<span class="font-headline-md text-body-sm font-semibold text-on-surface">Device gallery safe</span>
+<!-- Green Shield / Badge 'PRESERVED' -->
+<div class="flex items-center gap-1 px-1.5 py-0.5 rounded bg-tertiary/10 border border-tertiary/30 text-tertiary font-label-code-sm text-[10px] font-semibold">
+<span class="material-symbols-outlined text-[12px]">check_circle</span>
+<span>PRESERVED</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-outline leading-snug">
+                Original image file <span class="font-label-code-sm text-on-surface font-medium">stage_brick_texture.png</span> stored in your Android device gallery is NOT deleted or modified.
+              </p>
+</div>
+</div>
+</div>
+<!-- Explicit Notice & Alternative Workflow Box -->
+<div class="p-3 rounded-lg bg-surface-container-lowest/80 border border-outline-variant/40 flex items-start gap-2.5">
+<span class="material-symbols-outlined text-outline text-[18px] shrink-0 mt-0.5">info</span>
+<p class="font-body-sm text-body-sm text-outline leading-relaxed">
+            This action cannot be undone. To keep geometry intact while hiding projection, toggle visibility in <span class="text-on-surface font-medium underline underline-offset-2 decoration-outline-variant">Layers</span> instead.
+          </p>
+</div>
+<!-- Action Buttons (Jetpack Compose Layout Architecture) -->
+<div class="flex flex-col sm:flex-row-reverse gap-2.5 pt-space-xs">
+<!-- Destructive Button: Prominent solid red fill (#ef4444 equivalent) -->
+<button class="w-full sm:flex-1 h-12 px-space-md rounded-lg bg-error-container text-on-error-container border border-error/50 hover:bg-error hover:text-on-error flex items-center justify-center gap-2 font-label-lg text-label-lg active:scale-[0.98] transition-all shadow-[0_4px_16px_rgba(239,68,68,0.25)] focus:outline-none focus:ring-2 focus:ring-error" type="button">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+<span>Delete surface</span>
+</button>
+<!-- Safe Return Action: 'Keep surface' (Tonal / Outline button) -->
+<button class="w-full sm:flex-1 h-12 px-space-md rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface border border-outline-variant flex items-center justify-center gap-2 font-label-lg text-label-lg active:scale-[0.98] transition-all focus:outline-none focus:ring-2 focus:ring-outline" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+<span>Keep surface</span>
+</button>
+</div>
+</div>
+<!-- Bottom System Pill Bar Margin for Android 412x924dp Standards -->
+<div class="w-full py-1.5 flex justify-center bg-surface-container-lowest">
+<div class="w-32 h-1 rounded-full bg-outline-variant/40"></div>
+</div>
+</div>
+</main>
+</body></html>

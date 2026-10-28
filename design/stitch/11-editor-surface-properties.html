@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Lumis — Surface Properties</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "primary-fixed": "#e8ddff",
+            "on-surface": "#e2e2e9",
+            "on-background": "#e2e2e9",
+            "inverse-primary": "#674bb5",
+            "on-primary-fixed-variant": "#4f319c",
+            "error": "#ffb4ab",
+            "surface-container": "#1e1f25",
+            "tertiary-fixed-dim": "#45dfa4",
+            "on-tertiary-fixed": "#002114",
+            "error-container": "#93000a",
+            "surface-container-lowest": "#0c0e13",
+            "tertiary": "#45dfa4",
+            "surface-dim": "#111318",
+            "secondary-container": "#02aebe",
+            "inverse-on-surface": "#2e3036",
+            "tertiary-container": "#00b37e",
+            "on-surface-variant": "#cac4d4",
+            "secondary-fixed": "#91f1ff",
+            "surface-variant": "#33353a",
+            "primary-container": "#a78bfa",
+            "primary": "#cebdff",
+            "on-error-container": "#ffdad6",
+            "on-secondary": "#00363c",
+            "on-error": "#690005",
+            "inverse-surface": "#e2e2e9",
+            "on-tertiary-container": "#003d28",
+            "surface-container-highest": "#33353a",
+            "on-primary-fixed": "#21005e",
+            "on-tertiary-fixed-variant": "#005137",
+            "on-secondary-fixed-variant": "#004f57",
+            "on-secondary-container": "#003b42",
+            "on-secondary-fixed": "#001f23",
+            "surface": "#111318",
+            "on-tertiary": "#003825",
+            "primary-fixed-dim": "#cebdff",
+            "outline": "#948e9d",
+            "surface-container-low": "#1a1b21",
+            "tertiary-fixed": "#68fcbf",
+            "outline-variant": "#494552",
+            "on-primary-container": "#3c1989",
+            "background": "#111318",
+            "secondary": "#54d8e8",
+            "surface-bright": "#37393f",
+            "on-primary": "#381385",
+            "surface-tint": "#cebdff",
+            "surface-container-high": "#282a2f",
+            "secondary-fixed-dim": "#54d8e8"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "gutter": "0.75rem",
+            "space-xl": "2rem",
+            "margin": "1rem"
+          },
+          "fontFamily": {
+            "label-lg": ["Plus Jakarta Sans"],
+            "label-code-sm": ["JetBrains Mono"],
+            "headline-xl": ["Space Grotesk"],
+            "headline-md": ["Space Grotesk"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "label-code-md": ["JetBrains Mono"],
+            "headline-lg": ["Space Grotesk"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "title-sm": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "label-lg": ["13px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "label-code-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+            "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "label-code-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "title-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      font-size: 20px;
+    }
+    /* Hide scrollbars while enabling smooth scrolling */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    /* Keystone anchor glow */
+    .keystone-glow {
+      box-shadow: 0 0 14px rgba(84, 216, 232, 0.7), 0 0 2px rgba(255, 255, 255, 1);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-lowest text-on-surface antialiased overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container flex justify-center">
+<!-- Mobile Viewport Container (Pixel 9 Pro simulation: 412x924 dp frame) -->
+<main class="w-full max-w-[412px] min-h-screen bg-surface flex flex-col relative border-x border-outline-variant/30 shadow-2xl">
+<!-- Top System Inset / Telemetry Pill Bar -->
+<header class="w-full bg-surface pt-2 px-space-md pb-1 flex items-center justify-between z-30 select-none">
+<!-- Status Clock & Telemetry Readout -->
+<div class="flex items-center space-x-2">
+<span class="font-label-code-sm text-label-code-sm text-outline font-medium tracking-tight">21:42</span>
+<div class="flex items-center space-x-1.5 px-2 py-0.5 rounded-full bg-surface-container-high border border-outline-variant/40">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed animate-pulse"></span>
+<span class="font-label-code-sm text-label-code-sm text-secondary font-medium tracking-tighter">OPTIC #1 • 12ms</span>
+</div>
+</div>
+<!-- Battery & Hardware Sensors -->
+<div class="flex items-center space-x-2 text-outline">
+<span class="font-label-code-sm text-label-code-sm text-on-surface-variant">1080p@60</span>
+<span class="material-symbols-outlined text-[16px] text-tertiary">wifi_tethering</span>
+<span class="material-symbols-outlined text-[16px]">battery_full</span>
+</div>
+</header>
+<!-- App Top Bar (Shared Component Header translated) -->
+<section class="docked full-width top-0 bg-surface text-primary border-b border-outline-variant flex justify-between items-center w-full px-space-md pt-space-xs pb-space-sm max-w-full z-20">
+<!-- Leading: Back Action & Project Name -->
+<div class="flex items-center space-x-1 min-w-0">
+<button aria-label="Projects" class="w-10 h-10 -ml-1 flex items-center justify-center rounded-lg text-secondary hover:bg-surface-container-high active:scale-95 transition-all">
+<span class="material-symbols-outlined text-secondary">arrow_back_ios_new</span>
+</button>
+<div class="flex flex-col min-w-0 pr-1">
+<span class="font-label-code-sm text-label-code-sm text-outline truncate leading-none">Projects</span>
+<h1 class="font-headline-md text-headline-md font-bold tracking-tight text-on-surface truncate leading-tight">Living room test</h1>
+</div>
+</div>
+<!-- Trailing Controls: History, Mode Toggle, System Settings -->
+<div class="flex items-center space-x-1">
+<!-- Undo / Redo Cluster -->
+<div class="flex items-center bg-surface-container-low rounded-lg p-0.5 border border-outline-variant/50">
+<button aria-label="Undo" class="w-8 h-8 flex items-center justify-center text-on-surface hover:text-secondary rounded active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[18px]">undo</span>
+</button>
+<button aria-label="Redo" class="w-8 h-8 flex items-center justify-center text-outline/40 cursor-not-allowed rounded" disabled="">
+<span class="material-symbols-outlined text-[18px]">redo</span>
+</button>
+</div>
+<!-- Edit / Output Segmented Pill -->
+<div class="flex items-center bg-surface-container-low p-0.5 rounded-lg border border-outline-variant/60">
+<button class="px-2.5 py-1 rounded font-label-lg text-label-lg bg-surface-container-highest text-secondary shadow-sm">
+            Edit
+          </button>
+<button class="px-2.5 py-1 rounded font-label-lg text-label-lg text-outline hover:text-on-surface">
+            Out
+          </button>
+</div>
+<!-- Project Settings Menu Button -->
+<button aria-label="Settings" class="w-9 h-9 flex items-center justify-center rounded-lg text-outline hover:text-on-surface hover:bg-surface-container-high active:scale-95 transition-transform">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</section>
+<!-- Center Viewport: Letterboxed 16:9 Projection Canvas -->
+<section class="relative w-full bg-surface-container-lowest flex items-center justify-center py-4 px-2 select-none overflow-hidden" style="min-height: 250px;">
+<!-- Coordinate Origin / Grid Overlay Background -->
+<div class="absolute inset-0 opacity-15 bg-[radial-gradient(#494552_1px,transparent_1px)] [background-size:16px_16px]"></div>
+<!-- Canvas 16:9 Letterbox Container -->
+<div class="relative w-full aspect-[16/9] max-w-[390px] bg-black/90 rounded border border-outline-variant/60 shadow-inner flex items-center justify-center overflow-visible">
+<!-- Canvas Boundary Info Watermark -->
+<span class="absolute top-1.5 left-2 font-label-code-sm text-label-code-sm text-outline/60 tracking-wider">CANVAS #1 • 1920×1080</span>
+<span class="absolute bottom-1.5 right-2 font-label-code-sm text-label-code-sm text-outline/60 tracking-wider">LUMIS CALIBRATE</span>
+<!-- Reference Base Grid Projection Plane -->
+<div class="absolute inset-3 border border-dashed border-outline-variant/30 rounded-sm pointer-events-none"></div>
+<!-- Selected Warped Video Quad (Keystone Quad with Active Boundary) -->
+<div class="relative w-[78%] h-[82%] rotate-[-1deg] transition-all">
+<!-- Outer Selection Quad Outline -->
+<div class="absolute -inset-1 border-2 border-white rounded-sm pointer-events-none shadow-[0_0_12px_rgba(255,255,255,0.3)]"></div>
+<!-- Warped Video Texture Display -->
+<div class="w-full h-full rounded-sm overflow-hidden bg-surface-container-high relative border border-secondary/40">
+<!-- Simulated Video Content Placeholder -->
+<img class="w-full h-full object-cover opacity-85 saturate-125" data-alt="A vivid cinematic projection of high-contrast liquid electric neon waves undulating across a midnight surface. Glowing cyan and vibrant ultraviolet streaks cast optic luminescence with rich fluid motion. The mood is hypnotic and technically calibrated for ambient dark room projection mapping environments." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHFwmSKA2R3g-R8NHVvFIcjc5xeihMg6AQvOZs1QmiAgDRd9hwTmuVUmfRcz14d3PY1CbQ9J92_CRh8JWG_H4Jz8VGVa_dRvX22sn_otxuz2pasT2Kwwrzb8-aCnUEWX60eWisBQ_Jan1aK7prV67w0j0wczFjhe69Wbg6tWEYCEZsgxMpuhi3yrFzi-hAFuTOo3lgQ_Bp1XIA3m7Tt2qn2bqGo-Mg6rJmKDOxn26WsBbd--jLONt_fZCbuGKNg0gA5d4v62mf2X8"/>
+<!-- Video Quad Telemetry Badge Overlay -->
+<div class="absolute bottom-1.5 left-1.5 bg-surface-container-lowest/80 backdrop-blur-md px-1.5 py-0.5 rounded border border-outline-variant/40 flex items-center space-x-1">
+<span class="material-symbols-outlined text-[13px] text-secondary" style="font-variation-settings: 'FILL' 1;">movie</span>
+<span class="font-label-code-sm text-label-code-sm text-on-surface tracking-tight">Neon Wave.mp4</span>
+</div>
+<!-- Coordinate Crosshair overlay -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none">
+<div class="w-full h-px bg-secondary/40 absolute top-1/2"></div>
+<div class="h-full w-px bg-secondary/40 absolute left-1/2"></div>
+</div>
+</div>
+<!-- Keystone Corner Pin Handles with 48dp Touch Targets -->
+<!-- Top-Left Handle -->
+<div class="absolute -top-3 -left-3 w-12 h-12 flex items-center justify-center cursor-pointer group -translate-x-3 -translate-y-3">
+<div class="w-4 h-4 rounded-full bg-white border-2 border-secondary keystone-glow transition-transform group-hover:scale-125">
+<div class="w-1.5 h-1.5 rounded-full bg-secondary m-auto mt-[3px]"></div>
+</div>
+</div>
+<!-- Top-Right Handle -->
+<div class="absolute -top-3 -right-3 w-12 h-12 flex items-center justify-center cursor-pointer group translate-x-3 -translate-y-3">
+<div class="w-4 h-4 rounded-full bg-white border-2 border-secondary keystone-glow transition-transform group-hover:scale-125">
+<div class="w-1.5 h-1.5 rounded-full bg-secondary m-auto mt-[3px]"></div>
+</div>
+</div>
+<!-- Bottom-Left Handle -->
+<div class="absolute -bottom-3 -left-3 w-12 h-12 flex items-center justify-center cursor-pointer group -translate-x-3 translate-y-3">
+<div class="w-4 h-4 rounded-full bg-white border-2 border-secondary keystone-glow transition-transform group-hover:scale-125">
+<div class="w-1.5 h-1.5 rounded-full bg-secondary m-auto mt-[3px]"></div>
+</div>
+</div>
+<!-- Bottom-Right Handle -->
+<div class="absolute -bottom-3 -right-3 w-12 h-12 flex items-center justify-center cursor-pointer group translate-x-3 translate-y-3">
+<div class="w-4 h-4 rounded-full bg-white border-2 border-secondary keystone-glow transition-transform group-hover:scale-125">
+<div class="w-1.5 h-1.5 rounded-full bg-secondary m-auto mt-[3px]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Canvas HUD Overlay Indicator -->
+<div class="absolute bottom-2 left-4 bg-surface-container/90 border border-outline-variant/60 rounded px-2 py-0.5 flex items-center space-x-1.5">
+<span class="w-2 h-2 rounded-full bg-secondary animate-ping"></span>
+<span class="font-label-code-sm text-label-code-sm text-secondary font-medium">Quad #1: Active Selection</span>
+</div>
+</section>
+<!-- Bottom Sheet / Properties Inspector (Docked Level 1 Panel) -->
+<section class="flex-1 bg-surface-container-low rounded-t-[20px] border-t border-outline-variant/80 shadow-2xl flex flex-col z-10 px-space-md pt-3 pb-8">
+<!-- Drag Handle Pill -->
+<div class="w-10 h-1 bg-outline-variant/80 rounded-full mx-auto mb-3 shrink-0"></div>
+<!-- Header: Surface Title & Layer Status -->
+<div class="flex items-center justify-between pb-3 border-b border-outline-variant/40 mb-3.5 shrink-0">
+<div class="flex items-center space-x-2">
+<div class="w-7 h-7 rounded bg-primary-container/20 border border-primary-container/50 flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[18px]">layers</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md font-bold tracking-tight text-on-surface">Surface 1</h2>
+<div class="flex items-center space-x-1.5">
+<span class="font-label-code-sm text-label-code-sm text-secondary font-medium">NEON WAVE</span>
+<span class="text-outline text-[10px]">•</span>
+<span class="font-label-code-sm text-label-code-sm text-outline">Video Quad</span>
+</div>
+</div>
+</div>
+<div class="flex items-center space-x-1">
+<button class="w-10 h-10 flex items-center justify-center rounded-lg bg-surface-container text-on-surface hover:text-secondary border border-outline-variant/50 active:scale-95 transition-all" title="Visibility">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">visibility</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg bg-surface-container text-outline hover:text-on-surface border border-outline-variant/50 active:scale-95 transition-all" title="Lock Layer">
+<span class="material-symbols-outlined">lock_open</span>
+</button>
+</div>
+</div>
+<!-- Scrollable Inspector Controls Area -->
+<div class="flex-1 space-y-4 overflow-y-auto no-scrollbar pr-0.5">
+<!-- Control 1: Editable Surface Name Input Field -->
+<div class="space-y-1.5">
+<label class="block font-label-code-sm text-label-code-sm text-outline tracking-wider" for="surface-name-input">
+            SURFACE IDENTIFIER
+          </label>
+<div class="relative flex items-center">
+<input class="w-full bg-surface-container-highest/60 border border-outline-variant/80 rounded-lg px-3 py-2.5 font-headline-md text-title-sm text-on-surface focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container transition-all" id="surface-name-input" type="text" value="Neon Wave"/>
+<span class="absolute right-3 material-symbols-outlined text-outline text-[18px]">edit</span>
+</div>
+</div>
+<!-- Control 2: Opacity Slider with live readout & scrub bar -->
+<div class="bg-surface-container p-3 rounded-xl border border-outline-variant/50 space-y-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-1.5">
+<span class="material-symbols-outlined text-outline text-[18px]">opacity</span>
+<span class="font-label-code-sm text-label-code-sm text-on-surface-variant font-medium">OPACITY</span>
+</div>
+<span class="font-label-code-md text-label-code-md text-secondary font-semibold bg-surface-container-lowest px-2 py-0.5 rounded border border-outline-variant/40">
+              85%
+            </span>
+</div>
+<div class="relative flex items-center h-8">
+<input class="w-full h-2 bg-surface-container-highest rounded-lg appearance-none cursor-pointer accent-primary-container focus:outline-none" max="100" min="0" type="range" value="85"/>
+</div>
+<div class="flex justify-between font-label-code-sm text-label-code-sm text-outline/60 px-0.5">
+<span>0%</span>
+<span>50%</span>
+<span>100%</span>
+</div>
+</div>
+<!-- Control 3: Corner Pinning Actions Grid -->
+<div class="space-y-2">
+<span class="block font-label-code-sm text-label-code-sm text-outline tracking-wider">
+            CORNER PINNING &amp; GEOMETRY
+          </span>
+<div class="grid grid-cols-2 gap-2">
+<!-- Reset Corners button with confirmation icon -->
+<button class="h-12 bg-surface-container hover:bg-surface-container-high border border-outline-variant/70 rounded-lg px-3 flex items-center justify-center space-x-2 text-on-surface active:scale-[0.98] transition-transform">
+<span class="material-symbols-outlined text-secondary text-[20px]">restart_alt</span>
+<span class="font-label-lg text-label-lg font-semibold">Reset Corners</span>
+</button>
+<!-- Fit to Canvas button -->
+<button class="h-12 bg-surface-container hover:bg-surface-container-high border border-outline-variant/70 rounded-lg px-3 flex items-center justify-center space-x-2 text-on-surface active:scale-[0.98] transition-transform">
+<span class="material-symbols-outlined text-secondary text-[20px]">aspect_ratio</span>
+<span class="font-label-lg text-label-lg font-semibold">Fit to Canvas</span>
+</button>
+</div>
+</div>
+<!-- Control 4: Media Actions -->
+<div class="space-y-2">
+<span class="block font-label-code-sm text-label-code-sm text-outline tracking-wider">
+            SOURCE MAPPING
+          </span>
+<button class="w-full h-12 bg-surface-container-high hover:bg-surface-variant border border-outline-variant rounded-lg px-3.5 flex items-center justify-between text-on-surface active:scale-[0.98] transition-all">
+<div class="flex items-center space-x-2.5">
+<span class="material-symbols-outlined text-secondary">movie_edit</span>
+<div class="text-left">
+<span class="block font-label-lg text-label-lg font-semibold leading-none">Replace Media</span>
+<span class="font-label-code-sm text-label-code-sm text-outline leading-tight">Neon_Wave_1080p.mp4 (42 MB)</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">sync</span>
+</button>
+</div>
+<!-- Control 5: Video Playback Panel (Play/Pause, Loop ON, Mute OFF, Restart) -->
+<div class="bg-surface-container p-3.5 rounded-xl border border-outline-variant/60 space-y-3">
+<div class="flex items-center justify-between border-b border-outline-variant/40 pb-2">
+<span class="font-label-code-sm text-label-code-sm text-outline tracking-wider">PLAYBACK CONTROLS</span>
+<span class="font-label-code-sm text-label-code-sm text-tertiary font-medium">STREAMING 60FPS</span>
+</div>
+<!-- Video Progress Bar with live timestamp -->
+<div class="space-y-1">
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full w-[42%]"></div>
+</div>
+<div class="flex justify-between font-label-code-sm text-label-code-sm text-outline">
+<span class="text-secondary">00:08.4</span>
+<span>00:20.0</span>
+</div>
+</div>
+<!-- Transport Buttons Row (No playback speed controls) -->
+<div class="grid grid-cols-4 gap-2 pt-1">
+<!-- Play / Pause Button -->
+<button class="h-11 bg-primary-container text-on-primary-container rounded-lg flex flex-col items-center justify-center active:scale-95 transition-transform" title="Play / Pause">
+<span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">pause</span>
+<span class="text-[9px] font-bold leading-tight uppercase">Pause</span>
+</button>
+<!-- Loop Toggle (Active: ON) -->
+<button class="h-11 bg-surface-container-highest text-secondary border border-secondary/50 rounded-lg flex flex-col items-center justify-center active:scale-95 transition-transform" title="Loop Toggle">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">repeat</span>
+<span class="text-[9px] font-bold leading-tight text-secondary">Loop: ON</span>
+</button>
+<!-- Mute Toggle (Inactive: OFF) -->
+<button class="h-11 bg-surface-container text-outline hover:text-on-surface border border-outline-variant/60 rounded-lg flex flex-col items-center justify-center active:scale-95 transition-transform" title="Mute Toggle">
+<span class="material-symbols-outlined text-[20px]">volume_up</span>
+<span class="text-[9px] font-medium leading-tight">Mute: OFF</span>
+</button>
+<!-- Restart Button -->
+<button class="h-11 bg-surface-container text-outline hover:text-on-surface border border-outline-variant/60 rounded-lg flex flex-col items-center justify-center active:scale-95 transition-transform" title="Restart">
+<span class="material-symbols-outlined text-[20px]">skip_previous</span>
+<span class="text-[9px] font-medium leading-tight">Restart</span>
+</button>
+</div>
+</div>
+<!-- Control 6: Safety Actions at Bottom (Duplicate & Delete Surface) -->
+<div class="pt-2 space-y-2.5">
+<!-- Duplicate Button -->
+<button class="w-full h-12 bg-surface-container hover:bg-surface-container-high border border-outline-variant/80 rounded-lg px-4 flex items-center justify-center space-x-2 text-on-surface active:scale-[0.98] transition-transform">
+<span class="material-symbols-outlined text-outline">content_copy</span>
+<span class="font-label-lg text-label-lg font-semibold">Duplicate Surface</span>
+</button>
+<!-- Danger Delete Surface Button (Red outline with danger styling) -->
+<button class="w-full h-12 bg-error-container/10 hover:bg-error-container/20 border border-error text-error rounded-lg px-4 flex items-center justify-center space-x-2 active:scale-[0.98] transition-transform">
+<span class="material-symbols-outlined text-error">delete_forever</span>
+<span class="font-label-lg text-label-lg font-bold tracking-wide">Delete Surface</span>
+</button>
+</div>
+</div>
+<!-- Android Bottom Safe Area Inset / Gesture Pill Bar -->
+<div class="w-full pt-4 flex items-center justify-center shrink-0">
+<div class="w-32 h-1 bg-outline-variant/50 rounded-full"></div>
+</div>
+</section>
+</main>
+<!-- Interactive script for slider readout micro-interaction -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const slider = document.querySelector('input[type="range"]');
+      const opacityDisplay = document.querySelector('.font-label-code-md.text-secondary');
+
+      if (slider && opacityDisplay) {
+        slider.addEventListener('input', (e) => {
+          opacityDisplay.textContent = `${e.target.value}%`;
+        });
+      }
+    });
+  </script>
+</body></html>

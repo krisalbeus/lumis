@@ -23,4 +23,14 @@
     <item name="import_media" type="id" />
     <item name="source_label" type="id" />
     <item name="source_detail" type="id" />
+    <item name="layers" type="id" />
+    <item name="add_surface" type="id" />
+    <item name="surface_properties" type="id" />
+    <item name="surface_visibility" type="id" />
+    <item name="surface_opacity" type="id" />
+    <item name="duplicate_surface" type="id" />
+    <item name="delete_surface" type="id" />
+    <item name="move_forward" type="id" />
+    <item name="move_backward" type="id" />
+    <item name="empty_canvas" type="id" />
 </resources>

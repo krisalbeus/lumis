@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Lumis</string>
-    <string name="instructions">Drag the four corners to map the video. Tap Output to project fullscreen; press Back to return.</string>
+    <string name="instructions">Select in Layers, then drag the four corners. Output projects fullscreen; Back returns to Edit.</string>
     <string name="mode_edit">Edit</string>
     <string name="mode_output">Output</string>
     <string name="output_size">Output %1$d × %2$d</string>
@@ -24,7 +24,7 @@
     <string name="playing">Playing</string>
     <string name="paused">Paused</string>
     <string name="offline_note">On-device. Offline. Yours.</string>
-    <string name="canvas_description">Video canvas with four draggable corners</string>
+    <string name="canvas_description">Scene canvas with four draggable corners for the selected surface</string>
     <string name="corner_description">Corner %1$s. Swipe up or down to adjust horizontally. Use actions to move vertically.</string>
     <string name="move_left">Move left</string>
     <string name="move_right">Move right</string>
@@ -37,4 +37,28 @@
     <string name="source_unsupported">This file type is not supported. Choose an image or video.</string>
     <string name="renderer_error">The video renderer could not start. Your corner positions are unchanged.</string>
     <string name="error_title">Let’s try that again</string>
+    <string name="layers">Layers</string>
+    <string name="layers_count">Layers (%1$d)</string>
+    <string name="add_surface">Add surface</string>
+    <string name="surface_properties">Surface properties</string>
+    <string name="surface_name">Surface</string>
+    <string name="surface_number">Surface %1$d</string>
+    <string name="select_surface">Select surface %1$d</string>
+    <string name="visibility_surface">Show surface %1$d</string>
+    <string name="show_surface">Show</string>
+    <string name="opacity">Opacity</string>
+    <string name="opacity_percent">Opacity %1$d%%</string>
+    <string name="move_forward">Move forward</string>
+    <string name="move_backward">Move backward</string>
+    <string name="duplicate_surface">Duplicate surface</string>
+    <string name="delete_surface">Delete surface</string>
+    <string name="delete_surface_title">Delete Surface %1$d?</string>
+    <string name="delete_surface_message">This removes the surface and its corner mapping. The original media file is not changed or deleted. To keep the mapping, hide the surface in Layers instead.</string>
+    <string name="keep_surface">Keep surface</string>
+    <string name="done">Done</string>
+    <string name="bundled_sample">Bundled sample</string>
+    <string name="add_image">Image</string>
+    <string name="add_video">Video</string>
+    <string name="empty_canvas_title">No surfaces</string>
+    <string name="empty_canvas">Add a surface to start mapping.</string>
 </resources>

@@ -2,7 +2,7 @@
 
 An Android-first, offline projection-mapping app. Currently implemented:
 **Milestone 0, the rendering proof**, **Milestone 1, the virtual projector
-canvas**, and **Milestone 2, media import**. This is intentionally not the
+canvas**, **Milestone 2, media import**, and **Milestone 3, scene composition**. This is intentionally not the
 complete MVP.
 
 Play a bundled video, independently drag its four corners, and watch the GPU
@@ -11,6 +11,8 @@ fullscreen **Output** of the same fixed 1920x1080 scene. Includes Play/Pause,
 Reset corners, optional measured FPS, portrait/landscape layouts, and accessible
 corner-movement actions. Import local images/videos and replace unavailable media
 without losing corner mapping.
+Compose multiple independently mapped images/videos with visibility, opacity,
+layer ordering, duplication, and confirmed deletion.
 No projector, account, network access, or media permissions are required.
 
 - [Implementation checklist](IMPLEMENTATION.md)
@@ -60,7 +62,21 @@ are test-only dependencies; the first build needs access to Gradle/Maven artifac
   13+ and document picker fallback on older versions. Supported media are local
   images and videos.
 - Imported images and videos use the same mapped quad, and replacing media keeps
-  geometry unchanged.
+  the selected surface's geometry, opacity, visibility, and layer order unchanged.
+- **Add surface** adds a bundled sample or opens the image/video picker for a new
+  surface. There is no artificial surface-count limit; available decoder/GPU/memory
+  resources still limit practical compositions.
+- **Layers** lists surfaces frontmost first. Select a row to edit that surface's
+  corners, media, and playback; selection never changes drawing order. Each row's
+  **Show** switch hides its content and editing handles without deleting it.
+- **Surface properties** controls visibility, 0-100% opacity, **Move backward /
+  forward**, **Duplicate surface**, and **Delete surface**. Duplication inserts an
+  independent copy immediately above the original, retaining mapping/properties
+  and playback intent. Reordering does not restart decoders.
+- Deletion requires confirmation and never deletes the original media file.
+  Deleting the last surface leaves an empty editor and pure black Output;
+  **Add surface** starts composing again. Properties/playback/reset are disabled
+  when there is no selection.
 - Unavailable or unsupported files produce explicit recovery UI. If a previously
   imported source is missing on restore, Lumis falls back to the bundled sample
   for continuity and prompts **Replace media** while preserving mapping.
@@ -71,14 +87,15 @@ are test-only dependencies; the first build needs access to Gradle/Maven artifac
 - Corners stay within the canvas. Folded, crossed, or nearly collapsed geometry
   is rejected with a visible message instead of feeding a singular transform to
   the renderer.
-- **Pause / Play** controls the video without resetting its geometry.
-- **Reset corners** restores the starting rectangle without restarting playback.
+- **Pause / Play** controls only the selected video without resetting its geometry.
+- **Reset corners** restores the selected surface's starting rectangle without restarting playback.
 - **Show FPS** reports actual redraws and decoded frames sampled by the renderer,
   not a fabricated display refresh rate. With a 30fps source and no interaction,
   roughly 30 redraws/sec is expected; paused playback does not spin a render loop.
 - Screen-reader users can focus each labeled corner and use left/right/up/down
   actions. Scroll-forward/backward actions adjust horizontally.
-- Rotation and background/resume preserve corner geometry, playback intent,
+- Rotation and background/resume preserve all surfaces, stable IDs, order,
+  selection, geometry, visibility, opacity, each video's playback intent/position,
   and Edit/Output mode. A playback or renderer error exits Output so recovery UI
   never appears in clean output.
   Android saved-instance-state also survives activity recreation; permanent
@@ -90,21 +107,29 @@ geometry intact and shows an explicit Retry action.
 ## Rendering architecture
 
 ```text
-MainActivity: one immutable Quad in 1920x1080 logical output space
+MainActivity: one immutable Scene in 1920x1080 logical output space
      |                         |
      v                         v
 CornerOverlay (Edit only)  VideoRenderer (GL thread, Edit and Output)
-editing handles           projective transform + presentation viewport
+selected-surface handles  ordered GPU compositor + presentation viewport
                                ^
                                |
-MediaPlayer -> Surface -> SurfaceTexture / external OES texture
-Bitmap decode -> GL texture upload -> same homography path
+Per-video MediaPlayer -> Surface -> SurfaceTexture / external OES texture
+Per-image bounded bitmap decode -> GL texture -> same homography path
 ```
 
 - Android's decoder writes directly to a GPU-backed surface. Video pixels do not
   pass through Kotlin/Java arrays, JavaScript, or regenerated bitmaps.
-- Imported still images are decoded once, uploaded to a 2D GL texture, and
+- Imported still images are validated, decoded for upload to a 2D GL texture, and
   rendered with the exact same homography and viewport path as video.
+  Decodes are limited to a 2048-pixel longest edge to bound per-image memory.
+  Android 9+ also applies the image decoder's source-orientation handling.
+- Each stable surface ID owns its texture/decoder resources. Source replacement
+  or deletion releases only that surface; selection, geometry, visibility,
+  opacity, and z-order edits reuse existing resources.
+- Surfaces draw back-to-front using premultiplied-alpha blending, including
+  transparent images and per-surface opacity. Hidden surfaces keep their playback
+  intent; showing them again does not restart their videos.
 - A unit-square homography maps source coordinates into the convex destination
   quad. The vertex shader retains homogeneous `w` in `gl_Position`, allowing
   correct perspective interpolation across both triangles without a diagonal seam.
@@ -119,7 +144,7 @@ Bitmap decode -> GL texture upload -> same homography path
 Scene coordinates are normalized to the fixed 1920x1080 logical output frame
 (`OutputCanvas`). A `Viewport` places that frame on a physical surface. Edit uses
 a 28dp inset preview shared exactly by the renderer and handle overlay. Output uses
-the same `GLSurfaceView`, renderer, decoder surface, and quad with no inset,
+the same `GLSurfaceView`, compositor, media surfaces, and scene with no inset,
 letterboxed or pillarboxed in black at 16:9. Switching modes only changes view
 visibility, system bars, and the viewport; it never recreates the video pipeline.
 On a 2400x1080 landscape phone, Output is exactly 1920x1080 pixels. External
@@ -128,6 +153,7 @@ HDMI/Presentation display routing is not implemented yet.
 Key source:
 
 - [Quad, homography, and viewport math](app/src/main/java/com/lumis/geometry/Quad.kt)
+- [Immutable scene and surface operations](app/src/main/java/com/lumis/scene/Scene.kt)
 - [GPU video renderer](app/src/main/java/com/lumis/renderer/VideoRenderer.kt)
 - [Decoder lifecycle](app/src/main/java/com/lumis/media/SamplePlayer.kt)
 - [Corner editing and accessibility](app/src/main/java/com/lumis/editor/CornerOverlay.kt)
@@ -140,6 +166,10 @@ and intentionally not implemented. It uses Android's system sans font
 for an offline, dependency-free technical spike. The Android vector logo adapts
 the Stitch foreground's geometry and gradients, omitting tiny dashed construction
 guides for small-size legibility.
+Composition controls reuse approved screens 10/11 (Layers/Properties),
+14 (source choice), 30 (delete confirmation), and 08 (empty canvas). Native
+scrollable dialogs and accessible move buttons adapt the references without
+introducing roadmap controls.
 
 ## Tests
 
@@ -167,6 +197,16 @@ Android's system input pipeline.
 - [Media import tests](app/src/androidTest/java/com/lumis/MediaImportTest.kt)
   cover image/video replacement, unsupported and unavailable-source handling,
   preserved mapping on failures, and missing-source restore flow.
+- [Scene unit tests](app/src/test/java/com/lumis/scene/SceneTest.kt) cover stable
+  IDs, selection, independent duplication, ordering, visibility, opacity,
+  validation, hit testing, deletion, and more than four surfaces.
+- [Composition tests](app/src/androidTest/java/com/lumis/SceneCompositionTest.kt)
+  verify four independently advancing videos with actual GPU pixels, six image
+  surfaces without a four-surface cap, absolute image orientation, transparent
+  image blending and opacity (within 3/255 per RGB channel), draw order,
+  selection/gesture isolation, native property controls, delete confirmation,
+  empty-scene clean Output, mixed-scene recreation/backgrounding, and per-layer
+  replacement/deletion/missing-source isolation.
 - [Output tests](app/src/androidTest/java/com/lumis/OutputModeTest.kt) cover
   the 1920x1080 caption and preview aspect, fullscreen immersive output with all
   editor chrome/diagnostics hidden, Back returning to the same editing session,
@@ -197,7 +237,7 @@ sh tools/generate-sample.sh
 
 ## Not implemented yet
 
-Project management/saving, multiple surfaces, undo/redo, viewport pan/zoom,
+Project management/saving, undo/redo, viewport pan/zoom,
 external Output displays, shaders, masks, and cameras are not part of this
 build. Physical Pixel 9 Pro performance, thermal behavior,
 hardware-specific decoding, and projector output still need device testing.

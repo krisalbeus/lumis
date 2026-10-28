@@ -95,6 +95,9 @@ metadata is 3840x2160, the same aspect ratio at twice the resolution.
 - [Clean output reference](stitch/25-output-clean-fullscreen.html)
 - [Selected-video editor reference](stitch/09-editor-selected-video.html)
 - [Selected-video screenshot](stitch/09-editor-selected-video.png)
+- [Surface layers](stitch/10-editor-surface-layers.html)
+- [Surface properties](stitch/11-editor-surface-properties.html)
+- [Delete surface confirmation](stitch/30-delete-surface-confirmation.html)
 - [Rendering-proof mobile layout, Milestone 1](stitch/13-rendering-proof-mobile.html)
 - [Rendering-proof landscape layout, Milestone 1](stitch/33-rendering-proof-landscape.html)
 - [Extracted SVG assets](assets/)
@@ -112,6 +115,18 @@ They are decorative here, outside approved scope, and not implemented. Output
 itself follows screen 25: black, fullscreen, mapped content only, with Back
 returning to Edit. The Milestone 0 versions are listed under
 `supersededScreens`.
+
+Milestone 3 reuses approved screens 10/11 for Layers/Properties, 14 for adding
+image/video/sample sources, 30 for destructive confirmation, and 08 for the
+empty canvas. The native implementation adapts their charcoal/violet/cyan
+tokens into scrollable, accessible dialogs. Layer order is frontmost first;
+Move backward/forward buttons provide an accessible alternative to drag handles.
+Visibility, opacity, independent duplication, and confirmed deletion are in
+scope; locks, effects, calibration, save/project navigation, and decorative
+diagnostics are not. Only the selected visible surface gets editing handles;
+no dialog, handle, label, or empty-state message enters clean Output.
+The three composition HTML exports are existing approved references, not new
+screen revisions.
 
 All current screen references remain in Stitch. Only the references above are
 exported locally; the manifest is not a full offline archive of every mockup.

@@ -48,13 +48,19 @@ Use [the Stitch workflow](design/README.md) for missing screens and assets.
 - [x] Preserve current media and scene state on import failures; if a restored
   source is missing, fall back to the bundled sample and keep mapping unchanged.
 
-## Milestone 3 - Scene composition (next)
+## Milestone 3 - Scene composition (complete)
 
-- [ ] Add multiple surfaces, selection, visibility, opacity, and z-order.
-- [ ] Duplicate/delete with confirmation or undo.
-- [ ] Verify at least four concurrent surfaces, with no artificial hard limit.
+- [x] Add an immutable scene with stable surface IDs and independent media/geometry.
+- [x] Add multiple surfaces, layer selection, visibility, opacity, and z-order.
+- [x] Composite all surfaces in the same GPU pipeline for Edit and clean Output.
+- [x] Duplicate independently; confirm deletion without deleting original media.
+- [x] Handle deletion of the last surface and adding from an empty scene.
+- [x] Preserve all surfaces/properties/playback across recreation/backgrounding.
+- [x] Verify four concurrently advancing videos and six images, with no artificial hard limit.
+- [x] Test actual GPU alpha/order/orientation, per-layer resource isolation,
+  missing-media recovery, native controls, and compact/large-font behavior.
 
-## Milestone 4 - Persistence
+## Milestone 4 - Persistence (next)
 
 - [ ] Add versioned local projects, reopen, autosave, and recovery.
 - [ ] Add project create/rename/duplicate/delete and explicit save failure states.
@@ -75,6 +81,37 @@ Use [the Stitch workflow](design/README.md) for missing screens and assets.
 - [ ] Physical projector-assisted calibration (requires hardware).
 
 ## Verification log
+
+### Milestone 3
+
+Verified on 2026-10-29 with the same `e2e_playstore` AVD (Android 16 / API 36).
+
+| Check | Result |
+|---|---|
+| Unit tests | 23 passed (15 geometry + 8 scene) |
+| Android lint | 0 errors; 3 existing warnings (SDK/Gradle advisories and older-Android back attribute) |
+| Connected tests, 1080x2400 / density 420 | 33 passed (24 regression + 9 composition) |
+| Compact tests, 720x1280 / density 320 / font scale 1.5 | 20 passed (9 composition + 5 import + 6 Output) |
+| Concurrent video | Four separate decoder/texture pairs all advanced and produced visible GPU pixels; pausing the selected video did not pause the others |
+| No four-surface cap | Six imported image surfaces rendered; pure scene model also exercised 25 surfaces |
+| GPU compositing | Red/blue opacity, PNG transparency, visibility, z-order, and Edit/Output verified within 3/255 per RGB channel |
+| Source orientation | All four colored image corners upright/unmirrored; existing video/perspective tests still pass |
+| Independent editing/resources | Layer selection/corner dragging isolated; replacing/deleting one surface left the other decoder Surface identity unchanged and frames advancing |
+| Lifecycle | Mixed image/video scene, stable IDs/order/selection/properties, paused intent, Output, and repeated background/resume retained |
+| Empty scene and recovery | Cancel/confirm deletion, delete-last -> black Output, recreate empty scene, add again; missing unselected image attributed/recovered per surface |
+| Visual review | Portrait, landscape, Layers, Properties, delete confirmation, warped two-video clean Output, and compact 150% text inspected |
+
+Image decodes are bounded to 2048 pixels on their longest edge; per-surface GPU
+resources are reused across property edits. Decoder errors from released players
+are ignored by identity, preventing obsolete callbacks from affecting new media.
+Picker additions and replacements both request persistent read access where the
+provider supports it. Native move buttons are the accessible reorder equivalent
+of the Stitch layer-list affordance. Dialog colors reuse the existing brand tokens.
+
+These are emulator correctness checks, not physical-device throughput guarantees.
+Four-video hardware limits, long-running memory/thermal behavior, Android 8/9
+compatibility, provider-specific permissions, and projector output still require
+device testing. This milestone does not add permanent project saving.
 
 ### Milestone 2
 

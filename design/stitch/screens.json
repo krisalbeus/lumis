@@ -143,7 +143,8 @@
       "html": {
         "name": "projects/9969649650324268552/files/5f076fb52c444dba841fbbe2c646125b",
         "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/5f076fb52c444dba841fbbe2c646125b:download"
-      }
+      },
+      "localExport": "stitch/10-editor-surface-layers.html"
     },
     {
       "id": "955136ebbac948318132cbe2f9abedb9",
@@ -157,7 +158,8 @@
       "html": {
         "name": "projects/9969649650324268552/files/6eebaf08849947109fff9954313cf05b",
         "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/6eebaf08849947109fff9954313cf05b:download"
-      }
+      },
+      "localExport": "stitch/11-editor-surface-properties.html"
     },
     {
       "id": "86b6663875ba4cba84c455fe12c9d80d",
@@ -428,7 +430,8 @@
       "html": {
         "name": "projects/9969649650324268552/files/c44ec986525d41528966c81ddeec141e",
         "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/c44ec986525d41528966c81ddeec141e:download"
-      }
+      },
+      "localExport": "stitch/30-delete-surface-confirmation.html"
     },
     {
       "id": "abdd8f7240174407be8ec7043140f2a9",

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Lumis Projection Studio - Editor / Surface Layers</title>
+<!-- Material Symbols & Typography -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "primary-fixed": "#e8ddff",
+            "on-surface": "#e2e2e9",
+            "on-background": "#e2e2e9",
+            "inverse-primary": "#674bb5",
+            "on-primary-fixed-variant": "#4f319c",
+            "error": "#ffb4ab",
+            "surface-container": "#1e1f25",
+            "tertiary-fixed-dim": "#45dfa4",
+            "on-tertiary-fixed": "#002114",
+            "error-container": "#93000a",
+            "surface-container-lowest": "#0c0e13",
+            "tertiary": "#45dfa4",
+            "surface-dim": "#111318",
+            "secondary-container": "#02aebe",
+            "inverse-on-surface": "#2e3036",
+            "tertiary-container": "#00b37e",
+            "on-surface-variant": "#cac4d4",
+            "secondary-fixed": "#91f1ff",
+            "surface-variant": "#33353a",
+            "primary-container": "#a78bfa",
+            "primary": "#cebdff",
+            "on-error-container": "#ffdad6",
+            "on-secondary": "#00363c",
+            "on-error": "#690005",
+            "inverse-surface": "#e2e2e9",
+            "on-tertiary-container": "#003d28",
+            "surface-container-highest": "#33353a",
+            "on-primary-fixed": "#21005e",
+            "on-tertiary-fixed-variant": "#005137",
+            "on-secondary-fixed-variant": "#004f57",
+            "on-secondary-container": "#003b42",
+            "on-secondary-fixed": "#001f23",
+            "surface": "#111318",
+            "on-tertiary": "#003825",
+            "primary-fixed-dim": "#cebdff",
+            "outline": "#948e9d",
+            "surface-container-low": "#1a1b21",
+            "tertiary-fixed": "#68fcbf",
+            "outline-variant": "#494552",
+            "on-primary-container": "#3c1989",
+            "background": "#111318",
+            "secondary": "#54d8e8",
+            "surface-bright": "#37393f",
+            "on-primary": "#381385",
+            "surface-tint": "#cebdff",
+            "surface-container-high": "#282a2f",
+            "secondary-fixed-dim": "#54d8e8"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "gutter": "0.75rem",
+            "space-xl": "2rem",
+            "margin": "1rem"
+          },
+          "fontFamily": {
+            "label-lg": ["Plus Jakarta Sans"],
+            "label-code-sm": ["JetBrains Mono"],
+            "headline-xl": ["Space Grotesk"],
+            "headline-md": ["Space Grotesk"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "label-code-md": ["JetBrains Mono"],
+            "headline-lg": ["Space Grotesk"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "title-sm": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "label-lg": ["13px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "label-code-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+            "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "label-code-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "title-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    /* Perspective warp visual elements */
+    .mesh-grid {
+      background-size: 24px 24px;
+      background-image:
+        linear-gradient(to right, rgba(73, 69, 82, 0.25) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(73, 69, 82, 0.25) 1px, transparent 1px);
+    }
+    .optical-glow {
+      box-shadow: 0 0 16px rgba(84, 216, 232, 0.45);
+    }
+    .optical-glow-sm {
+      box-shadow: 0 0 8px rgba(84, 216, 232, 0.55);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-lowest text-on-surface antialiased select-none flex justify-center items-center min-h-screen p-0 sm:p-4 overflow-hidden font-body-md">
+<!-- Mobile Viewport bounds: Pixel 9 Pro 412x924 dp standard container -->
+<div class="relative w-full max-w-[412px] h-[924px] bg-[#090B10] flex flex-col justify-between overflow-hidden shadow-2xl border border-outline-variant/30 rounded-none sm:rounded-[36px]">
+<!-- ================= 1. ANDROID TOP TELEMETRY & HARDWARE CUTOUT ================= -->
+<div class="w-full pt-2 px-space-md flex items-center justify-between z-30 bg-surface/90 backdrop-blur-md">
+<!-- Monospace Telemetry / Sync Clock -->
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+<span class="font-label-code-sm text-label-code-sm text-tertiary">OPTIC·LINK</span>
+<span class="font-label-code-sm text-label-code-sm text-outline">12ms · 60fps</span>
+</div>
+<!-- Center punch hole hardware spacer -->
+<div class="w-4 h-4 rounded-full bg-[#000000] border border-outline-variant/40"></div>
+<!-- Wireless Projector Status Pill -->
+<div class="flex items-center gap-2">
+<span class="font-label-code-sm text-label-code-sm text-on-surface-variant font-medium">1920x1080</span>
+<span class="material-symbols-outlined text-[16px] text-secondary">cast_connected</span>
+</div>
+</div>
+<!-- ================= 2. TOP APP BAR & MODE CONTROLS ================= -->
+<!-- Mapped directly following TopAppBar Anchor Specs -->
+<header class="w-full bg-surface border-b border-outline-variant/40 px-space-md pt-2 pb-2.5 flex flex-col gap-2 z-20">
+<div class="flex items-center justify-between w-full">
+<!-- Back Navigation to Projects -->
+<button aria-label="Back to projects" class="flex items-center gap-1 text-outline hover:text-on-surface active:scale-95 transition-all py-1 pr-2 -ml-1">
+<span class="material-symbols-outlined text-[20px]">arrow_back_ios_new</span>
+<span class="font-headline-md text-body-sm font-semibold tracking-tight text-on-surface-variant">Projects</span>
+</button>
+<!-- Project Title -->
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px] text-primary">videocam</span>
+<h1 class="font-headline-md text-[17px] font-bold tracking-tight text-on-surface">Living room test</h1>
+</div>
+<!-- Global Settings -->
+<button aria-label="Settings" class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface-container-high text-outline hover:text-on-surface active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[22px]">settings</span>
+</button>
+</div>
+<!-- Second Row: Undo / Redo & Mode Switcher -->
+<div class="flex items-center justify-between w-full pt-0.5">
+<!-- Undo / Redo cluster -->
+<div class="flex items-center bg-surface-container-low rounded-lg p-0.5 border border-outline-variant/50">
+<button class="w-9 h-8 flex items-center justify-center text-on-surface hover:bg-surface-container-high rounded active:scale-95 transition-all" title="Undo">
+<span class="material-symbols-outlined text-[18px]">undo</span>
+</button>
+<div class="w-[1px] h-4 bg-outline-variant/60"></div>
+<button class="w-9 h-8 flex items-center justify-center text-outline hover:text-on-surface hover:bg-surface-container-high rounded active:scale-95 transition-all opacity-60" title="Redo">
+<span class="material-symbols-outlined text-[18px]">redo</span>
+</button>
+</div>
+<!-- Edit vs Output Segmented Switch -->
+<div class="flex items-center bg-surface-container-low rounded-lg p-0.5 border border-outline-variant/60">
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-surface-container-high text-secondary border border-secondary/30 shadow-sm transition-all">
+<span class="material-symbols-outlined text-[16px] text-secondary">tune</span>
+<span class="font-headline-md text-label-code-sm font-semibold">Edit Mode</span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded text-outline hover:text-on-surface transition-all">
+<span class="material-symbols-outlined text-[16px]">visibility</span>
+<span class="font-headline-md text-label-code-sm font-semibold">Output</span>
+</button>
+</div>
+<!-- Magnet Snapping Toggle indicator -->
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-surface-container-low border border-outline-variant/40 text-tertiary active:scale-95" title="Corner Snap Active">
+<span class="material-symbols-outlined text-[18px]">grid_goldenratio</span>
+</button>
+</div>
+</header>
+<!-- ================= 3. CENTER VIEWPORT (16:9 PROJECTION CANVAS) ================= -->
+<div class="relative flex-1 w-full bg-[#090B10] flex flex-col items-center justify-center overflow-hidden px-3 py-1">
+<!-- Aspect Ratio Label / Coordinate System HUD -->
+<div class="absolute top-2 left-4 z-10 flex items-center gap-2">
+<span class="font-label-code-sm text-label-code-sm text-outline/80 bg-surface-container-lowest/80 px-2 py-0.5 rounded border border-outline-variant/40">Canvas: 16:9 Beam</span>
+<span class="font-label-code-sm text-label-code-sm text-primary/80 bg-surface-container-lowest/80 px-2 py-0.5 rounded border border-outline-variant/40">Keystone: 4-Pt Active</span>
+</div>
+<div class="absolute top-2 right-4 z-10">
+<span class="font-label-code-sm text-label-code-sm text-secondary bg-surface-container-lowest/90 px-2 py-0.5 rounded border border-secondary/30">Zoom: 100%</span>
+</div>
+<!-- 16:9 Letterboxed Projection Canvas Frame -->
+<div class="relative w-full aspect-video bg-[#0d1017] rounded-lg border border-outline-variant/60 shadow-2xl overflow-hidden mesh-grid flex items-center justify-center">
+<!-- Grid Axis Lines -->
+<div class="absolute inset-0 pointer-events-none flex items-center justify-center">
+<div class="w-full h-[1px] bg-outline-variant/20"></div>
+<div class="absolute h-full w-[1px] bg-outline-variant/20"></div>
+</div>
+<!-- ================= LAYER 3: BRICK TEXTURE MAPPING (Back/Right angled surface) ================= -->
+<div class="absolute w-[62%] h-[68%] right-2 bottom-3 transform skew-y-6 rotate-[-4deg] opacity-75 rounded border border-outline-variant/50 overflow-hidden shadow-lg transition-transform">
+<img class="w-full h-full object-cover filter contrast-125 brightness-90 saturate-50" data-alt="A textured architectural exposed brick wall with industrial urban mortar lines and dramatic warm amber side-raking spotlighting. The surface is photographed straight-on with rich micro-details and dark dramatic studio shadows fitting a high-tech projection mapping simulation." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEKLz4GKY3Ii1Odb3xUo3J3aylRsPzee5KoXiBvaGF-klScTMxCcXUOPeV1PWXMZ_Q_R_ZMWnS5ECDj9O2Zc_FEpnNKG3y8xj_9Ycvzarv0z59GzRXUl7ifmrBnyp9uvMon_v0u70TsP0gu6J-souBm6-mRHmbIFgOM_BOHGwkPRqEy81hlw7fXI964bhrz3Pi8z9nzokJIGLhyg2nsEspz_W-GTIGv_6CkX8SoZMAPJmI_o4wPKbp-Th49nLdwnVFN_04Xm1-Rj8"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/80 via-transparent to-transparent"></div>
+<div class="absolute top-1 left-2 font-label-code-sm text-[9px] text-on-surface/70 bg-black/60 px-1 rounded">Stage Left Box</div>
+</div>
+<!-- ================= LAYER 2: GEOMETRIC CUBE MAP (Ceiling / Upper angled beam) ================= -->
+<div class="absolute w-[70%] h-[58%] top-2 left-6 transform skew-x-[-12deg] skew-y-[-3deg] opacity-85 rounded border border-outline/30 overflow-hidden shadow-xl">
+<img class="w-full h-full object-cover filter contrast-125 brightness-95" data-alt="An intricate 3D isometric geometric cube pattern rendered with metallic cyan and obsidian gradient facets, glowing laser wireframe outlines, and volumetric dark studio reflections designed specifically for architectural spatial projection mapping on ceilings." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGYOMuigqr7UpJ7vSqZVc_X9ZRVeRykRQ-nge1k83_Ww_iFkHt-j26c4R6DKYwRjcBhCMChu4Ke4W2DzycTm3tkqsdnMCoMdONfABkd0_lMBjiGYBPPpbTF2MxOtPCNdAPdCm6kZEpl3hlcKcvmlbZ2FXTNrg9CNpoYRLWXG8HOiI9XC2jLr34Eux9oRERqb43Av2PYrxtr6slvkeFTqo-zjLOcVtZOHfZSi-2_pI32uHeUEkee7HEaU1yxnK-xpYqar939zZZYak"/>
+<div class="absolute inset-0 bg-primary/10 mix-blend-screen pointer-events-none"></div>
+<div class="absolute top-1 left-2 font-label-code-sm text-[9px] text-secondary bg-black/70 px-1 rounded">Ceiling Beam</div>
+</div>
+<!-- ================= LAYER 1 (SELECTED & ACTIVE): FLUID NEON WAVE WITH KEYSTONE NODES ================= -->
+<div class="absolute w-[76%] h-[74%] left-5 top-5 transform rotate-[2deg] skew-y-[1deg] rounded border-2 border-secondary optical-glow overflow-visible z-10 bg-surface-container-lowest/40">
+<!-- Layer Content Texture -->
+<div class="w-full h-full rounded overflow-hidden relative">
+<img class="w-full h-full object-cover filter brightness-110 contrast-125" data-alt="Vibrant generative fluid dynamic waves pulsating with electric neon violet, cyan, and deep indigo bioluminescent light ribbons in deep cosmic black space. Ultra sharp high resolution abstract motion design graphic calibrated for mobile spatial computing projector overlay." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzPgfmptCGKDrLb6yc2RHeFLnpiI0CX_rUGDTo2FxeEDo2qNQm2bCcMCs6xfmAL6d_WIoCGWMzBT2kMq161g0ml3thZ_EcP9IEQIhsk2tfI72CbqU7Xtcf0kqkmVXP8GliIUM04PHwlCgLYOD7s89Dy7Z4yw1IxmB_bOTyj9Y8-6B6TOHgaVRZRKk7KCtDZZra6A3kYLGOg4lqf2GV-9Q0eZ32QV_D0ky-kJ4RcH4LJc-qnD-qM1raIdHICUK4MXsQHNPv4Wdmp9Q"/>
+<div class="absolute bottom-2 left-2 bg-[#090B10]/80 border border-secondary/40 px-2 py-0.5 rounded backdrop-blur-sm flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-ping"></span>
+<span class="font-label-code-sm text-[10px] text-secondary font-medium tracking-wide">Living Room Wall [ACTIVE]</span>
+</div>
+</div>
+<!-- Subtle Keystoning Corner Outlines & Interactive Nodes -->
+<!-- Top-Left Vertex Node (Interactive Handle) -->
+<div class="absolute -top-3 -left-3 w-6 h-6 flex items-center justify-center cursor-pointer group">
+<div class="w-3.5 h-3.5 rounded-full bg-surface border-2 border-secondary flex items-center justify-center optical-glow-sm">
+<div class="w-1 h-1 rounded-full bg-white"></div>
+</div>
+<span class="hidden group-hover:block absolute -top-4 font-label-code-sm text-[8px] bg-black text-secondary px-1 rounded">N0: (24,18)</span>
+</div>
+<!-- Top-Right Vertex Node -->
+<div class="absolute -top-3 -right-3 w-6 h-6 flex items-center justify-center cursor-pointer">
+<div class="w-3.5 h-3.5 rounded-full bg-surface border-2 border-secondary flex items-center justify-center optical-glow-sm">
+<div class="w-1 h-1 rounded-full bg-white"></div>
+</div>
+</div>
+<!-- Bottom-Left Vertex Node -->
+<div class="absolute -bottom-3 -left-3 w-6 h-6 flex items-center justify-center cursor-pointer">
+<div class="w-3.5 h-3.5 rounded-full bg-surface border-2 border-secondary flex items-center justify-center optical-glow-sm">
+<div class="w-1 h-1 rounded-full bg-white"></div>
+</div>
+</div>
+<!-- Bottom-Right Vertex Node -->
+<div class="absolute -bottom-3 -right-3 w-6 h-6 flex items-center justify-center cursor-pointer">
+<div class="w-3.5 h-3.5 rounded-full bg-surface border-2 border-secondary flex items-center justify-center optical-glow-sm">
+<div class="w-1 h-1 rounded-full bg-white"></div>
+</div>
+</div>
+<!-- Center Pivot Reticle -->
+<div class="absolute inset-0 m-auto w-4 h-4 flex items-center justify-center pointer-events-none">
+<span class="material-symbols-outlined text-[14px] text-secondary/60">add</span>
+</div>
+</div>
+</div>
+<!-- Quick Transform Toolbar Directly Below Canvas -->
+<div class="w-full flex items-center justify-between px-2 pt-2">
+<div class="flex items-center gap-2">
+<button class="px-2.5 py-1 bg-surface-container-low hover:bg-surface-container rounded border border-outline-variant/60 flex items-center gap-1.5 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[15px] text-secondary">crop_rotate</span>
+<span class="font-label-code-sm text-label-code-sm text-on-surface">Rotate 90°</span>
+</button>
+<button class="px-2.5 py-1 bg-surface-container-low hover:bg-surface-container rounded border border-outline-variant/60 flex items-center gap-1.5 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[15px] text-outline">flip</span>
+<span class="font-label-code-sm text-label-code-sm text-on-surface">Flip H</span>
+</button>
+</div>
+<div class="flex items-center gap-1.5 font-label-code-sm text-label-code-sm text-outline">
+<span>X: <span class="text-on-surface">142</span></span>
+<span class="text-outline-variant">|</span>
+<span>Y: <span class="text-on-surface">88</span></span>
+<span class="text-outline-variant">|</span>
+<span>W: <span class="text-on-surface">1280</span></span>
+</div>
+</div>
+</div>
+<!-- ================= 4. EXPANDED BOTTOM SHEET / LAYERS PANEL ================= -->
+<section class="w-full bg-[#141821] rounded-t-2xl border-t border-outline-variant/80 shadow-[0_-12px_32px_rgba(0,0,0,0.8)] z-30 flex flex-col">
+<!-- Drawer Grab Handle Pill -->
+<div class="w-full flex justify-center pt-2 pb-1 cursor-grab active:cursor-grabbing">
+<div class="w-10 h-1 rounded-full bg-outline-variant/70"></div>
+</div>
+<!-- Sheet Header: Title count & Add Surface CTA -->
+<div class="px-space-md py-2 flex items-center justify-between border-b border-outline-variant/40">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px] text-primary">layers</span>
+<h2 class="font-headline-md text-[17px] font-bold tracking-tight text-on-surface">Surfaces</h2>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high border border-outline-variant/50 font-label-code-sm text-label-code-sm text-secondary font-medium">3</span>
+</div>
+<!-- + Add surface CTA Button -->
+<button class="flex items-center gap-1.5 bg-primary-container hover:bg-primary text-on-primary-container px-3 py-1.5 rounded-lg active:scale-95 transition-all shadow-md">
+<span class="material-symbols-outlined text-[18px] font-bold">add</span>
+<span class="font-headline-md text-label-lg font-bold">Add surface</span>
+</button>
+</div>
+<!-- Surface Layers List Container -->
+<div class="px-space-md py-2.5 flex flex-col gap-2 max-h-[305px] overflow-y-auto">
+<!-- LAYER ITEM 1 (ACTIVE / SELECTED) -->
+<div class="flex items-center justify-between p-2 rounded-xl bg-[#1C2230] border-2 border-secondary/80 optical-glow-sm transition-all relative">
+<!-- Selection Bar indicator -->
+<div class="absolute left-0 top-2 bottom-2 w-1 bg-secondary rounded-r"></div>
+<!-- Left Cluster: Drag Handle + Thumbnail + Name/Badge -->
+<div class="flex items-center gap-2.5 pl-1.5">
+<!-- Drag reorder handle (=) -->
+<button class="text-outline hover:text-on-surface cursor-grab active:cursor-grabbing p-1" title="Drag to reorder">
+<span class="material-symbols-outlined text-[20px]">drag_handle</span>
+</button>
+<!-- Layer Preview Thumbnail -->
+<div class="w-12 h-10 rounded-lg overflow-hidden border border-secondary/60 relative bg-surface-container-lowest shrink-0">
+<img class="w-full h-full object-cover" data-alt="Close up miniature abstract neon fluid wave thumbnail with saturated cyan and violet glowing particles for spatial layer interface preview icon." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZRKqHMpqpMElcWX_ABqQZ8rj8K54vP7pe4ulNN9QzBE_s6Gfd3P3VOgAupfhOMmWK2L10Q77iIYNsConhni_wj9yKTyxR8aAQ05DlMcB0Y0fTDftkWhJbU8MvQ3FBPdu6o5ksp8y-4rPCa4D7Cw14Y-gN3dTfc1V7BA6iefqE3Ywsjyaw28MP8xGdnV28a0XSpSqzudGQFSYI59k4gzkk_FCA8cQ7k44t04GhkDWFE7zfjCSoz2l9hjbYjayl4EmvAuUMCpbQdCg"/>
+<div class="absolute inset-0 bg-secondary/15 pointer-events-none"></div>
+</div>
+<!-- Layer Meta -->
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="font-headline-md text-body-md font-bold text-on-surface tracking-tight">Living Room Wall</span>
+</div>
+<div class="flex items-center gap-2 mt-0.5">
+<!-- Type Badge: Video -->
+<span class="inline-flex items-center gap-1 font-label-code-sm text-[10px] text-secondary bg-surface-container-highest px-1.5 py-0.2 rounded border border-secondary/30">
+<span class="material-symbols-outlined text-[11px]">play_circle</span>
+                  Video
+                </span>
+<span class="font-label-code-sm text-[10px] text-outline">4K · 60fps</span>
+</div>
+</div>
+</div>
+<!-- Right Cluster: Visibility Toggle & Three-Dot Row Menu -->
+<div class="flex items-center gap-1">
+<button class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-surface-container text-secondary transition-all" title="Visibility Toggle">
+<span class="material-symbols-outlined text-[20px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">visibility</span>
+</button>
+<button class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-surface-container text-outline hover:text-on-surface transition-all" title="Layer Options">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+</div>
+<!-- LAYER ITEM 2 (UNSELECTED) -->
+<div class="flex items-center justify-between p-2 rounded-xl bg-surface-container-low hover:bg-surface-container border border-outline-variant/50 transition-all">
+<!-- Left Cluster: Drag Handle + Thumbnail + Name/Badge -->
+<div class="flex items-center gap-2.5 pl-1.5">
+<!-- Drag reorder handle (=) -->
+<button class="text-outline/70 hover:text-on-surface cursor-grab active:cursor-grabbing p-1" title="Drag to reorder">
+<span class="material-symbols-outlined text-[20px]">drag_handle</span>
+</button>
+<!-- Layer Preview Thumbnail -->
+<div class="w-12 h-10 rounded-lg overflow-hidden border border-outline-variant/60 relative bg-surface-container-lowest shrink-0">
+<img class="w-full h-full object-cover" data-alt="Miniature texture preview thumbnail of a geometric isometric cube wireframe grid with cyan line art on pure black background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKzsKHhSNN_zU9yzii9FbEK5LYUkogsBQ1H42Tp4lEru55VPcLFr_u5hEqEWAF1ZuZB_DCShjRovbg1nP7YTeSUIr6sCDOaMd-XI1tkPfoH2o0633l048C9ucGOa8JFLtYwlaxrfgMdfidzEZ96MrZ29ckASB6XkR6qLDaFPJ3bKvF498R5WdYnmgOxP7OVv_TTZDyrc5uYw8JK5Two4DkOO3snzs9c2XLKu58trkqU52SP6dGLTFwPUaR2-X4QGMvTHGLH-OB2KY"/>
+</div>
+<!-- Layer Meta -->
+<div class="flex flex-col">
+<span class="font-headline-md text-body-md font-semibold text-on-surface/90 tracking-tight">Ceiling Beam</span>
+<div class="flex items-center gap-2 mt-0.5">
+<!-- Type Badge: Video -->
+<span class="inline-flex items-center gap-1 font-label-code-sm text-[10px] text-primary bg-surface-container-highest px-1.5 py-0.2 rounded border border-outline-variant/40">
+<span class="material-symbols-outlined text-[11px]">play_circle</span>
+                  Video
+                </span>
+<span class="font-label-code-sm text-[10px] text-outline">Looping</span>
+</div>
+</div>
+</div>
+<!-- Right Cluster: Visibility Toggle & Three-Dot Row Menu -->
+<div class="flex items-center gap-1">
+<button class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-surface-container text-outline hover:text-on-surface transition-all" title="Visibility Toggle">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+<button class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-surface-container text-outline hover:text-on-surface transition-all" title="Layer Options">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+</div>
+<!-- LAYER ITEM 3 (UNSELECTED - IMAGE TYPE) -->
+<div class="flex items-center justify-between p-2 rounded-xl bg-surface-container-low hover:bg-surface-container border border-outline-variant/50 transition-all">
+<!-- Left Cluster: Drag Handle + Thumbnail + Name/Badge -->
+<div class="flex items-center gap-2.5 pl-1.5">
+<!-- Drag reorder handle (=) -->
+<button class="text-outline/70 hover:text-on-surface cursor-grab active:cursor-grabbing p-1" title="Drag to reorder">
+<span class="material-symbols-outlined text-[20px]">drag_handle</span>
+</button>
+<!-- Layer Preview Thumbnail -->
+<div class="w-12 h-10 rounded-lg overflow-hidden border border-outline-variant/60 relative bg-surface-container-lowest shrink-0">
+<img class="w-full h-full object-cover" data-alt="Miniature texture preview thumbnail of architectural brick wall with dark high-contrast industrial surfaces." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtgm0mkU3ngG4QRC3YS1iLHnYUEBPbyJ9v8T9vUXuqw_0245fqd_nbctQqWqHyUuHZXBTffeik7Vsvd6J9ZpI6mcmo7uZw_eH9GtV08G8K0nOK_Df1XwIVdjA2LknLsFUj5HZlvzGyyTdFsd3yD6D10kXhWfG4gzQnMrFpqlAMbbeORMJNlB-SEarKevgP9gUDgrjfGWiWhhWNQbZpJPoX-Dar440BZIaVXVHYnvkn_h-o2F-lUYETSG33jOXgcQliSkWAj7uh174"/>
+</div>
+<!-- Layer Meta -->
+<div class="flex flex-col">
+<span class="font-headline-md text-body-md font-semibold text-on-surface/90 tracking-tight">Stage Left Box</span>
+<div class="flex items-center gap-2 mt-0.5">
+<!-- Type Badge: Image -->
+<span class="inline-flex items-center gap-1 font-label-code-sm text-[10px] text-tertiary bg-surface-container-highest px-1.5 py-0.2 rounded border border-outline-variant/40">
+<span class="material-symbols-outlined text-[11px]">image</span>
+                  Image
+                </span>
+<span class="font-label-code-sm text-[10px] text-outline">Static 2048px</span>
+</div>
+</div>
+</div>
+<!-- Right Cluster: Visibility Toggle & Three-Dot Row Menu -->
+<div class="flex items-center gap-1">
+<button class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-surface-container text-outline hover:text-on-surface transition-all" title="Visibility Toggle">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+<button class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-surface-container text-outline hover:text-on-surface transition-all" title="Layer Options">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Quick Action Drawer Footer (Layer operations shortcuts) -->
+<div class="px-space-md py-2 bg-surface border-t border-outline-variant/30 flex items-center justify-between text-outline">
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-1 hover:text-on-surface text-label-code-sm font-label-code-sm">
+<span class="material-symbols-outlined text-[16px]">lock_open</span>
+            Lock All
+          </button>
+<span class="text-outline-variant/60">·</span>
+<button class="flex items-center gap-1 hover:text-on-surface text-label-code-sm font-label-code-sm">
+<span class="material-symbols-outlined text-[16px]">content_copy</span>
+            Duplicate
+          </button>
+</div>
+<button class="flex items-center gap-1 text-error/80 hover:text-error text-label-code-sm font-label-code-sm">
+<span class="material-symbols-outlined text-[16px]">delete</span>
+          Delete
+        </button>
+</div>
+<!-- Android Gesture Navigation Bar Pill Clearance Area -->
+<div class="w-full h-7 flex items-center justify-center bg-surface pb-1">
+<div class="w-32 h-1 bg-outline-variant/80 rounded-full"></div>
+</div>
+</section>
+</div>
+</body></html>

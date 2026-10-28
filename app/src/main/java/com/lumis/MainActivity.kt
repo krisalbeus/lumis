@@ -1,9 +1,11 @@
 package com.lumis
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.BitmapFactory
+import android.graphics.ImageDecoder
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
@@ -22,6 +24,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
+import android.widget.SeekBar
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
@@ -33,15 +36,24 @@ import com.lumis.media.MediaFailure
 import com.lumis.media.MediaSource
 import com.lumis.media.SamplePlayer
 import com.lumis.renderer.VideoRenderer
+import com.lumis.scene.Scene
+import com.lumis.scene.SceneSurface
 import java.io.FileNotFoundException
+import java.io.IOException
 
 class MainActivity : Activity() {
-    var quad = Quad.DEFAULT
+    var scene = Scene()
         private set
+    val quad: Quad get() = scene.selected?.quad ?: Quad.DEFAULT
     lateinit var renderer: VideoRenderer
         private set
-    lateinit var player: SamplePlayer
-        private set
+    private class MediaSession(val player: SamplePlayer) {
+        var ready = false
+        var failure: MediaFailure? = null
+        var missing: MediaSource? = null
+    }
+    private val sessions = mutableMapOf<Long, MediaSession>()
+    val player: SamplePlayer get() = requireNotNull(sessions[scene.selectedId]).player
     private lateinit var glView: GLSurfaceView
     private lateinit var overlay: CornerOverlay
     private lateinit var playButton: Button
@@ -56,6 +68,9 @@ class MainActivity : Activity() {
     private lateinit var root: LinearLayout
     private lateinit var editModeButton: Button
     private lateinit var outputModeButton: Button
+    private lateinit var layersButton: Button
+    private lateinit var propertiesButton: Button
+    private lateinit var emptyCanvas: TextView
     private val editorChrome = mutableListOf<View>()
     var outputMode = false
         private set
@@ -63,10 +78,10 @@ class MainActivity : Activity() {
     private var resumed = false
     private var rendererFailed = false
     private var showFps = false
-    private var source: MediaSource = MediaSource.BundledSample
-    private var pendingMissingSource: MediaSource? = null
-    private var errorFailure: MediaFailure? = null
-    private var restoreFailureOnResume = false
+    private val source: MediaSource get() = scene.selected?.source ?: MediaSource.BundledSample
+    private var pickerAddsSurface = false
+    private var pickerTargetId: Long? = null
+    private var compositionDialog: AlertDialog? = null
     private val background = Color.rgb(9, 11, 16)
     private val surface = Color.rgb(20, 24, 33)
     private val cyan = Color.rgb(103, 232, 249)
@@ -76,31 +91,42 @@ class MainActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        savedInstanceState?.getDoubleArray("quad")?.let { quad = Quad.fromCoordinates(it) }
         showFps = savedInstanceState?.getBoolean("fps") ?: false
-        source = when (savedInstanceState?.getString("source_type")) {
-            "video" -> savedInstanceState.getString("source_uri")?.let { MediaSource.Video(Uri.parse(it)) } ?: MediaSource.BundledSample
-            "image" -> savedInstanceState.getString("source_uri")?.let { MediaSource.Image(Uri.parse(it)) } ?: MediaSource.BundledSample
-            else -> MediaSource.BundledSample
+        savedInstanceState?.getBundle("scene")?.let { saved ->
+            val layers = requireNotNull(saved.getLongArray("ids")).map { id ->
+                val layer = requireNotNull(saved.getBundle(id.toString()))
+                SceneSurface(id, readSource(layer), Quad.fromCoordinates(requireNotNull(layer.getDoubleArray("quad"))),
+                    layer.getBoolean("visible"), layer.getFloat("opacity"))
+            }
+            scene = Scene(layers, saved.getLong("selected").takeIf { it > 0 }, saved.getLong("next"))
         }
-        pendingMissingSource = savedInstanceState?.getString("missing_uri")?.let { uri ->
-            when (savedInstanceState.getString("missing_type")) {
-                "video" -> MediaSource.Video(Uri.parse(uri))
-                "image" -> MediaSource.Image(Uri.parse(uri))
-                else -> null
+        scene.surfaces.forEach { layer ->
+            val session = newSession(layer.id)
+            savedInstanceState?.getBundle("scene")?.getBundle(layer.id.toString())?.let {
+                session.player.restore(it.getBoolean("playing"), it.getInt("position"))
+                session.missing = it.getBundle("missing")?.let(::readSource)
+                session.failure = it.getString("failure")?.let(MediaFailure::valueOf)
             }
         }
-        player = SamplePlayer(this, ::playbackChanged) { failure ->
-            showError(failure, source, fallbackToSample = failure == MediaFailure.UNAVAILABLE)
-        }
-        if (source is MediaSource.Video || source is MediaSource.BundledSample) {
-            player.setSource(source)
-        }
-        player.restore(savedInstanceState?.getBoolean("playing") ?: true, savedInstanceState?.getInt("position") ?: 0)
+        pickerAddsSurface = savedInstanceState?.getBoolean("picker_add") ?: false
+        pickerTargetId = savedInstanceState?.getLong("picker_target")?.takeIf { it > 0 }
         buildUi()
         setOutputMode(savedInstanceState?.getBoolean("output") ?: false)
-        updateSourceUi()
-        restoreFailureOnResume = savedInstanceState?.getBoolean("show_missing_error") ?: false
+        refreshEditor()
+    }
+
+    private fun newSession(id: Long): MediaSession {
+        val mediaPlayer = SamplePlayer(this, { ready, _ ->
+            sessions[id]?.ready = ready
+            if (scene.selectedId == id) refreshPlayback()
+            updateKeepScreenOn()
+        }, { failure ->
+            if (sessions.containsKey(id)) {
+                selectSurface(id)
+                showError(failure, fallbackToSample = failure == MediaFailure.UNAVAILABLE)
+            }
+        })
+        return MediaSession(mediaPlayer).also { sessions[id] = it }
     }
 
     private fun buildUi() {
@@ -153,12 +179,12 @@ class MainActivity : Activity() {
         renderer = VideoRenderer(
             CornerOverlay.INSET_DP * resources.displayMetrics.density,
             { glView.requestRender() },
-            { videoSurface ->
+            { id, media, videoSurface ->
                 runOnUiThread {
-                    if (resumed && renderer.currentSurface === videoSurface) {
+                    if (resumed && renderer.surfaceFor(id) === videoSurface &&
+                        scene.surfaces.any { it.id == id && it.source == media }) {
                         rendererFailed = false
-                        errorPanel.visibility = View.GONE
-                        attachCurrentSource(videoSurface)
+                        attachSource(id, videoSurface)
                     }
                 }
             },
@@ -170,7 +196,7 @@ class MainActivity : Activity() {
             },
             { renderFps, videoFps ->
                 runOnUiThread {
-                    if (player.wantsToPlay) metrics.text = getString(
+                    if (scene.selectedId != null && player.wantsToPlay) metrics.text = getString(
                         if (landscape) R.string.fps_compact else R.string.fps, renderFps, videoFps,
                     )
                 }
@@ -178,13 +204,19 @@ class MainActivity : Activity() {
         )
         glView.setRenderer(renderer)
         glView.renderMode = GLSurfaceView.RENDERMODE_WHEN_DIRTY
-        renderer.updateQuad(quad)
+        renderer.updateScene(scene)
         stage.addView(glView, FrameLayout.LayoutParams(-1, -1))
         overlay = CornerOverlay(this, { quad }, ::moveCorner) {
             Toast.makeText(this, R.string.invalid_quad, Toast.LENGTH_SHORT).show()
         }
         overlay.id = R.id.corner_overlay
         stage.addView(overlay, FrameLayout.LayoutParams(-1, -1))
+        emptyCanvas = text(getString(R.string.empty_canvas), 16, secondary).apply {
+            id = R.id.empty_canvas
+            gravity = Gravity.CENTER
+        }
+        stage.addView(emptyCanvas, FrameLayout.LayoutParams(-1, -1))
+        editorChrome += emptyCanvas
         body.addView(stage, if (landscape) LinearLayout.LayoutParams(0, -1, 1f) else LinearLayout.LayoutParams(-1, 0, 1f))
 
         val panel = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
@@ -251,6 +283,25 @@ class MainActivity : Activity() {
         }
         source.addView(sourceAction, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(10) })
         panel.addView(source)
+        val composition = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            isBaselineAligned = false
+        }
+        layersButton = button(R.string.layers, false).apply {
+            id = R.id.layers
+            setOnClickListener { showLayers() }
+        }
+        composition.addView(layersButton, LinearLayout.LayoutParams(0, -2, 1f).apply { marginEnd = dp(8) })
+        composition.addView(button(R.string.add_surface, false).apply {
+            id = R.id.add_surface
+            setOnClickListener { showAddSurface() }
+        }, LinearLayout.LayoutParams(0, -2, 1f))
+        panel.addView(composition, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(8) })
+        propertiesButton = button(R.string.surface_properties, false).apply {
+            id = R.id.surface_properties
+            setOnClickListener { showProperties() }
+        }
+        panel.addView(propertiesButton, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(8) })
 
         val controls = LinearLayout(this).apply {
             orientation = if (landscape) LinearLayout.VERTICAL else LinearLayout.HORIZONTAL
@@ -268,9 +319,7 @@ class MainActivity : Activity() {
         controls.addView(button(R.string.reset, false).apply {
             id = R.id.reset_corners
             setOnClickListener {
-                quad = Quad.DEFAULT
-                renderer.updateQuad(quad)
-                this@MainActivity.overlay.update()
+                scene.selected?.let { updateSurface(it.copy(quad = Quad.DEFAULT)) }
             }
         }, if (landscape) LinearLayout.LayoutParams(-1, -2) else LinearLayout.LayoutParams(0, -2, 1f))
         panel.addView(controls)
@@ -345,8 +394,11 @@ class MainActivity : Activity() {
 
     /** Edit and Output share the same GL view, scene, video surface, and player. */
     fun setOutputMode(enabled: Boolean) {
+        compositionDialog?.dismiss()
         outputMode = enabled
         editorChrome.forEach { it.visibility = if (enabled) View.GONE else View.VISIBLE }
+        overlay.visibility = if (!enabled && scene.selected?.visible == true) View.VISIBLE else View.GONE
+        emptyCanvas.visibility = if (!enabled && scene.surfaces.isEmpty()) View.VISIBLE else View.GONE
         root.setBackgroundColor(if (enabled) Color.BLACK else background)
         window.decorView.setBackgroundColor(if (enabled) Color.BLACK else background)
         renderer.setOutputMode(enabled)
@@ -426,18 +478,29 @@ class MainActivity : Activity() {
     }
 
     private fun updateKeepScreenOn() {
-        if (outputMode || (player.wantsToPlay && playButton.isEnabled)) window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        if (outputMode || scene.surfaces.any { layer ->
+                val session = sessions[layer.id]
+                layer.visible && session?.ready == true && session.player.wantsToPlay
+            }) window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         else window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     private fun launchPicker() {
+        pickerTargetId = scene.selectedId
+        pickerAddsSurface = false
+        openPicker("*/*")
+    }
+
+    private fun openPicker(mime: String) {
         val intent = if (android.os.Build.VERSION.SDK_INT >= 33) {
-            Intent(android.provider.MediaStore.ACTION_PICK_IMAGES)
+            Intent(android.provider.MediaStore.ACTION_PICK_IMAGES).apply {
+                if (mime != "*/*") type = mime
+            }
         } else {
             Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
                 addCategory(Intent.CATEGORY_OPENABLE)
-                type = "*/*"
-                putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "video/*"))
+                type = mime
+                if (mime == "*/*") putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "video/*"))
             }
         }
         try {
@@ -448,31 +511,22 @@ class MainActivity : Activity() {
         }
     }
 
-    fun importFromUri(uri: Uri) {
+    private fun retainReadPermission(uri: Uri) {
+        if (uri.scheme != "content") return
         try {
             contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        } catch (_: SecurityException) {
-            // Photo Picker Uris are often transient; continue with best-effort access.
-        } catch (_: IllegalArgumentException) {
-            // Not all Uris support persistable permissions.
+        } catch (error: SecurityException) {
+            Log.w("Lumis", "Provider grants only temporary media access", error)
+        } catch (error: IllegalArgumentException) {
+            Log.w("Lumis", "Provider does not support persistent media access", error)
         }
-        val result = inspectUri(uri)
-        when (result.kind) {
-            InspectedKind.IMAGE -> {
-                val bitmap = decodeImage(uri) ?: return
-                errorFailure = null
-                applySource(MediaSource.Image(uri))
-                renderer.setImage(bitmap)
-                errorPanel.visibility = View.GONE
-                playbackChanged(ready = false, playing = false)
-            }
-            InspectedKind.VIDEO -> {
-                errorFailure = null
-                applySource(MediaSource.Video(uri))
-                renderer.clearImage()
-                errorPanel.visibility = View.GONE
-                renderer.currentSurface?.let { player.attach(it) }
-            }
+    }
+
+    fun importFromUri(uri: Uri) {
+        retainReadPermission(uri)
+        val next = when (inspectUri(uri).kind) {
+            InspectedKind.IMAGE -> MediaSource.Image(uri)
+            InspectedKind.VIDEO -> MediaSource.Video(uri)
             InspectedKind.UNSUPPORTED -> {
                 showError(MediaFailure.UNSUPPORTED)
                 return
@@ -482,40 +536,42 @@ class MainActivity : Activity() {
                 return
             }
         }
-        pendingMissingSource = null
-        restoreFailureOnResume = false
-        updateSourceUi()
+        if (next is MediaSource.Image) {
+            // Validate before replacing the selected source. Upload follows resource creation.
+            val bitmap = decodeImage(uri) ?: return
+            bitmap.recycle()
+        }
+        val selected = scene.selected
+        if (selected == null) addSurface(next) else {
+            val session = requireNotNull(sessions[selected.id])
+            session.player.release()
+            session.ready = false
+            session.failure = null
+            session.missing = null
+            session.player.restore(true, 0)
+            updateSurface(selected.copy(source = next))
+            if (next == selected.source) renderer.surfaceFor(selected.id)?.let { attachSource(selected.id, it) }
+        }
     }
 
-    private fun attachCurrentSource(surface: android.view.Surface) {
-        when (val current = source) {
+    private fun attachSource(id: Long, surface: android.view.Surface) {
+        val layer = scene.surfaces.find { it.id == id } ?: return
+        val session = requireNotNull(sessions[id])
+        when (val current = layer.source) {
             MediaSource.BundledSample, is MediaSource.Video -> {
-                player.setSource(current)
-                renderer.clearImage()
-                player.attach(surface)
+                session.player.setSource(current, resetPosition = false)
+                session.player.attach(surface)
             }
             is MediaSource.Image -> {
-                player.release()
-                playbackChanged(ready = false, playing = false)
-                val bitmap = decodeImage(current.uri)
-                if (bitmap == null) {
-                    showError(MediaFailure.UNAVAILABLE, current, fallbackToSample = true)
-                    player.setSource(MediaSource.BundledSample)
-                    player.attach(surface)
-                    return
-                }
-                renderer.setImage(bitmap)
-                errorPanel.visibility = View.GONE
+                session.player.release()
+                val bitmap = decodeImage(current.uri) { failure ->
+                    selectSurface(id)
+                    showError(failure, current, fallbackToSample = failure == MediaFailure.UNAVAILABLE)
+                } ?: return
+                renderer.setImage(id, current, bitmap)
             }
         }
-    }
-
-    private fun applySource(next: MediaSource) {
-        source = next
-        if (next is MediaSource.Video || next is MediaSource.BundledSample) {
-            player.setSource(next)
-        }
-        updateSourceUi()
+        if (scene.selectedId == id) refreshEditor()
     }
 
     private enum class InspectedKind { IMAGE, VIDEO, UNSUPPORTED, UNAVAILABLE }
@@ -559,18 +615,40 @@ class MainActivity : Activity() {
         }
     }
 
-    private fun decodeImage(uri: Uri) = try {
-        contentResolver.openInputStream(uri)?.use { stream ->
-            BitmapFactory.decodeStream(stream)
-        }?.takeIf { it.width > 0 && it.height > 0 } ?: run {
-            showError(MediaFailure.UNSUPPORTED)
+    private fun decodeImage(uri: Uri, onFailure: (MediaFailure) -> Unit = { showError(it) }) = try {
+        val bitmap = if (android.os.Build.VERSION.SDK_INT >= 28) {
+            ImageDecoder.decodeBitmap(ImageDecoder.createSource(contentResolver, uri)) { decoder, info, _ ->
+                val scale = minOf(1.0, 2048.0 / maxOf(info.size.width, info.size.height))
+                decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
+                decoder.setTargetColorSpace(android.graphics.ColorSpace.get(android.graphics.ColorSpace.Named.SRGB))
+                decoder.setTargetSize(maxOf(1, (info.size.width * scale).toInt()), maxOf(1, (info.size.height * scale).toInt()))
+            }
+        } else {
+            val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+            contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, bounds) }
+            val options = BitmapFactory.Options()
+            while (maxOf(bounds.outWidth, bounds.outHeight) / options.inSampleSize > 2048) options.inSampleSize *= 2
+            contentResolver.openInputStream(uri)?.use { BitmapFactory.decodeStream(it, null, options) }
+        }
+        bitmap?.takeIf { it.width > 0 && it.height > 0 } ?: run {
+            onFailure(MediaFailure.UNSUPPORTED)
             null
         }
-    } catch (_: FileNotFoundException) {
-        showError(MediaFailure.UNAVAILABLE)
+    } catch (error: FileNotFoundException) {
+        Log.e("Lumis", "Image source unavailable", error)
+        onFailure(MediaFailure.UNAVAILABLE)
         null
-    } catch (_: SecurityException) {
-        showError(MediaFailure.UNAVAILABLE)
+    } catch (error: SecurityException) {
+        Log.e("Lumis", "Image access denied", error)
+        onFailure(MediaFailure.UNAVAILABLE)
+        null
+    } catch (error: IOException) {
+        Log.e("Lumis", "Image decoding failed", error)
+        onFailure(MediaFailure.UNSUPPORTED)
+        null
+    } catch (error: IllegalArgumentException) {
+        Log.e("Lumis", "Image data unsupported", error)
+        onFailure(MediaFailure.UNSUPPORTED)
         null
     }
 
@@ -587,6 +665,13 @@ class MainActivity : Activity() {
     }
 
     private fun updateSourceUi() {
+        if (scene.selected == null) {
+            sourceLabel.setText(R.string.empty_canvas_title)
+            sourceDetail.setText(R.string.empty_canvas)
+            sourceAction.isEnabled = false
+            return
+        }
+        sourceAction.isEnabled = true
         when (val current = source) {
             MediaSource.BundledSample -> {
                 sourceLabel.setText(R.string.sample_label)
@@ -606,29 +691,237 @@ class MainActivity : Activity() {
         }
     }
 
+    private fun refreshEditor() {
+        updateSourceUi()
+        refreshPlayback()
+        layersButton.text = getString(R.string.layers_count, scene.surfaces.size)
+        propertiesButton.isEnabled = scene.selected != null
+        findViewById<View>(R.id.reset_corners).isEnabled = scene.selected != null
+        overlay.visibility = if (!outputMode && scene.selected?.visible == true) View.VISIBLE else View.GONE
+        emptyCanvas.visibility = if (!outputMode && scene.surfaces.isEmpty()) View.VISIBLE else View.GONE
+        overlay.update()
+        val failure = sessions[scene.selectedId]?.failure
+        if (!rendererFailed) {
+            errorPanel.visibility = if (failure == null) View.GONE else View.VISIBLE
+            failure?.let {
+                errorMessage.setText(when (it) {
+                    MediaFailure.UNAVAILABLE -> R.string.source_unavailable
+                    MediaFailure.UNSUPPORTED -> R.string.source_unsupported
+                    MediaFailure.DECODER -> R.string.video_error
+                })
+                errorAction.setText(if (it == MediaFailure.UNAVAILABLE) R.string.replace_media else R.string.retry)
+            }
+        }
+    }
+
+    fun selectSurface(id: Long) {
+        scene = scene.select(id)
+        renderer.updateScene(scene)
+        refreshEditor()
+    }
+
+    fun updateSurface(surface: SceneSurface) {
+        scene = scene.update(surface)
+        renderer.updateScene(scene)
+        refreshEditor()
+    }
+
+    fun addSurface(source: MediaSource = MediaSource.BundledSample) {
+        scene = scene.add(source)
+        newSession(requireNotNull(scene.selectedId))
+        renderer.updateScene(scene)
+        refreshEditor()
+    }
+
+    fun duplicateSurface() {
+        val originalId = requireNotNull(scene.selectedId)
+        val original = requireNotNull(sessions[originalId])
+        scene = scene.duplicate()
+        newSession(requireNotNull(scene.selectedId)).also {
+            it.player.restore(original.player.wantsToPlay, original.player.position())
+            it.failure = original.failure
+            it.missing = original.missing
+        }
+        renderer.updateScene(scene)
+        refreshEditor()
+    }
+
+    private fun deleteSurface(id: Long) {
+        sessions.remove(id)?.player?.release()
+        scene = scene.delete(id)
+        renderer.updateScene(scene)
+        refreshEditor()
+    }
+
+    private fun showLayers() {
+        val panel = dialogPanel()
+        scene.surfaces.asReversed().forEach { layer ->
+            val row = LinearLayout(this).apply { isBaselineAligned = false; gravity = Gravity.CENTER_VERTICAL }
+            row.addView(button(R.string.surface_name, layer.id == scene.selectedId).apply {
+                text = getString(R.string.surface_number, layer.id)
+                isSelected = layer.id == scene.selectedId
+                contentDescription = getString(R.string.select_surface, layer.id)
+                setOnClickListener {
+                    selectSurface(layer.id)
+                    compositionDialog?.dismiss()
+                }
+            }, LinearLayout.LayoutParams(0, -2, 1f))
+            @Suppress("UseSwitchCompatOrMaterialCode")
+            row.addView(Switch(this).apply {
+                minHeight = dp(48)
+                setTextColor(secondary)
+                text = getString(R.string.show_surface)
+                contentDescription = getString(R.string.visibility_surface, layer.id)
+                isChecked = layer.visible
+                setOnCheckedChangeListener { _, visible ->
+                    scene.surfaces.find { it.id == layer.id }?.let { updateSurface(it.copy(visible = visible)) }
+                }
+            }, LinearLayout.LayoutParams(-2, -2).apply { marginStart = dp(8) })
+            panel.addView(row, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(8) })
+        }
+        if (scene.surfaces.isEmpty()) panel.addView(text(getString(R.string.empty_canvas), 14, secondary))
+        showPanel(R.string.layers, panel)
+    }
+
+    private fun showAddSurface() {
+        val panel = dialogPanel()
+        listOf(R.string.bundled_sample to null, R.string.add_image to "image/*", R.string.add_video to "video/*").forEach { (label, mime) ->
+            panel.addView(button(label, label == R.string.bundled_sample).apply {
+                setOnClickListener {
+                    compositionDialog?.dismiss()
+                    if (mime == null) addSurface() else {
+                        pickerAddsSurface = true
+                        pickerTargetId = null
+                        openPicker(mime)
+                    }
+                }
+            }, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(8) })
+        }
+        showPanel(R.string.add_surface, panel)
+    }
+
+    private fun showProperties() {
+        val selected = scene.selected ?: return
+        val id = selected.id
+        val panel = dialogPanel()
+        panel.addView(text(getString(R.string.surface_number, id), 18, Color.WHITE, true))
+        @Suppress("UseSwitchCompatOrMaterialCode")
+        val visible = Switch(this).apply {
+            this.id = R.id.surface_visibility
+            text = getString(R.string.show_surface)
+            setTextColor(secondary)
+            minHeight = dp(48)
+            isChecked = selected.visible
+            setOnCheckedChangeListener { _, value ->
+                scene.surfaces.find { it.id == id }?.let { updateSurface(it.copy(visible = value)) }
+            }
+        }
+        panel.addView(visible)
+        val opacityLabel = text(getString(R.string.opacity_percent, (selected.opacity * 100).toInt()), 14, secondary)
+        panel.addView(opacityLabel)
+        panel.addView(SeekBar(this).apply {
+            this.id = R.id.surface_opacity
+            contentDescription = getString(R.string.opacity)
+            minimumHeight = dp(48)
+            max = 100
+            progress = (selected.opacity * 100).toInt()
+            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                    if (!fromUser) return
+                    opacityLabel.text = getString(R.string.opacity_percent, progress)
+                    scene.surfaces.find { it.id == id }?.let { updateSurface(it.copy(opacity = progress / 100f)) }
+                }
+                override fun onStartTrackingTouch(seekBar: SeekBar?) = Unit
+                override fun onStopTrackingTouch(seekBar: SeekBar?) = Unit
+            })
+        }, LinearLayout.LayoutParams(-1, dp(48)))
+        val backward = button(R.string.move_backward, false).apply { this.id = R.id.move_backward }
+        val forward = button(R.string.move_forward, false).apply { this.id = R.id.move_forward }
+        fun updateOrderButtons() {
+            val index = scene.surfaces.indexOfFirst { it.id == id }
+            backward.isEnabled = index > 0
+            forward.isEnabled = index < scene.surfaces.lastIndex
+        }
+        listOf(backward to false, forward to true).forEach { (view, ahead) ->
+            view.setOnClickListener {
+                scene = scene.move(id, ahead)
+                renderer.updateScene(scene)
+                updateOrderButtons()
+            }
+            panel.addView(view, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(8) })
+        }
+        updateOrderButtons()
+        panel.addView(button(R.string.duplicate_surface, false).apply {
+            this.id = R.id.duplicate_surface
+            setOnClickListener {
+                duplicateSurface()
+                compositionDialog?.dismiss()
+            }
+        }, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(8) })
+        panel.addView(button(R.string.delete_surface, false).apply {
+            this.id = R.id.delete_surface
+            setTextColor(Color.rgb(251, 113, 133))
+            setOnClickListener {
+                compositionDialog?.dismiss()
+                confirmDelete(id)
+            }
+        }, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(8) })
+        showPanel(R.string.surface_properties, panel)
+    }
+
+    private fun confirmDelete(id: Long) {
+        compositionDialog = AlertDialog.Builder(this)
+            .setTitle(getString(R.string.delete_surface_title, id))
+            .setMessage(R.string.delete_surface_message)
+            .setNegativeButton(R.string.keep_surface, null)
+            .setPositiveButton(R.string.delete_surface) { _, _ -> deleteSurface(id) }
+            .show()
+            .also { it.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.rgb(251, 113, 133)) }
+    }
+
+    private fun dialogPanel() = LinearLayout(this).apply {
+        orientation = LinearLayout.VERTICAL
+        setPadding(dp(20), dp(12), dp(20), dp(12))
+        setBackgroundColor(this@MainActivity.background)
+    }
+
+    private fun showPanel(title: Int, panel: LinearLayout) {
+        compositionDialog?.dismiss()
+        compositionDialog = AlertDialog.Builder(this)
+            .setTitle(title)
+            .setView(ScrollView(this).apply { addView(panel) })
+            .setNegativeButton(R.string.done, null)
+            .show()
+    }
+
     private fun moveCorner(index: Int, point: Point): Boolean {
         val moved = quad.moveCorner(index, point) ?: return false
         if (moved === quad) return true
-        quad = moved
-        renderer.updateQuad(moved)
+        val selected = scene.selected ?: return false
+        scene = scene.update(selected.copy(quad = moved))
+        renderer.updateScene(scene)
         overlay.update()
         return true
     }
 
-    private fun playbackChanged(ready: Boolean, playing: Boolean) {
+    private fun refreshPlayback() {
+        val session = sessions[scene.selectedId]
+        val ready = session?.ready == true
+        val playing = ready && session?.player?.wantsToPlay == true
         val image = source is MediaSource.Image
         playButton.isEnabled = ready && !image
         playButton.setText(if (playing && !image) R.string.pause else R.string.play)
         status.setText(
             when {
+                scene.selected == null -> R.string.empty_canvas_title
+                session?.failure != null -> R.string.error_title
                 image -> R.string.still_image
                 !ready -> R.string.loading
                 playing -> R.string.playing
                 else -> R.string.paused
             },
         )
-        if (playing || outputMode) window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        else window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        updateKeepScreenOn()
         if (!playing) metrics.setText(R.string.paused)
     }
 
@@ -637,18 +930,19 @@ class MainActivity : Activity() {
         fallbackSource: MediaSource = source,
         fallbackToSample: Boolean = false,
     ) {
-        // Recovery UI belongs to the editor, never to clean output.
         if (outputMode) setOutputMode(false)
         rendererFailed = false
-        errorFailure = failure
-        pendingMissingSource = if (failure == MediaFailure.UNAVAILABLE && fallbackToSample) fallbackSource else null
-        if (failure == MediaFailure.UNAVAILABLE && fallbackToSample) {
-            applySource(MediaSource.BundledSample)
-            renderer.clearImage()
+        val selected = scene.selected
+        val session = sessions[scene.selectedId]
+        session?.failure = failure
+        if (fallbackToSample && selected != null && session != null) {
+            session.missing = fallbackSource
+            session.player.release()
+            session.ready = false
+            session.player.restore(true, 0)
+            updateSurface(selected.copy(source = MediaSource.BundledSample))
         }
-        player.release(preservePosition = false)
-        playButton.isEnabled = false
-        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        refreshPlayback()
         errorMessage.setText(
             when (failure) {
                 MediaFailure.UNAVAILABLE -> R.string.source_unavailable
@@ -659,15 +953,13 @@ class MainActivity : Activity() {
         status.setText(R.string.error_title)
         errorAction.setText(if (failure == MediaFailure.UNAVAILABLE) R.string.replace_media else R.string.retry)
         errorPanel.visibility = View.VISIBLE
-        restoreFailureOnResume = failure == MediaFailure.UNAVAILABLE && fallbackToSample
     }
 
     private fun showError(gpu: Boolean) {
         if (gpu) {
             if (outputMode) setOutputMode(false)
             rendererFailed = true
-            errorFailure = null
-            player.release()
+            sessions.values.forEach { it.player.release(); it.ready = false }
             playButton.isEnabled = false
             window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             errorMessage.setText(R.string.renderer_error)
@@ -684,19 +976,15 @@ class MainActivity : Activity() {
             recreate()
             return
         }
-        if (errorFailure == MediaFailure.UNAVAILABLE) {
+        val session = sessions[scene.selectedId]
+        if (session?.failure == MediaFailure.UNAVAILABLE) {
             launchPicker()
             return
         }
-        if (source is MediaSource.Image) {
-            errorPanel.visibility = View.GONE
-            restoreFailureOnResume = false
-            renderer.currentSurface?.let { attachCurrentSource(it) }
-        } else {
-            renderer.currentSurface?.let {
-                errorPanel.visibility = View.GONE
-                player.attach(it)
-            }
+        session?.failure = null
+        errorPanel.visibility = View.GONE
+        scene.selectedId?.let { id ->
+            renderer.surfaceFor(id)?.let { attachSource(id, it) }
         }
     }
 
@@ -704,18 +992,20 @@ class MainActivity : Activity() {
         super.onResume()
         resumed = true
         glView.onResume()
-        if (restoreFailureOnResume && pendingMissingSource != null && errorPanel.visibility != View.VISIBLE) {
-            showError(MediaFailure.UNAVAILABLE, pendingMissingSource!!, fallbackToSample = true)
-        }
     }
 
     override fun onPause() {
         resumed = false
-        player.release()
+        sessions.values.forEach { it.player.release(); it.ready = false }
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         glView.queueEvent { renderer.release() }
         glView.onPause()
         super.onPause()
+    }
+
+    override fun onDestroy() {
+        compositionDialog?.dismiss()
+        super.onDestroy()
     }
 
     @Deprecated("Deprecated in Java")
@@ -723,39 +1013,62 @@ class MainActivity : Activity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode != REQUEST_PICK_MEDIA || resultCode != RESULT_OK) return
         val uri = data?.data ?: return
-        importFromUri(uri)
+        if (pickerAddsSurface) {
+            retainReadPermission(uri)
+            val next = when (inspectUri(uri).kind) {
+                InspectedKind.IMAGE -> MediaSource.Image(uri)
+                InspectedKind.VIDEO -> MediaSource.Video(uri)
+                InspectedKind.UNSUPPORTED -> { showError(MediaFailure.UNSUPPORTED); return }
+                InspectedKind.UNAVAILABLE -> { showError(MediaFailure.UNAVAILABLE); return }
+            }
+            if (next is MediaSource.Image) {
+                val bitmap = decodeImage(uri) ?: return
+                bitmap.recycle()
+            }
+            addSurface(next)
+        } else {
+            pickerTargetId?.takeIf { id -> scene.surfaces.any { it.id == id } }?.let(::selectSurface)
+            importFromUri(uri)
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putDoubleArray("quad", quad.toCoordinates())
-        outState.putBoolean("playing", player.wantsToPlay)
-        outState.putInt("position", player.position())
         outState.putBoolean("fps", showFps)
         outState.putBoolean("output", outputMode)
-        when (val current = source) {
-            MediaSource.BundledSample -> outState.putString("source_type", "sample")
-            is MediaSource.Video -> {
-                outState.putString("source_type", "video")
-                outState.putString("source_uri", current.uri.toString())
+        outState.putBoolean("picker_add", pickerAddsSurface)
+        outState.putLong("picker_target", pickerTargetId ?: 0)
+        outState.putBundle("scene", Bundle().apply {
+            putLongArray("ids", scene.surfaces.map { it.id }.toLongArray())
+            putLong("selected", scene.selectedId ?: 0)
+            putLong("next", scene.nextId)
+            scene.surfaces.forEach { layer ->
+                val session = requireNotNull(sessions[layer.id])
+                putBundle(layer.id.toString(), sourceBundle(layer.source).apply {
+                    putDoubleArray("quad", layer.quad.toCoordinates())
+                    putBoolean("visible", layer.visible)
+                    putFloat("opacity", layer.opacity)
+                    putBoolean("playing", session.player.wantsToPlay)
+                    putInt("position", session.player.position())
+                    putString("failure", session.failure?.name)
+                    session.missing?.let { putBundle("missing", sourceBundle(it)) }
+                })
             }
-            is MediaSource.Image -> {
-                outState.putString("source_type", "image")
-                outState.putString("source_uri", current.uri.toString())
-            }
-        }
-        when (val missing = pendingMissingSource) {
-            is MediaSource.Video -> {
-                outState.putString("missing_type", "video")
-                outState.putString("missing_uri", missing.uri.toString())
-            }
-            is MediaSource.Image -> {
-                outState.putString("missing_type", "image")
-                outState.putString("missing_uri", missing.uri.toString())
-            }
-            else -> {}
-        }
-        outState.putBoolean("show_missing_error", restoreFailureOnResume)
+        })
         super.onSaveInstanceState(outState)
+    }
+
+    private fun sourceBundle(source: MediaSource) = Bundle().apply {
+        when (source) {
+            MediaSource.BundledSample -> putString("type", "sample")
+            is MediaSource.Image -> { putString("type", "image"); putString("uri", source.uri.toString()) }
+            is MediaSource.Video -> { putString("type", "video"); putString("uri", source.uri.toString()) }
+        }
+    }
+
+    private fun readSource(bundle: Bundle): MediaSource = when (bundle.getString("type")) {
+        "image" -> MediaSource.Image(Uri.parse(requireNotNull(bundle.getString("uri"))))
+        "video" -> MediaSource.Video(Uri.parse(requireNotNull(bundle.getString("uri"))))
+        else -> MediaSource.BundledSample
     }
 
     private fun text(value: String, size: Int, color: Int, bold: Boolean = false) = TextView(this).apply {

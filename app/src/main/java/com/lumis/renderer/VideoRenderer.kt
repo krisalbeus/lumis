@@ -9,12 +9,14 @@ import android.opengl.GLUtils
 import android.util.Log
 import android.view.Surface
 import com.lumis.geometry.Homography
-import com.lumis.geometry.Quad
 import com.lumis.geometry.Viewport
+import com.lumis.media.MediaSource
+import com.lumis.scene.Scene
+import com.lumis.scene.SceneSurface
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.atomic.AtomicReference
 import kotlin.math.roundToInt
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
@@ -22,69 +24,74 @@ import javax.microedition.khronos.opengles.GL10
 class VideoRenderer(
     private val editInset: Double,
     private val requestFrame: () -> Unit,
-    private val onSurface: (Surface) -> Unit,
+    private val onSurface: (Long, MediaSource, Surface) -> Unit,
     private val onFailure: (String) -> Unit,
     private val onMetrics: (Double, Double) -> Unit,
 ) : GLSurfaceView.Renderer {
     enum class ContentType { VIDEO, IMAGE }
 
-    @Volatile private var transform = Homography(Quad.DEFAULT).matrix
-    @Volatile var currentSurface: Surface? = null
-        private set
+    private data class Layer(val surface: SceneSurface, val transform: FloatArray = Homography(surface.quad).matrix)
+    private data class ImageUpload(val source: MediaSource, val bitmap: Bitmap)
+    private class Texture(val source: MediaSource, val id: Int) {
+        val available = AtomicBoolean(false)
+        var stream: SurfaceTexture? = null
+        var surface: Surface? = null
+        val matrix = FloatArray(16)
+        var ready = false
+    }
+
+    private class Program(val id: Int) {
+        val position = GLES20.glGetAttribLocation(id, "aSource")
+        val homography = GLES20.glGetUniformLocation(id, "uHomography")
+        val matrix = GLES20.glGetUniformLocation(id, "uTextureMatrix")
+        val sampler = GLES20.glGetUniformLocation(id, "uMedia")
+        val opacity = GLES20.glGetUniformLocation(id, "uOpacity")
+    }
+
+    @Volatile private var layers: List<Layer> = emptyList()
+    @Volatile private var selectedId: Long? = null
+    private val surfaces = ConcurrentHashMap<Long, Surface>()
+    private val pendingImages = ConcurrentHashMap<Long, ImageUpload>()
+    private val frameCounts = ConcurrentHashMap<Long, Long>()
+    private val textures = mutableMapOf<Long, Texture>()
+    private var videoProgram: Program? = null
+    private var imageProgram: Program? = null
+    private var failed = false
+    private var surfaceWidth = 1
+    private var surfaceHeight = 1
+    private var metricsStart = 0L
+    private var metricDraws = 0
+    private var metricFrames = 0
     @Volatile var renderedFrames = 0L
         private set
     @Volatile var videoFrames = 0L
         private set
-    @Volatile var contentType = ContentType.VIDEO
-        private set
-    private val frameAvailable = AtomicBoolean(false)
-    private var texture: SurfaceTexture? = null
-    private var videoTextureId = 0
-    private var imageTextureId = 0
-    private var videoProgram = 0
-    private var imageProgram = 0
-    private var positionLocation = 0
-    private var homographyLocation = 0
-    private var textureMatrixLocation = 0
-    private var videoSamplerLocation = 0
-    private var imageSamplerLocation = 0
-    private var imagePositionLocation = 0
-    private var imageHomographyLocation = 0
-    private val pendingImage = AtomicReference<Bitmap?>(null)
-    private val viewportBounds = IntArray(4)
-    private var surfaceWidth = 1
-    private var surfaceHeight = 1
     @Volatile var outputMode = false
         private set
     @Volatile var viewport = Viewport.fit(1, 1, 0.0)
         private set
-    private var failed = false
-    private var hasFrame = false
-    private var metricsStart = 0L
-    private var metricDraws = 0
-    private var metricFrames = 0
-    private val textureMatrix = FloatArray(16)
+
+    val currentSurface: Surface? get() = selectedId?.let(surfaces::get)
+    val contentType: ContentType
+        get() = if (layers.any { it.surface.id == selectedId && it.surface.source is MediaSource.Image }) ContentType.IMAGE else ContentType.VIDEO
+    fun surfaceFor(id: Long): Surface? = surfaces[id]
+    fun framesFor(id: Long): Long = frameCounts[id] ?: 0L
+
     private val vertices = ByteBuffer.allocateDirect(8 * 4).order(ByteOrder.nativeOrder())
         .asFloatBuffer().apply { put(floatArrayOf(0f, 0f, 0f, 1f, 1f, 0f, 1f, 1f)); position(0) }
 
-    fun updateQuad(quad: Quad) {
-        transform = Homography(quad).matrix
+    fun updateScene(scene: Scene) {
+        selectedId = scene.selectedId
+        layers = scene.surfaces.map(::Layer)
         requestFrame()
     }
 
-    fun setImage(bitmap: Bitmap) {
-        pendingImage.getAndSet(bitmap)?.takeIf { it !== bitmap }?.recycle()
-        contentType = ContentType.IMAGE
+    /** Ownership of the bitmap transfers to the GL thread, including disposal. */
+    fun setImage(id: Long, source: MediaSource, bitmap: Bitmap) {
+        pendingImages.put(id, ImageUpload(source, bitmap))?.bitmap?.recycle()
         requestFrame()
     }
 
-    fun clearImage() {
-        contentType = ContentType.VIDEO
-        pendingImage.getAndSet(null)?.recycle()
-        requestFrame()
-    }
-
-    /** Output reuses this scene and video texture; only the presentation framing changes. */
     fun setOutputMode(enabled: Boolean) {
         outputMode = enabled
         requestFrame()
@@ -92,8 +99,6 @@ class VideoRenderer(
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         failed = false
-        hasFrame = false
-        frameAvailable.set(false)
         metricsStart = System.nanoTime()
         metricDraws = 0
         metricFrames = 0
@@ -101,40 +106,9 @@ class VideoRenderer(
             check(GLES20.glGetString(GLES20.GL_EXTENSIONS)?.contains("GL_OES_EGL_image_external") == true) {
                 "External video textures are not supported."
             }
-            videoProgram = createProgram(VIDEO_VERTEX_SHADER, VIDEO_FRAGMENT_SHADER)
-            imageProgram = createProgram(IMAGE_VERTEX_SHADER, IMAGE_FRAGMENT_SHADER)
-            positionLocation = GLES20.glGetAttribLocation(videoProgram, "aSource")
-            homographyLocation = GLES20.glGetUniformLocation(videoProgram, "uHomography")
-            textureMatrixLocation = GLES20.glGetUniformLocation(videoProgram, "uTextureMatrix")
-            videoSamplerLocation = GLES20.glGetUniformLocation(videoProgram, "uVideo")
-            imageSamplerLocation = GLES20.glGetUniformLocation(imageProgram, "uImage")
-            imagePositionLocation = GLES20.glGetAttribLocation(imageProgram, "aSource")
-            imageHomographyLocation = GLES20.glGetUniformLocation(imageProgram, "uHomography")
-            val names = IntArray(1)
-            GLES20.glGenTextures(1, names, 0)
-            videoTextureId = names[0]
-            GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, videoTextureId)
-            GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR)
-            GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR)
-            GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE)
-            GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE)
-            GLES20.glGenTextures(1, names, 0)
-            imageTextureId = names[0]
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, imageTextureId)
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR)
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR)
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE)
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE)
-            val newTexture = SurfaceTexture(videoTextureId)
-            newTexture.setOnFrameAvailableListener {
-                frameAvailable.set(true)
-                requestFrame()
-            }
-            texture = newTexture
-            val surface = Surface(newTexture)
-            currentSurface = surface
-            onSurface(surface)
-            checkGl("initializing video texture")
+            videoProgram = Program(createProgram(VIDEO_VERTEX_SHADER, VIDEO_FRAGMENT_SHADER))
+            imageProgram = Program(createProgram(IMAGE_VERTEX_SHADER, IMAGE_FRAGMENT_SHADER))
+            checkGl("initializing compositor")
         } catch (error: IllegalStateException) {
             fail(error)
         }
@@ -145,45 +119,57 @@ class VideoRenderer(
         surfaceHeight = height
     }
 
-    private fun updateViewport(): Boolean {
+    override fun onDrawFrame(gl: GL10?) {
         val output = outputMode
         val fitted = Viewport.fit(surfaceWidth, surfaceHeight, if (output) 0.0 else editInset)
         viewport = fitted
-        viewportBounds[0] = fitted.left.roundToInt()
-        viewportBounds[1] = (surfaceHeight - fitted.top - fitted.height).roundToInt()
-        viewportBounds[2] = fitted.width.roundToInt()
-        viewportBounds[3] = fitted.height.roundToInt()
-        GLES20.glViewport(viewportBounds[0], viewportBounds[1], viewportBounds[2], viewportBounds[3])
-        return output
-    }
-
-    override fun onDrawFrame(gl: GL10?) {
-        if (updateViewport()) GLES20.glClearColor(0f, 0f, 0f, 1f)
-        else GLES20.glClearColor(9f / 255, 11f / 255, 16f / 255, 1f)
+        GLES20.glViewport(fitted.left.roundToInt(), (surfaceHeight - fitted.top - fitted.height).roundToInt(),
+            fitted.width.roundToInt(), fitted.height.roundToInt())
+        if (output) GLES20.glClearColor(0f, 0f, 0f, 1f) else GLES20.glClearColor(9f / 255, 11f / 255, 16f / 255, 1f)
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
         GLES20.glEnable(GLES20.GL_SCISSOR_TEST)
-        GLES20.glScissor(viewportBounds[0], viewportBounds[1], viewportBounds[2], viewportBounds[3])
+        GLES20.glScissor(fitted.left.roundToInt(), (surfaceHeight - fitted.top - fitted.height).roundToInt(),
+            fitted.width.roundToInt(), fitted.height.roundToInt())
         GLES20.glClearColor(0f, 0f, 0f, 1f)
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
         GLES20.glDisable(GLES20.GL_SCISSOR_TEST)
-        if (failed || videoProgram == 0 || imageProgram == 0) return
+        if (failed || videoProgram == null || imageProgram == null) return
         try {
-            pendingImage.getAndSet(null)?.let { bitmap ->
-                uploadImage(bitmap)
-                bitmap.recycle()
+            val snapshot = layers
+            val desired = snapshot.associate { it.surface.id to it.surface.source }
+            frameCounts.keys.filterNot(desired::containsKey).forEach { frameCounts.remove(it) }
+            textures.keys.toList().filter { desired[it] != textures[it]?.source }.forEach { id ->
+                surfaces.remove(id)
+                releaseTexture(requireNotNull(textures.remove(id)))
             }
-            if (frameAvailable.compareAndSet(true, false)) {
-                texture?.updateTexImage()
-                texture?.getTransformMatrix(textureMatrix)
-                hasFrame = true
-                videoFrames++
-                metricFrames++
+            snapshot.forEach { layer ->
+                val s = layer.surface
+                val texture = textures.getOrPut(s.id) { createTexture(s) }
+                pendingImages.remove(s.id)?.let { image ->
+                    try {
+                        if (image.source == s.source && s.source is MediaSource.Image) {
+                            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture.id)
+                            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, image.bitmap, 0)
+                            texture.ready = true
+                        }
+                    } finally {
+                        image.bitmap.recycle()
+                    }
+                }
+                if (texture.available.compareAndSet(true, false)) {
+                    texture.stream?.updateTexImage()
+                    texture.stream?.getTransformMatrix(texture.matrix)
+                    texture.ready = true
+                    videoFrames++
+                    frameCounts[s.id] = framesFor(s.id) + 1
+                    metricFrames++
+                }
+                if (s.visible && s.opacity > 0f && texture.ready) draw(layer, texture)
             }
-            if (contentType == ContentType.IMAGE) {
-                drawImage()
-            } else if (hasFrame) {
-                drawVideo()
-            }
+            pendingImages.keys.filterNot(desired::containsKey).forEach { pendingImages.remove(it)?.bitmap?.recycle() }
+            checkGl("compositing scene")
+            renderedFrames++
+            metricDraws++
             val now = System.nanoTime()
             val seconds = (now - metricsStart) / 1e9
             if (seconds >= 1.0) {
@@ -197,64 +183,72 @@ class VideoRenderer(
         }
     }
 
+    private fun createTexture(layer: SceneSurface): Texture {
+        val image = layer.source is MediaSource.Image
+        val target = if (image) GLES20.GL_TEXTURE_2D else GLES11Ext.GL_TEXTURE_EXTERNAL_OES
+        val names = IntArray(1)
+        GLES20.glGenTextures(1, names, 0)
+        GLES20.glBindTexture(target, names[0])
+        GLES20.glTexParameteri(target, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR)
+        GLES20.glTexParameteri(target, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR)
+        GLES20.glTexParameteri(target, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE)
+        GLES20.glTexParameteri(target, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE)
+        val texture = Texture(layer.source, names[0])
+        // Image upload and video attachment are requested only after this texture exists.
+        val stream = if (image) SurfaceTexture(false) else SurfaceTexture(names[0])
+        texture.stream = stream
+        stream.setOnFrameAvailableListener {
+            texture.available.set(true)
+            requestFrame()
+        }
+        val surface = Surface(stream)
+        texture.surface = surface
+        surfaces[layer.id] = surface
+        onSurface(layer.id, layer.source, surface)
+        return texture
+    }
+
+    private fun draw(layer: Layer, texture: Texture) {
+        val image = layer.surface.source is MediaSource.Image
+        val program = requireNotNull(if (image) imageProgram else videoProgram)
+        GLES20.glUseProgram(program.id)
+        GLES20.glEnable(GLES20.GL_BLEND)
+        // Android bitmap uploads are premultiplied; video is opaque before surface opacity.
+        GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA)
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
+        GLES20.glBindTexture(if (image) GLES20.GL_TEXTURE_2D else GLES11Ext.GL_TEXTURE_EXTERNAL_OES, texture.id)
+        GLES20.glUniform1i(program.sampler, 0)
+        GLES20.glUniform1f(program.opacity, layer.surface.opacity)
+        GLES20.glUniformMatrix3fv(program.homography, 1, false, layer.transform, 0)
+        if (!image) GLES20.glUniformMatrix4fv(program.matrix, 1, false, texture.matrix, 0)
+        GLES20.glEnableVertexAttribArray(program.position)
+        GLES20.glVertexAttribPointer(program.position, 2, GLES20.GL_FLOAT, false, 0, vertices)
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
+        GLES20.glDisableVertexAttribArray(program.position)
+        GLES20.glDisable(GLES20.GL_BLEND)
+    }
+
     fun release() {
-        pendingImage.getAndSet(null)?.recycle()
-        currentSurface?.release()
-        currentSurface = null
-        texture?.setOnFrameAvailableListener(null)
-        texture?.release()
-        texture = null
-        if (videoTextureId != 0) GLES20.glDeleteTextures(1, intArrayOf(videoTextureId), 0)
-        if (imageTextureId != 0) GLES20.glDeleteTextures(1, intArrayOf(imageTextureId), 0)
-        if (videoProgram != 0) GLES20.glDeleteProgram(videoProgram)
-        if (imageProgram != 0) GLES20.glDeleteProgram(imageProgram)
-        videoTextureId = 0
-        imageTextureId = 0
-        videoProgram = 0
-        imageProgram = 0
-        hasFrame = false
+        surfaces.clear()
+        textures.values.forEach(::releaseTexture)
+        textures.clear()
+        pendingImages.keys.toList().forEach { pendingImages.remove(it)?.bitmap?.recycle() }
+        videoProgram?.let { GLES20.glDeleteProgram(it.id) }
+        imageProgram?.let { GLES20.glDeleteProgram(it.id) }
+        videoProgram = null
+        imageProgram = null
     }
 
-    private fun uploadImage(bitmap: Bitmap) {
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, imageTextureId)
-        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0)
-        checkGl("uploading image")
-    }
-
-    private fun drawVideo() {
-        GLES20.glUseProgram(videoProgram)
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
-        GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, videoTextureId)
-        GLES20.glUniform1i(videoSamplerLocation, 0)
-        GLES20.glUniformMatrix3fv(homographyLocation, 1, false, transform, 0)
-        GLES20.glUniformMatrix4fv(textureMatrixLocation, 1, false, textureMatrix, 0)
-        GLES20.glEnableVertexAttribArray(positionLocation)
-        GLES20.glVertexAttribPointer(positionLocation, 2, GLES20.GL_FLOAT, false, 0, vertices)
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
-        GLES20.glDisableVertexAttribArray(positionLocation)
-        renderedFrames++
-        metricDraws++
-        checkGl("drawing video")
-    }
-
-    private fun drawImage() {
-        GLES20.glUseProgram(imageProgram)
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, imageTextureId)
-        GLES20.glUniform1i(imageSamplerLocation, 0)
-        GLES20.glUniformMatrix3fv(imageHomographyLocation, 1, false, transform, 0)
-        GLES20.glEnableVertexAttribArray(imagePositionLocation)
-        GLES20.glVertexAttribPointer(imagePositionLocation, 2, GLES20.GL_FLOAT, false, 0, vertices)
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
-        GLES20.glDisableVertexAttribArray(imagePositionLocation)
-        renderedFrames++
-        metricDraws++
-        checkGl("drawing image")
+    private fun releaseTexture(texture: Texture) {
+        texture.stream?.setOnFrameAvailableListener(null)
+        texture.surface?.release()
+        texture.stream?.release()
+        GLES20.glDeleteTextures(1, intArrayOf(texture.id), 0)
     }
 
     private fun fail(error: IllegalStateException) {
         failed = true
-        Log.e("LumisRenderer", "GPU video rendering failed", error)
+        Log.e("LumisRenderer", "Scene compositing failed", error)
         onFailure(error.message ?: "Unknown OpenGL error")
     }
 
@@ -277,7 +271,7 @@ class VideoRenderer(
         if (status[0] == 0) {
             val message = GLES20.glGetProgramInfoLog(result)
             GLES20.glDeleteProgram(result)
-            error("Video shader link failed: $message")
+            error("Media shader link failed: $message")
         }
         return result
     }
@@ -291,14 +285,13 @@ class VideoRenderer(
         if (status[0] == 0) {
             val message = GLES20.glGetShaderInfoLog(shader)
             GLES20.glDeleteShader(shader)
-            error("Video shader compilation failed: $message")
+            error("Media shader compilation failed: $message")
         }
         return shader
     }
 
     companion object {
-        // Keeping projective w in clip space makes the GPU interpolate texture UVs
-        // perspectively across both triangles, without a diagonal seam.
+        // Preserve projective w so both triangles interpolate texture coordinates perspectively.
         private const val VIDEO_VERTEX_SHADER = """
             attribute vec2 aSource;
             uniform mat3 uHomography;
@@ -310,15 +303,6 @@ class VideoRenderer(
                 vTexture = (uTextureMatrix * vec4(aSource.x, 1.0 - aSource.y, 0.0, 1.0)).xy;
             }
         """
-        private const val VIDEO_FRAGMENT_SHADER = """
-            #extension GL_OES_EGL_image_external : require
-            precision mediump float;
-            uniform samplerExternalOES uVideo;
-            varying vec2 vTexture;
-            void main() {
-                gl_FragColor = texture2D(uVideo, vTexture);
-            }
-        """
         private const val IMAGE_VERTEX_SHADER = """
             attribute vec2 aSource;
             uniform mat3 uHomography;
@@ -326,16 +310,23 @@ class VideoRenderer(
             void main() {
                 vec3 p = uHomography * vec3(aSource, 1.0);
                 gl_Position = vec4(2.0 * p.x - p.z, p.z - 2.0 * p.y, 0.0, p.z);
-                vTexture = vec2(aSource.x, 1.0 - aSource.y);
+                vTexture = aSource;
             }
+        """
+        private const val VIDEO_FRAGMENT_SHADER = """
+            #extension GL_OES_EGL_image_external : require
+            precision mediump float;
+            uniform samplerExternalOES uMedia;
+            uniform float uOpacity;
+            varying vec2 vTexture;
+            void main() { gl_FragColor = texture2D(uMedia, vTexture) * uOpacity; }
         """
         private const val IMAGE_FRAGMENT_SHADER = """
             precision mediump float;
-            uniform sampler2D uImage;
+            uniform sampler2D uMedia;
+            uniform float uOpacity;
             varying vec2 vTexture;
-            void main() {
-                gl_FragColor = texture2D(uImage, vTexture);
-            }
+            void main() { gl_FragColor = texture2D(uMedia, vTexture) * uOpacity; }
         """
     }
 }
