@@ -79,6 +79,14 @@ are test-only dependencies; the first build needs access to Gradle/Maven artifac
 - **Layers** lists surfaces frontmost first. Select a row to edit that surface's
   corners, media, and playback; selection never changes drawing order. Each row's
   **Show** switch hides its content and editing handles without deleting it.
+- **Tap a surface in Edit** to select the topmost visible quad under your finger,
+  including when preview zoom/pan is active. Hidden and zero-opacity layers are
+  skipped; translucent layers remain selectable. Hit testing uses the quad,
+  not individual transparent image pixels. Empty taps leave selection unchanged.
+  Selection does not create an undo step or discard redo. Swipes, long holds,
+  cancelled touches, and two-finger navigation do not select. A gesture starting
+  on a selected corner still edits that corner. Layers remains the accessible
+  alternative. Local and external Output never accept selection taps.
 - **Surface properties** controls visibility, 0-100% opacity, **Move backward /
   forward**, **Duplicate surface**, and **Delete surface**. Duplication inserts an
   independent copy immediately above the original, retaining mapping/properties
@@ -352,6 +360,10 @@ Android's system input pipeline.
   four-video/image resources, hotplug/reconnect consent, multiple targets,
   display resize, black paused/error output and Retry, recreation/resume, and
   readable accessible controls. No test-only routing exists in production code.
+- [Canvas selection tests](app/src/androidTest/java/com/lumis/LayerSelectionTest.kt)
+  inject actual screen taps to verify topmost/warped/zoomed selection,
+  hidden/zero-opacity skipping, unchanged ordering/resources/history, rapid taps,
+  empty taps, swipe/hold/cancel/pinch rejection, corner priority, and Output safety.
 - GPU tests use `PixelCopy` on the actual GL surface, not a UI screenshot proxy.
   They compare 20 source points after a strong trapezoid warp, requiring average
   per-channel error under 5/255 and at least 18/20 samples under 12/255.

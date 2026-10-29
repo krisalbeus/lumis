@@ -55,7 +55,7 @@
     <string name="project_save_failed">Could not save. Your edits are still open. Retry before leaving.</string>
     <string name="untitled_project">Untitled project</string>
     <string name="app_name">Lumis</string>
-    <string name="instructions">Select in Layers, then drag the four corners. Output projects fullscreen; Back returns to Edit.</string>
+    <string name="instructions">Tap a surface to select it, or use Layers. Drag a corner to reshape it. Output projects fullscreen; Back returns to Edit.</string>
     <string name="mode_edit">Edit</string>
     <string name="mode_output">Output</string>
     <string name="output_size">Output %1$d × %2$d</string>

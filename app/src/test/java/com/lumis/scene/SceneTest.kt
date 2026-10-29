@@ -55,6 +55,16 @@ class SceneTest {
         assertNull(scene.hitTest(Point(.01, .01)))
     }
 
+    @Test fun hitTestingUsesQuadEdgesAndCurrentDrawingOrder() {
+        val diamond = com.lumis.geometry.Quad(Point(.5, .2), Point(.8, .5), Point(.5, .8), Point(.2, .5))
+        val scene = Scene().add().let { it.update(it.selected!!.copy(quad = diamond)) }
+        assertEquals(1L, scene.hitTest(Point(.3, .3)))
+        assertEquals(2L, scene.hitTest(Point(.5, .5)))
+        assertEquals(2L, scene.hitTest(diamond.a))
+        assertEquals(1L, scene.move(2, false).hitTest(Point(.5, .5)))
+        assertEquals(2L, scene.update(scene.selected!!.copy(opacity = .01f)).hitTest(Point(.5, .5)))
+    }
+
     @Test(expected = IllegalArgumentException::class)
     fun invalidOpacityIsRejected() { SceneSurface(1, opacity = Float.NaN) }
 

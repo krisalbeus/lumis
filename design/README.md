@@ -40,7 +40,7 @@ Treat generated brand work as a design candidate, not trademark clearance.
 
 ## Current screen inventory
 
-There are **34 current design references**: 31 application screens/states and
+There are **35 current design references**: 32 application screens/states and
 three asset/component boards. Some references are sheets or dialogs, not separate
 navigation destinations. Their exact resource IDs and export references are in
 [the manifest](stitch/screens.json).
@@ -81,6 +81,7 @@ navigation destinations. Their exact resource IDs and export references are in
 | 32 | About Lumis |
 | 33 | Rendering Proof / Landscape |
 | 34 | External display output |
+| 35 | Editor / Tap layer selection |
 
 Screen 09 was refined to remove technical jargon and unsolicited debug tools.
 Screen 25 was revised because its initial screenshot was not 16:9. Use the
@@ -178,6 +179,16 @@ Android/Samsung still controls desktop chrome, notifications, and mirroring
 outside an active Presentation. Native controls use the existing scrollable
 panel and 48dp targets. No casting, MediaProjection permission, effects,
 physical calibration, or display-wall support was added.
+
+Screen 35 adds the approved tap-to-select interaction using the existing editor
+and navigation design system. A completed short tap selects the topmost visible,
+nonzero-opacity quad at that point. Hit testing uses geometry, not image alpha;
+empty taps keep selection. Existing selected corner handles retain drag priority.
+Swipes, holds, cancellation, and multi-finger gestures do not select.
+Layers remains the accessible alternative. Selection changes neither ordering
+nor history, and local/external Output pixels remain unaffected. The mockup's
+extra Restart/Loop controls, tap halo, dashed outlines, and decorative glow are
+not part of this change; native selection uses existing cyan handles.
 
 All current screen references remain in Stitch. Only the references above are
 exported locally; the manifest is not a full offline archive of every mockup.

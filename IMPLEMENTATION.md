@@ -107,6 +107,39 @@ Use [the Stitch workflow](design/README.md) for missing screens and assets.
 
 ## Verification log
 
+### Tap-to-select polish
+
+- [x] Commit independent external-display milestone as `b1cad5f`.
+- [x] Create Stitch screen 35 in the existing project/design system.
+- [x] Reuse scene geometric hit testing to select the topmost visible,
+  nonzero-opacity quad on completed Edit taps, including zoom/pan.
+- [x] Preserve corner ownership, two-finger navigation, ordering, decoder
+  identity, undo/redo history, and clean local/external Output.
+- [x] Validate regressions/compact interactions and build APK 0.2.1.
+
+Verified on 2026-10-29: 31 unit tests, 80 full connected tests, and 33 focused
+compact tests (6 selection + 14 editing + 13 rendering) at 720x1280, density 320,
+150% font passed. Lint has no errors and the same three baseline warnings.
+The signed 0.2.1 APK (version code 3) updates existing installs in place.
+
+The six selection tests inject real screen taps and cover overlapping geometry,
+hidden/zero-opacity skipping, warped quads, zoom/pan, empty taps, rapid taps,
+resource/order/history preservation, swipe/hold/cancel/multi-pointer rejection,
+selected-corner priority, and Output touch rejection. Pure hit-test coverage also
+checks quad edges and reordered layers. Android's tap detector uses system touch
+slop/hold thresholds; double-tap detection is disabled so rapid consecutive taps
+each select normally.
+
+On compact canvases, the existing 56dp corner targets can overlap areas outside
+the quad; those touches intentionally retain corner priority. The zoomed hit-test
+proof uses a point outside these targets rather than reducing accessibility
+targets to make selection win.
+
+One combined compact run also encountered the previously observed independent
+virtual-display activation/disconnect intermittency. No unrelated output-routing
+change was made here; the final full 80-test run passed, including all ten external
+tests. Physical HDMI validation remains pending as documented below.
+
 ### Milestone 6
 
 Verified on 2026-10-29 using `e2e_playstore` (Android 16 / API 36).

@@ -1,16 +1,30 @@
 package com.lumis.editor
 
+import android.content.Context
+import android.view.GestureDetector
 import android.view.MotionEvent
 import com.lumis.geometry.Point
 import kotlin.math.hypot
 
-class PreviewGestures(private val navigate: (Double, Point, Point) -> Unit) {
+class PreviewGestures(
+    context: Context,
+    private val navigate: (Double, Point, Point) -> Unit,
+    tap: (Point) -> Unit,
+) {
+    private val taps = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
+        override fun onDown(event: MotionEvent) = true
+        override fun onSingleTapUp(event: MotionEvent): Boolean {
+            tap(Point(event.x.toDouble(), event.y.toDouble()))
+            return true
+        }
+    }).apply { setOnDoubleTapListener(null) }
     private var first = -1
     private var second = -1
     private var midpoint: Point? = null
     private var distance = 0.0
 
     fun touch(event: MotionEvent): Boolean {
+        taps.onTouchEvent(event)
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN, MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> reset()
             MotionEvent.ACTION_POINTER_DOWN -> if (first < 0 && event.pointerCount >= 2) {

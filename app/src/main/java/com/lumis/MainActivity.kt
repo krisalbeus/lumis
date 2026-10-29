@@ -381,7 +381,7 @@ class MainActivity : Activity() {
         return MediaSession(mediaPlayer).also { sessions[id] = it }
     }
 
-    @android.annotation.SuppressLint("ClickableViewAccessibility") // Navigation has button equivalents; single-finger canvas taps do nothing.
+    @android.annotation.SuppressLint("ClickableViewAccessibility") // Layers and navigation buttons provide accessible equivalents.
     private fun buildUi() {
         val landscape = resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
         root = LinearLayout(this).apply {
@@ -466,7 +466,12 @@ class MainActivity : Activity() {
             Toast.makeText(this, R.string.invalid_quad, Toast.LENGTH_SHORT).show()
         }
         overlay.id = R.id.corner_overlay
-        val navigation = PreviewGestures(::navigatePreview)
+        val navigation = PreviewGestures(this, ::navigatePreview) { point ->
+            val base = Viewport.fit(glView.width, glView.height, CornerOverlay.INSET_DP * resources.displayMetrics.density)
+            scene.hitTest(previewTransform.apply(base).toScene(point))?.let { id ->
+                if (id != scene.selectedId) selectSurface(id)
+            }
+        }
         glView.setOnTouchListener { _, event ->
             if (!outputMode) navigation.touch(event) else false
         }

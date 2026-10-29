@@ -4,6 +4,20 @@
   "projectUrl": "https://stitch.withgoogle.com/projects/9969649650324268552",
   "screens": [
     {
+      "id": "11dadafba2b540538f906c625053d1a7",
+      "title": "35 \u2014 Editor / Tap layer selection",
+      "width": 780,
+      "height": 2122,
+      "screenshot": {
+        "name": "projects/9969649650324268552/files/dfbf9ae168a94b539ec67b31ebe24a8f",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/dfbf9ae168a94b539ec67b31ebe24a8f:download"
+      },
+      "html": {
+        "name": "projects/9969649650324268552/files/700b94f4904146dbbb5ce64fcfe128dc",
+        "url": "https://stitch.googleapis.com/v1/projects/9969649650324268552/files/700b94f4904146dbbb5ce64fcfe128dc:download"
+      }
+    },
+    {
       "id": "850c3d5879f44f9c974054368d37f64a",
       "title": "34 \u2014 External display output",
       "width": 2560,
